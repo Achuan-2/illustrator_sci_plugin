@@ -1,11 +1,7 @@
     <ExtensionList>
-        <!-- 1 -->
         <Extension Id="com.example.achuanPlugin.panel">
            <HostList>
-
-               <!-- 2 -->
-               <Host Name="ILS" Port="8088"/>
-
+               <Host Name="ILST" Port="8088"/>
             </HostList>
         </Extension>
     </ExtensionList>    
