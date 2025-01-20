@@ -73,19 +73,22 @@ function addLabelsToImages(fontFamily, fontSize, labelOffsetX, labelOffsetY, lab
     var templates = {
         "A": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
         "a": "abcdefghijklmnopqrstuvwxyz",
-        "A)": "ABCDEFGHIJKLMNOPQRSTUVWXYZ)",
-        "a)": "abcdefghijklmnopqrstuvwxyz)"
+        "A)": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+        "a)": "abcdefghijklmnopqrstuvwxyz"
     };
 
     var labels = templates[labelTemplate] || templates["A"];
 
     for (var i = 0; i < selection.length; i++) {
         var item = selection[i];
-
+        var label;
+        label = labels[i % labels.length];
+        if (labelTemplate === "A)" || labelTemplate === "a)") {
+            label += ")";
+        }
         // Create text frame below the item
         var textFrame = doc.textFrames.add();
-        textFrame.contents = labels[i % labels.length];
-
+        textFrame.contents = label;
         // Position text frame below the item
         textFrame.top = item.top - labelOffsetY;
         textFrame.left = item.left + labelOffsetX;
