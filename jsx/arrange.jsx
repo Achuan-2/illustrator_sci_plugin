@@ -78,7 +78,7 @@ function addLabelsToImages(fontFamily, fontSize, labelOffsetX, labelOffsetY, lab
     };
 
     var labels = templates[labelTemplate] || templates["A"];
-    alert(selection.length);
+    //alert(selection.length);
     for (var i = 0; i < selection.length; i++) {
         try {
             var item = selection[i];
