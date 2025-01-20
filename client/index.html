@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Achuan-2's Plugin</title>
+    <style>
+        body { padding: 10px; font-family: Arial, sans-serif; color: white; }
+        .input-group { margin: 12px 0; }
+        label { display: inline-block; width: 100px; }
+        input { width: 60px; padding: 4px; }
+        button { padding: 8px 16px; margin-top: 10px; }
+    </style>
+</head>
+
+<body>
+    <!-- 1) Simple HTML UI elements to get us started -->
+    <h2>Image Tools</h2>
+
+    <div class="tool-section">
+        <h3>Arrange Images</h3>
+        <div class="input-group">
+            <label>Columns:</label>
+            <input type="number" id="columns" value="3" min="1">
+        </div>
+        <div class="input-group">
+            <label>Row Gap:</label>
+            <input type="number" id="row-gap" value="10" min="0">
+        </div>
+        <div class="input-group">
+            <label>Column Gap:</label>
+            <input type="number" id="col-gap" value="10" min="0">
+        </div>
+        <button id="arrange-button">Arrange Images</button>
+    </div>
+
+    <div class="tool-section">
+        <h3>Image Labels</h3>
+        <button id="add-label-button">Add Labels</button>
+    </div>
+
+    <!-- 3) Add your script dependencies here, including CEP's CSInterface.js library -->
+    <script type="text/javascript" src="CSInterface.js"></script>
+    <script type="text/javascript" src="../host/index.jsx"></script>
+</body>
+
+</html>
