@@ -31,17 +31,52 @@
             <label>Column Gap:</label>
             <input type="number" id="col-gap" value="10" min="0">
         </div>
+        <div class="input-group">
+            <label>Uniform Width:</label>
+            <input type="number" id="uniform-width" value="100" min="0">
+            <input type="checkbox" id="use-uniform-width">
+        </div>
+        <div class="input-group">
+            <label>Uniform Height:</label>
+            <input type="number" id="uniform-height" value="100" min="0">
+            <input type="checkbox" id="use-uniform-height">
+        </div>
         <button id="arrange-button">Arrange Images</button>
     </div>
 
     <div class="tool-section">
         <h3>Image Labels</h3>
+        <div class="input-group">
+            <label>Font Family:</label>
+            <input type="text" id="font-family" value="Arial">
+        </div>
+        <div class="input-group">
+            <label>Font Size:</label>
+            <input type="number" id="font-size" value="12" min="1">
+        </div>
+        <div class="input-group">
+            <label>Label Offset X:</label>
+            <input type="number" id="label-offset-x" value="-12">
+        </div>
+        <div class="input-group">
+            <label>Label Offset Y:</label>
+            <input type="number" id="label-offset-y" value="-6">
+        </div>
+        <div class="input-group">
+            <label>Label Template:</label>
+            <select id="label-template">
+                <option value="A">A</option>
+                <option value="a">a</option>
+                <option value="A)">A)</option>
+                <option value="a)">a)</option>
+            </select>
+        </div>
         <button id="add-label-button">Add Labels</button>
     </div>
 
     <!-- 3) Add your script dependencies here, including CEP's CSInterface.js library -->
-    <script type="text/javascript" src="CSInterface.js"></script>
-    <script type="text/javascript" src="../host/index.jsx"></script>
+    <script type="text/javascript" src="CSInterface.js" defer></script>
+    <script type="text/javascript" src="../host/index.jsx" defer></script>
 </body>
 
 </html>
