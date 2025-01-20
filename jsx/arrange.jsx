@@ -78,24 +78,32 @@ function addLabelsToImages(fontFamily, fontSize, labelOffsetX, labelOffsetY, lab
     };
 
     var labels = templates[labelTemplate] || templates["A"];
-
+    alert(selection.length);
     for (var i = 0; i < selection.length; i++) {
-        var item = selection[i];
-        var label;
-        label = labels[i % labels.length];
-        if (labelTemplate === "A)" || labelTemplate === "a)") {
-            label += ")";
-        }
-        // Create text frame below the item
-        var textFrame = doc.textFrames.add();
-        textFrame.contents = label;
-        // Position text frame below the item
-        textFrame.top = item.top - labelOffsetY;
-        textFrame.left = item.left + labelOffsetX;
+        try {
+            var item = selection[i];
+            var label = labels[i % labels.length];
+            if (labelTemplate === "A)" || labelTemplate === "a)") {
+                label += ")";
+            }
+            // Create text frame below the item
+            var textFrame = doc.textFrames.add();
+            textFrame.contents = label;
+            // Position text frame below the item
+            textFrame.top = item.top - labelOffsetY;
+            textFrame.left = item.left + labelOffsetX;
 
-        // Style the text
-        textFrame.textRange.characterAttributes.size = fontSize;
-        textFrame.textRange.characterAttributes.textFont = app.textFonts.getByName(fontFamily);
+            // Style the text
+            textFrame.textRange.characterAttributes.size = fontSize;
+            try {
+                textFrame.textRange.characterAttributes.textFont = app.textFonts.getByName(fontFamily === "Arial" ? "ArialMT" : fontFamily);
+            } catch (e) {
+                alert("Font not found: " + fontFamily);
+            }
+        } catch (e) {
+            // Handle errors without stopping the loop
+            alert("Error adding label to item " + (i + 1) + ": " + e.message);
+        }
     }
 }
 
