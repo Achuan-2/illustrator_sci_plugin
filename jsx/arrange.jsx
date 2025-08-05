@@ -131,7 +131,7 @@ function copyRelativePosition() {
     return deltaX + "," + deltaY;
 }
 
-function pasteRelativePosition(deltaX, deltaY) {
+function pasteRelativePosition(deltaX, deltaY, reverse) {
     if (app.documents.length === 0) return "Error: No document open.";
 
     var doc = app.activeDocument;
@@ -141,14 +141,14 @@ function pasteRelativePosition(deltaX, deltaY) {
         return "Error: Please select exactly two items (first the new reference object, then the object to move).";
     }
 
-    var newReference = selection[1];
-    var objectToMove = selection[0];
+    var newReference = reverse ? selection[0] : selection[1];
+    var objectToMove = reverse ? selection[1] : selection[0];
 
     var refBounds = newReference.geometricBounds;
     var objBounds = objectToMove.geometricBounds;
-
-    var newLeft = refBounds[0] + deltaX;
-    var newTop = refBounds[1] + deltaY;
+    // reverse=true的时候，deltaX和deltaY自动取反
+    var newLeft = refBounds[0] + (reverse ? -deltaX : deltaX);
+    var newTop = refBounds[1] + (reverse ? -deltaY : deltaY);
 
     // Move the object to the new calculated position
     // We adjust by the difference between the current top-left and the new top-left.

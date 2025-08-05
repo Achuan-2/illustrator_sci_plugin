@@ -5,6 +5,8 @@ var arrangeButton = document.querySelector("#arrange-button");
 var addLabelButton = document.querySelector("#add-label-button");
 var copyPosButton = document.querySelector("#copy-pos-button");
 var pastePosButton = document.querySelector("#paste-pos-button");
+var negatePosButton = document.querySelector("#negate-pos-button");
+var reverseMoveCheckbox = document.querySelector("#reverse-move-checkbox");
 var deltaXInput = document.querySelector("#delta-x");
 var deltaYInput = document.querySelector("#delta-y");
 var columnsInput = document.querySelector("#columns");
@@ -25,6 +27,7 @@ arrangeButton.addEventListener("click", handleArrange);
 addLabelButton.addEventListener("click", handleAddLabel);
 copyPosButton.addEventListener("click", handleCopyPosition);
 pastePosButton.addEventListener("click", handlePastePosition);
+negatePosButton.addEventListener("click", handleNegatePosition);
 
 // Handler Functions
 function handleCopyPosition() {
@@ -47,12 +50,18 @@ function handlePastePosition() {
     console.log("Paste Position button clicked");
     var deltaX = parseFloat(deltaXInput.value) || 0;
     var deltaY = parseFloat(deltaYInput.value) || 0;
+    var reverse = reverseMoveCheckbox.checked;
     csInterface.evalScript(`$.evalFile("${csInterface.getSystemPath(SystemPath.EXTENSION)}/jsx/arrange.jsx")`);
-    csInterface.evalScript(`pasteRelativePosition(${deltaX}, ${deltaY})`, function(result) {
+    csInterface.evalScript(`pasteRelativePosition(${deltaX}, ${deltaY}, ${reverse})`, function(result) {
         if (result && result.includes("Error:")) {
             alert(result);
         }
     });
+}
+
+function handleNegatePosition(){
+    deltaXInput.value = -parseFloat(deltaXInput.value);
+    deltaYInput.value = -parseFloat(deltaYInput.value);
 }
 
 function handleArrange() {
