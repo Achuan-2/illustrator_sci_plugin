@@ -7,6 +7,7 @@ var copyPosButton = document.querySelector("#copy-pos-button");
 var pastePosButton = document.querySelector("#paste-pos-button");
 var negatePosButton = document.querySelector("#negate-pos-button");
 var reverseMoveCheckbox = document.querySelector("#reverse-move-checkbox");
+var relativeCornerSelect = document.querySelector("#relative-corner");
 var deltaXInput = document.querySelector("#delta-x");
 var deltaYInput = document.querySelector("#delta-y");
 var columnsInput = document.querySelector("#columns");
@@ -32,8 +33,9 @@ negatePosButton.addEventListener("click", handleNegatePosition);
 // Handler Functions
 function handleCopyPosition() {
     console.log("Copy Position button clicked");
+    var corner = relativeCornerSelect.value;
     csInterface.evalScript(`$.evalFile("${csInterface.getSystemPath(SystemPath.EXTENSION)}/jsx/arrange.jsx")`);
-    csInterface.evalScript('copyRelativePosition()', function(result) {
+    csInterface.evalScript(`copyRelativePosition("${corner}")`, function(result) {
         if (result && result !== 'EvalScript error.') {
             var parts = result.split(',');
             if (parts.length === 2) {
@@ -51,8 +53,9 @@ function handlePastePosition() {
     var deltaX = parseFloat(deltaXInput.value) || 0;
     var deltaY = parseFloat(deltaYInput.value) || 0;
     var reverse = reverseMoveCheckbox.checked;
+    var corner = relativeCornerSelect.value;
     csInterface.evalScript(`$.evalFile("${csInterface.getSystemPath(SystemPath.EXTENSION)}/jsx/arrange.jsx")`);
-    csInterface.evalScript(`pasteRelativePosition(${deltaX}, ${deltaY}, ${reverse})`, function(result) {
+    csInterface.evalScript(`pasteRelativePosition(${deltaX}, ${deltaY}, ${reverse}, "${corner}")`, function(result) {
         if (result && result.includes("Error:")) {
             alert(result);
         }

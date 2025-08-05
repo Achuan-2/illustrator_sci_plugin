@@ -3,6 +3,9 @@
 function mmToPoints(mm) {
     return mm * 2.83464567;
 }
+function pointsToMm(points) {
+    return points / 2.83464567;
+}
 
 function arrangeImages(columns, rowGap, colGap, useWidth, wVal, useHeight, hVal) {
     if (app.documents.length === 0) return;
@@ -119,7 +122,7 @@ function addLabelsToImages(fontFamily, fontSize, labelOffsetX, labelOffsetY, lab
 }
 
 
-function copyRelativePosition() {
+function copyRelativePosition(corner) {
     if (app.documents.length === 0) return "Error: No document open.";
 
     var doc = app.activeDocument;
@@ -129,20 +132,55 @@ function copyRelativePosition() {
         return "Error: Please select exactly two items (first the reference object, then the object to measure).";
     }
 
-    var item1 = selection[1]; // The reference object (e.g., the mai image)
-    var item2 = selection[0]; // The object whose position is relative (e.g., the label)
+    var item1 = selection[1]; // The reference object
+    var item2 = selection[0]; // The object whose position is relative
 
-    // Using geometric bounds for positioning
     var bounds1 = item1.geometricBounds; // [left, top, right, bottom]
     var bounds2 = item2.geometricBounds;
 
-    var deltaX = bounds2[0] - bounds1[0];
-    var deltaY = bounds2[1] - bounds1[1];
+    var x1, y1, x2, y2;
 
-    return deltaX + "," + deltaY;
+    // Determine coordinates based on the selected corner
+    switch (corner) {
+        case "TL": // Top-Left
+            x1 = bounds1[0];
+            y1 = bounds1[1];
+            x2 = bounds2[0];
+            y2 = bounds2[1];
+            break;
+        case "TR": // Top-Right
+            x1 = bounds1[2];
+            y1 = bounds1[1];
+            x2 = bounds2[2];
+            y2 = bounds2[1];
+            break;
+        case "BL": // Bottom-Left
+            x1 = bounds1[0];
+            y1 = bounds1[3];
+            x2 = bounds2[0];
+            y2 = bounds2[3];
+            break;
+        case "BR": // Bottom-Right
+            x1 = bounds1[2];
+            y1 = bounds1[3];
+            x2 = bounds2[2];
+            y2 = bounds2[3];
+            break;
+        default: // Default to Top-Left
+            x1 = bounds1[0];
+            y1 = bounds1[1];
+            x2 = bounds2[0];
+            y2 = bounds2[1];
+            break;
+    }
+
+    var deltaX = x2 - x1;
+    var deltaY = y2 - y1;
+
+    return pointsToMm(deltaX) + "," + pointsToMm(deltaY);
 }
 
-function pasteRelativePosition(deltaX, deltaY, reverse) {
+function pasteRelativePosition(deltaX, deltaY, reverse, corner) {
     if (app.documents.length === 0) return "Error: No document open.";
 
     var doc = app.activeDocument;
@@ -157,13 +195,44 @@ function pasteRelativePosition(deltaX, deltaY, reverse) {
 
     var refBounds = newReference.geometricBounds;
     var objBounds = objectToMove.geometricBounds;
-    // reverse=true的时候，deltaX和deltaY自动取反
-    var newLeft = refBounds[0] + (reverse ? -deltaX : deltaX);
-    var newTop = refBounds[1] + (reverse ? -deltaY : deltaY);
 
-    // Move the object to the new calculated position
-    // We adjust by the difference between the current top-left and the new top-left.
-    objectToMove.translate(newLeft - objBounds[0], newTop - objBounds[1]);
+    var finalDeltaX = reverse ? -deltaX : deltaX;
+    var finalDeltaY = reverse ? -deltaY : deltaY;
+
+    // Convert mm from UI back to points for ExtendScript
+    var deltaXPt = mmToPoints(finalDeltaX);
+    var deltaYPt = mmToPoints(finalDeltaY);
+    
+    var newX, newY;
+
+    // Calculate new position based on the selected corner
+    switch (corner) {
+        case "TL": // Top-Left
+            newX = refBounds[0] + deltaXPt;
+            newY = refBounds[1] + deltaYPt;
+            objectToMove.translate(newX - objBounds[0], newY - objBounds[1]);
+            break;
+        case "TR": // Top-Right
+             newX = refBounds[2] + deltaXPt;
+             newY = refBounds[1] + deltaYPt;
+             objectToMove.translate(newX - objBounds[2], newY - objBounds[1]);
+            break;
+        case "BL": // Bottom-Left
+             newX = refBounds[0] + deltaXPt;
+             newY = refBounds[3] + deltaYPt;
+             objectToMove.translate(newX - objBounds[0], newY - objBounds[3]);
+            break;
+        case "BR": // Bottom-Right
+             newX = refBounds[2] + deltaXPt;
+             newY = refBounds[3] + deltaYPt;
+             objectToMove.translate(newX - objBounds[2], newY - objBounds[3]);
+            break;
+        default: // Default to Top-Left
+            newX = refBounds[0] + deltaXPt;
+            newY = refBounds[1] + deltaYPt;
+            objectToMove.translate(newX - objBounds[0], newY - objBounds[1]);
+            break;
+    }
 
     return "Success";
 }
