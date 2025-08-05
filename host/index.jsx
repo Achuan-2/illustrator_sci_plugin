@@ -3,6 +3,10 @@ var csInterface = new CSInterface();
 // UI Elements
 var arrangeButton = document.querySelector("#arrange-button");
 var addLabelButton = document.querySelector("#add-label-button");
+var copyPosButton = document.querySelector("#copy-pos-button");
+var pastePosButton = document.querySelector("#paste-pos-button");
+var deltaXInput = document.querySelector("#delta-x");
+var deltaYInput = document.querySelector("#delta-y");
 var columnsInput = document.querySelector("#columns");
 var rowGapInput = document.querySelector("#row-gap");
 var colGapInput = document.querySelector("#col-gap");
@@ -19,8 +23,38 @@ var labelTemplateSelect = document.querySelector("#label-template");
 // Event Listeners
 arrangeButton.addEventListener("click", handleArrange);
 addLabelButton.addEventListener("click", handleAddLabel);
+copyPosButton.addEventListener("click", handleCopyPosition);
+pastePosButton.addEventListener("click", handlePastePosition);
 
 // Handler Functions
+function handleCopyPosition() {
+    console.log("Copy Position button clicked");
+    csInterface.evalScript(`$.evalFile("${csInterface.getSystemPath(SystemPath.EXTENSION)}/jsx/arrange.jsx")`);
+    csInterface.evalScript('copyRelativePosition()', function(result) {
+        if (result && result !== 'EvalScript error.') {
+            var parts = result.split(',');
+            if (parts.length === 2) {
+                deltaXInput.value = parseFloat(parts[0]).toFixed(2);
+                deltaYInput.value = parseFloat(parts[1]).toFixed(2);
+            }
+        } else if (result.includes("Error:")) {
+            alert(result);
+        }
+    });
+}
+
+function handlePastePosition() {
+    console.log("Paste Position button clicked");
+    var deltaX = parseFloat(deltaXInput.value) || 0;
+    var deltaY = parseFloat(deltaYInput.value) || 0;
+    csInterface.evalScript(`$.evalFile("${csInterface.getSystemPath(SystemPath.EXTENSION)}/jsx/arrange.jsx")`);
+    csInterface.evalScript(`pasteRelativePosition(${deltaX}, ${deltaY})`, function(result) {
+        if (result && result.includes("Error:")) {
+            alert(result);
+        }
+    });
+}
+
 function handleArrange() {
     console.log("Arrange button clicked");
     var columns = parseInt(columnsInput.value) || 3;
