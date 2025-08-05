@@ -118,8 +118,8 @@ function copyRelativePosition() {
         return "Error: Please select exactly two items (first the reference object, then the object to measure).";
     }
 
-    var item1 = selection[0]; // The reference object (e.g., the mai image)
-    var item2 = selection[1]; // The object whose position is relative (e.g., the label)
+    var item1 = selection[1]; // The reference object (e.g., the mai image)
+    var item2 = selection[0]; // The object whose position is relative (e.g., the label)
 
     // Using geometric bounds for positioning
     var bounds1 = item1.geometricBounds; // [left, top, right, bottom]
@@ -141,8 +141,8 @@ function pasteRelativePosition(deltaX, deltaY) {
         return "Error: Please select exactly two items (first the new reference object, then the object to move).";
     }
 
-    var newReference = selection[0];
-    var objectToMove = selection[1];
+    var newReference = selection[1];
+    var objectToMove = selection[0];
 
     var refBounds = newReference.geometricBounds;
     var objBounds = objectToMove.geometricBounds;
