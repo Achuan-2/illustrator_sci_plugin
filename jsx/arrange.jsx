@@ -1,4 +1,9 @@
 // Illustrator ExtendScript Functions
+// Helper function to convert mm to points
+function mmToPoints(mm) {
+    return mm * 2.83464567;
+}
+
 function arrangeImages(columns, rowGap, colGap, useWidth, wVal, useHeight, hVal) {
     if (app.documents.length === 0) return;
 
@@ -10,6 +15,12 @@ function arrangeImages(columns, rowGap, colGap, useWidth, wVal, useHeight, hVal)
         return;
     }
 
+    // Convert mm values to points
+    var rowGapPt = mmToPoints(rowGap);
+    var colGapPt = mmToPoints(colGap);
+    var wValPt = useWidth ? mmToPoints(wVal) : 0;
+    var hValPt = useHeight ? mmToPoints(hVal) : 0;
+
     // Store items and get starting position
     var items = [];
     var startX = selection[0].left;
@@ -19,13 +30,13 @@ function arrangeImages(columns, rowGap, colGap, useWidth, wVal, useHeight, hVal)
         items.push(selection[i]);
         if (useWidth && wVal > 0) {
             var aspectRatio = items[i].height / items[i].width;
-            items[i].width = wVal;
-            items[i].height = wVal * aspectRatio;
+            items[i].width = wValPt;
+            items[i].height = wValPt * aspectRatio;
         }
         if (useHeight && hVal > 0) {
             var aspectRatio = items[i].width / items[i].height;
-            items[i].height = hVal;
-            items[i].width = hVal * aspectRatio;
+            items[i].height = hValPt;
+            items[i].width = hValPt * aspectRatio;
         }
     }
 
@@ -48,12 +59,12 @@ function arrangeImages(columns, rowGap, colGap, useWidth, wVal, useHeight, hVal)
         // Move to next position
         if (count < columns) {
             // Move right
-            currentX += items[i].width + colGap;
+            currentX += items[i].width + colGapPt;
         } else {
             // Move to next row
             count = 0;
             currentX = startX;
-            currentY -= maxRowHeight + rowGap;
+            currentY -= maxRowHeight + rowGapPt;
             maxRowHeight = 0;
         }
     }
