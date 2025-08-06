@@ -93,6 +93,7 @@
             gap: 8px;
             flex-wrap: wrap; /* 允许在窄宽度时换行 */
         }
+
         label {
             color: var(--muted);
             flex: 0 0 120px;   /* 默认标签宽 */
@@ -289,12 +290,14 @@
             <div class="panel" id="panel-size">
                 <div class="grid">
                     <div class="input-group">
-                        <label>Width (mm):</label>
+                            <span>Width (mm):</span>
                         <input type="number" id="size-w" value="0">
+                        <input type="checkbox" id="use-size-w" checked>
                     </div>
                     <div class="input-group">
-                        <label>Height (mm):</label>
+                        <span>Height (mm):</span>
                         <input type="number" id="size-h" value="0">
+                        <input type="checkbox" id="use-size-h" checked>
                     </div>
                 </div>
                 <div class="toolbar">

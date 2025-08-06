@@ -469,26 +469,38 @@ function copySize() {
     return '{"width":' + size.width + ',"height":' + size.height + '}';
 }
 
-function pasteSize(width, height) {
+function pasteSize(width, height, useW, useH) {
     if (app.documents.length === 0) return "Error: No document open.";
-    if (isNaN(width) || isNaN(height)) return "Error: Invalid width or height.";
-
+    
     var selection = app.activeDocument.selection;
     if (selection.length === 0) return "Error: Please select items to resize.";
 
-    var targetWidthPt = mmToPoints(width);
-    var targetHeightPt = mmToPoints(height);
+    if (!useW && !useH) return "Success: No action taken.";
+    
+    var targetWidthPt = useW ? mmToPoints(width) : 0;
+    var targetHeightPt = useH ? mmToPoints(height) : 0;
 
     for (var i = 0; i < selection.length; i++) {
         var item = selection[i];
         var info = getVisibleInfo(item);
         
-        if (info.width > 0 && info.height > 0) {
-            var scaleX = targetWidthPt / info.width * 100;
-            var scaleY = targetHeightPt / info.height * 100;
-            // Note: This performs non-uniform scaling if aspect ratios differ.
-            item.resize(scaleX, scaleY, true, true, true, true, 100, Transformation.CENTER);
+        if (info.width <= 0 || info.height <= 0) continue;
+
+        var scaleX = 100, scaleY = 100;
+
+        if (useW && useH) {
+            // Both are checked, non-uniform scale
+            scaleX = (targetWidthPt / info.width) * 100;
+            scaleY = (targetHeightPt / info.height) * 100;
+        } else if (useW) {
+            // Only width is checked, uniform scale
+            scaleX = scaleY = (targetWidthPt / info.width) * 100;
+        } else if (useH) {
+            // Only height is checked, uniform scale
+            scaleX = scaleY = (targetHeightPt / info.height) * 100;
         }
+
+        item.resize(scaleX, scaleY, true, true, true, true, 100, Transformation.CENTER);
     }
     return "Success";
 }
