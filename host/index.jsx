@@ -70,8 +70,8 @@ function handleNegatePosition(){
 function handleArrange() {
     console.log("Arrange button clicked");
     var columns = parseInt(columnsInput.value) || 3;
-    var rowGap = parseInt(rowGapInput.value) || 10;
-    var colGap = parseInt(colGapInput.value) || 10;
+    var rowGap = parseFloat(rowGapInput.value) || 10;
+    var colGap = parseFloat(colGapInput.value) || 10;
     if (
         useUniformWidthCheckbox.checked &&
         parseFloat(uniformWidthInput.value) < 0
