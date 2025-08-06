@@ -1,13 +1,15 @@
 # README
 
+插件地址：[Achuan-2/illustrator_sci_plugin](https://github.com/Achuan-2/illustrator_sci_plugin)
+
 ## 1 开发背景
 
-之前为了组会做ppt排图导入markdown，写了一个ppt插件，开源在Github，目前star数已经超过450 stars：[Achuan-2/SlideSCI](https://github.com/Achuan-2/SlideSCI)
+之前为了组会做ppt快速排图、导入markdown笔记，写了一个ppt插件，开源在Github，目前star数已经超过450 stars：[Achuan-2/SlideSCI](https://github.com/Achuan-2/SlideSCI)
 
 最近在写论文，用adobe illustrator排图有时好累
 
 - 比如我需要不同图同一个位置添加同一个标注，原生非常麻烦，因为只能获取绝对位置，得自己计算相对位置
-- 比如我需要图片批量改宽高，全选图片后，输入具体值，但实际改的是整体大小，每个图片的大小不是我输入的具体值
+- 比如我需要图片批量改宽高，全选图片后，输入具体值，但实际改的是整体大小，每个图片的大小并不是我输入的具体值
 
 ## 2 功能介绍
 
@@ -26,27 +28,44 @@
 1. 下载插件zip
 
     ![PixPin_2025-08-06_12-07-53](https://assets.b3logfile.com/siyuan/1610205759005/assets/PixPin_2025-08-06_12-07-53-20250806120759-910uvu0.png)
-2. 解压，复制插件文件夹到`C:\Program Files\Common Files\Adobe\CEP\extensions`​
+2. 解压，复制插件文件夹到Adobe 插件文件夹
 
-    ![PixPin_2025-08-06_12-07-37](https://assets.b3logfile.com/siyuan/1610205759005/assets/PixPin_2025-08-06_12-07-37-20250806120739-cquahfa.png)
+    - windows
+
+      - 32位版本：`C:\Program Files (x86)\Common Files\Adobe\CEP\extensions\`​
+      - 64位版本：`C:\Program Files\Common Files\Adobe\CEP\extensions`（illustrator版本比较新一般都是64位版本，32位版本应该都是比较老的版本）
+
+      ![PixPin_2025-08-06_12-07-37](https://assets.b3logfile.com/siyuan/1610205759005/assets/PixPin_2025-08-06_12-07-37-20250806120739-cquahfa.png)
+
+    - MacOS
+
+      - 系统目录：`/Library/Application Support/Adobe/CEP/extensions`​
+      - 用户目录：`~/Library/Application Support/Adobe/CEP/extensions`​
 3. 由于插件没有打包，需要额外设置PlayerDebugMode，才能使用本插件
 
     启用允许开发者扩展（PlayerDebugMode=1）步骤
 
-    windows解决方法
+    - windows解决方法
 
-    - win+r输入regedit，打开注册表
-    - 找到`计算机\HKEY_CURRENT_USER\Software\Adobe\`+`CSXS.版本号`（可以直接在地址栏粘贴）：新建字符串，名称为 PlayerDebugMode，然后双击输入值为1。
+      - ​`win+r`输入`regedit`，打开注册表
+      - 找到`计算机\HKEY_CURRENT_USER\Software\Adobe\`（可以直接在地址栏粘贴跳转）+`CSXS.版本号`：新建字符串，名称为 PlayerDebugMode，然后双击输入值为1。
 
-      ![PixPin_2025-08-06_09-54-07](https://assets.b3logfile.com/siyuan/1610205759005/assets/PixPin_2025-08-06_09-54-07-20250806095411-4s02uhq.png)
+        ![PixPin_2025-08-06_09-54-07](https://assets.b3logfile.com/siyuan/1610205759005/assets/PixPin_2025-08-06_09-54-07-20250806095411-4s02uhq.png)
+    - Mac系统解决方法
 
-    Mac系统解决方法
+      - 打开终端，输入
 
-    - 打开终端，输入
+        ```bash
+        defaults write com.adobe.CSXS.版本号 PlayerDebugMode 1
+        ```
 
-      ```bash
-      defaults write com.adobe.CSXS.版本号 PlayerDebugMode 1
-      ```
+        如
+
+        ```bash
+        defaults write com.adobe.CSXS.10 PlayerDebugMode 1
+        defaults write com.adobe.CSXS.11 PlayerDebugMode 1
+        defaults write com.adobe.CSXS.12 PlayerDebugMode 1
+        ```
 4. 打开插件
 
     - 窗口-扩展功能，选择本插件
