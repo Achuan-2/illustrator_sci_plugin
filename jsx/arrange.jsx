@@ -260,45 +260,34 @@ function copyRelativePosition(corner) {
         return "Error: Please select exactly two items (first the reference object, then the object to measure).";
     }
 
-    var item1 = selection[1]; // The reference object
-    var item2 = selection[0]; // The object whose position is relative
+    // 约定：selection[1] 是参考对象（先选），selection[0] 是被测对象（后选）
+    var refItem = selection[1];
+    var objItem = selection[0];
 
-    var bounds1 = item1.geometricBounds; // [left, top, right, bottom]
-    var bounds2 = item2.geometricBounds;
+    // 使用可视边界，适配剪切蒙版/复合路径
+    var refB = getVisibleBounds(refItem) || refItem.visibleBounds;
+    var objB = getVisibleBounds(objItem) || objItem.visibleBounds;
 
     var x1, y1, x2, y2;
 
-    // Determine coordinates based on the selected corner
+    // 基于角点取坐标
     switch (corner) {
-        case "TL": // Top-Left
-            x1 = bounds1[0];
-            y1 = bounds1[1];
-            x2 = bounds2[0];
-            y2 = bounds2[1];
-            break;
         case "TR": // Top-Right
-            x1 = bounds1[2];
-            y1 = bounds1[1];
-            x2 = bounds2[2];
-            y2 = bounds2[1];
+            x1 = refB[2]; y1 = refB[1];
+            x2 = objB[2]; y2 = objB[1];
             break;
         case "BL": // Bottom-Left
-            x1 = bounds1[0];
-            y1 = bounds1[3];
-            x2 = bounds2[0];
-            y2 = bounds2[3];
+            x1 = refB[0]; y1 = refB[3];
+            x2 = objB[0]; y2 = objB[3];
             break;
         case "BR": // Bottom-Right
-            x1 = bounds1[2];
-            y1 = bounds1[3];
-            x2 = bounds2[2];
-            y2 = bounds2[3];
+            x1 = refB[2]; y1 = refB[3];
+            x2 = objB[2]; y2 = objB[3];
             break;
-        default: // Default to Top-Left
-            x1 = bounds1[0];
-            y1 = bounds1[1];
-            x2 = bounds2[0];
-            y2 = bounds2[1];
+        case "TL": // Top-Left
+        default:
+            x1 = refB[0]; y1 = refB[1];
+            x2 = objB[0]; y2 = objB[1];
             break;
     }
 
