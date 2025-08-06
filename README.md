@@ -2,7 +2,7 @@
 
 ## 1 开发背景
 
-之前写了一个ppt插件，开源在Github，目前star数已经超过450 stars：Achuan-2/SlideSCI
+之前为了组会做ppt排图导入markdown，写了一个ppt插件，开源在Github，目前star数已经超过450 stars：[Achuan-2/SlideSCI](https://github.com/Achuan-2/SlideSCI)
 
 最近在写论文，用adobe illustrator排图有时好累
 
