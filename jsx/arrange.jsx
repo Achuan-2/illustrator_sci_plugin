@@ -390,8 +390,9 @@ function pasteRelativePosition(deltaX, deltaY, reverse, corner, order, reverseOr
         objectToMove = reverse ? baseRef : baseObj;
     }
 
-    var refBounds = newReference.geometricBounds;
-    var objBounds = objectToMove.geometricBounds;
+    // 使用可视边界，确保剪切蒙版/复合路径时位置计算正确
+    var refBounds = getVisibleBounds(newReference) || newReference.visibleBounds;
+    var objBounds = getVisibleBounds(objectToMove) || objectToMove.visibleBounds;
 
     var finalDeltaX = reverse ? -deltaX : deltaX;
     var finalDeltaY = reverse ? -deltaY : deltaY;
