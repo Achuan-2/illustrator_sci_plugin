@@ -11,6 +11,7 @@ var reverseMoveCheckbox = document.querySelector("#reverse-move-checkbox");
 var relativeCornerSelect = document.querySelector("#relative-corner");
 var deltaXInput = document.querySelector("#delta-x");
 var deltaYInput = document.querySelector("#delta-y");
+var copiedDeltasJSON = '[]';
 
 // New: Relative order controls
 var relativeOrderSelect = document.querySelector("#relative-order");
@@ -50,44 +51,109 @@ function handleCopyPosition() {
     console.log("Copy Position button clicked");
     var corner = relativeCornerSelect.value;
     var order = (relativeOrderSelect && relativeOrderSelect.value) || "stacking";
-    // merged: use reverseMoveCheckbox as reverse order flag too
     var revOrder = !!reverseMoveCheckbox.checked;
 
     csInterface.evalScript(`$.evalFile("${csInterface.getSystemPath(SystemPath.EXTENSION)}/jsx/arrange.jsx")`);
-    csInterface.evalScript(`copyRelativePosition("${corner}", "${order}", ${revOrder})`, function(result) {
-        if (result && result !== 'EvalScript error.') {
-            var parts = result.split(',');
-            if (parts.length === 2) {
-                deltaXInput.value = parseFloat(parts[0]).toFixed(2);
-                deltaYInput.value = parseFloat(parts[1]).toFixed(2);
-            }
-        } else if (result && result.indexOf("Error:") === 0) {
+    csInterface.evalScript(`copyRelativePosition("${corner}", "${order}", ${revOrder})`, function (result) {
+        deltaXInput.placeholder = 'ΔX'; // Reset placeholder
+        deltaYInput.placeholder = 'ΔY';
+
+        if (result && result.indexOf("Error:") === 0) {
             alert(result);
+            return;
+        }
+
+        if (result && result !== 'EvalScript error.') {
+            copiedDeltasJSON = result; // Store the raw JSON string
+            try {
+                // In ExtendScript, we're now using eval, which gives us an object directly.
+                var deltas = eval('(' + result + ')');
+                if (deltas && deltas.length === 1) {
+                    deltaXInput.value = parseFloat(deltas[0].deltaX).toFixed(2);
+                    deltaYInput.value = parseFloat(deltas[0].deltaY).toFixed(2);
+                } else if (deltas && deltas.length > 1) {
+                    deltaXInput.value = ''; // Clear the input
+                    deltaYInput.value = '';
+                    deltaXInput.placeholder = 'Multiple Values';
+                    deltaYInput.placeholder = 'Multiple Values';
+                } else {
+                    deltaXInput.value = '0.00';
+                    deltaYInput.value = '0.00';
+                }
+            } catch (e) {
+                alert("Failed to parse position data: " + e.message);
+                copiedDeltasJSON = '[]';
+                deltaXInput.value = '0.00';
+                deltaYInput.value = '0.00';
+            }
         }
     });
 }
 
 function handlePastePosition() {
     console.log("Paste Position button clicked");
-    var deltaX = parseFloat(deltaXInput.value) || 0;
-    var deltaY = parseFloat(deltaYInput.value) || 0;
+
+    var deltaXStr = deltaXInput.value.trim();
+    var deltaYStr = deltaYInput.value.trim();
+    var overrideDeltaX = null;
+    var overrideDeltaY = null;
+
+    // Use override if inputs are not empty strings. This allows '0' to be a valid override.
+    var useOverride = deltaXStr !== '' && deltaYStr !== '';
+
+    if (useOverride) {
+        overrideDeltaX = parseFloat(deltaXStr);
+        overrideDeltaY = parseFloat(deltaYStr);
+        if (isNaN(overrideDeltaX) || isNaN(overrideDeltaY)) {
+            alert("Invalid number format for ΔX or ΔY.");
+            return;
+        }
+    } else if (!copiedDeltasJSON || copiedDeltasJSON === '[]') {
+        alert("No position data has been copied, and no override values are set.");
+        return;
+    }
+
     var reverse = !!reverseMoveCheckbox.checked;
     var corner = relativeCornerSelect.value;
     var order = (relativeOrderSelect && relativeOrderSelect.value) || "stacking";
-    // merged: use reverseMoveCheckbox as reverse order flag too
     var revOrder = !!reverseMoveCheckbox.checked;
 
     csInterface.evalScript(`$.evalFile("${csInterface.getSystemPath(SystemPath.EXTENSION)}/jsx/arrange.jsx")`);
-    csInterface.evalScript(`pasteRelativePosition(${deltaX}, ${deltaY}, ${reverse}, "${corner}", "${order}", ${revOrder})`, function(result) {
+
+    var script = `pasteRelativePosition('${copiedDeltasJSON}', ${reverse}, "${corner}", "${order}", ${revOrder}, ${useOverride ? overrideDeltaX : 'null'}, ${useOverride ? overrideDeltaY : 'null'})`;
+    csInterface.evalScript(script, function (result) {
         if (result && result.indexOf("Error:") === 0) {
             alert(result);
         }
     });
 }
 
-function handleNegatePosition(){
-    deltaXInput.value = -parseFloat(deltaXInput.value);
-    deltaYInput.value = -parseFloat(deltaYInput.value);
+function handleNegatePosition() {
+    try {
+        var deltas = JSON.parse(copiedDeltasJSON);
+        if (!deltas || !deltas.length) return;
+
+        for (var i = 0; i < deltas.length; i++) {
+            deltas[i].deltaX = -deltas[i].deltaX;
+            deltas[i].deltaY = -deltas[i].deltaY;
+        }
+        
+        copiedDeltasJSON = JSON.stringify(deltas);
+
+        // Update UI
+        if (deltas.length === 1) {
+            deltaXInput.value = parseFloat(deltas[0].deltaX).toFixed(2);
+            deltaYInput.value = parseFloat(deltas[0].deltaY).toFixed(2);
+        } else if (deltas.length > 1) {
+            deltaXInput.value = '[Multiple]';
+            deltaYInput.value = '[Multiple]';
+        } else {
+            deltaXInput.value = '0.00';
+            deltaYInput.value = '0.00';
+        }
+    } catch (e) {
+        alert('Could not negate positions. Stored data is invalid.');
+    }
 }
 
 function handleArrange() {

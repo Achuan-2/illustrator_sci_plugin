@@ -7,6 +7,16 @@ function pointsToMm(points) {
     return points / 2.83464567;
 }
 
+// Simple stringifier to avoid ExtendScript's lack of native JSON support
+function simpleJsonStringify(arr) {
+    var parts = [];
+    for (var i = 0; i < arr.length; i++) {
+        var item = arr[i];
+        parts.push('{"deltaX":' + item.deltaX + ',"deltaY":' + item.deltaY + '}');
+    }
+    return '[' + parts.join(',') + ']';
+}
+
 // 更稳健的获取“可视区域”边界，参考用户提供逻辑，优先基于剪切路径/复合路径计算
 // 返回 [left, top, right, bottom]，未能获取时返回 undefined
 function getVisibleBounds(o) {
@@ -149,10 +159,10 @@ function getOrderedSelection(selection, order, reverse) {
         arr.sort(function (a, b) {
             var ia = getVisibleInfo(a);
             var ib = getVisibleInfo(b);
-            var cxA = (ia.left + ia.right) / 2;
-            var cyA = (ia.top + ia.bottom) / 2;
-            var cxB = (ib.left + ib.right) / 2;
-            var cyB = (ib.top + ib.bottom) / 2;
+            var cxA = ia.left;
+            var cyA = ia.top;
+            var cxB = ib.left;
+            var cyB = ib.top;
 
             if (ord === "horizontal") {
                 // 从左到右
@@ -310,126 +320,135 @@ function copyRelativePosition(corner, order, reverseOrder) {
     var doc = app.activeDocument;
     var selection = doc.selection;
 
-    var ord = order || "stacking";
-    var rev = !!reverseOrder;
-
     if (selection.length < 2) {
-        return "Error: Please select at least two items (the reference and the object to measure).";
+        return "Error: Please select at least two items.";
     }
 
-    var refItem, objItem;
-    if (selection.length === 2 && ord === "stacking" && !rev) {
-        // 保持原有语义：selection[1] 是参考，selection[0] 是被测
-        refItem = selection[1];
-        objItem = selection[0];
-    } else {
-        var ordered = getOrderedSelection(selection, ord, rev);
-        // 遵照原约定：ref 为第二个，obj 为第一个
-        objItem = ordered[0];
-        refItem = ordered[1];
-    }
+    var ord = order || "stacking";
+    var revOrd = !!reverseOrder;
+    var ordered = getOrderedSelection(selection, ord, revOrd);
 
+    // 确定参考对象 (refItem)
+    // 对于堆叠顺序 (stacking)，参考对象默认为最后一个，否则为第一个
+    var refItem = (ord === "stacking") ? ordered[ordered.length - 1] : ordered[0];
+
+    // 其他所有对象为目标对象 (objItems)
+    var objItems = [];
+    for (var i = 0; i < ordered.length; i++) {
+        if (ordered[i] !== refItem) {
+            objItems.push(ordered[i]);
+        }
+    }
+    
     // 使用可视边界，适配剪切蒙版/复合路径
     var refB = getVisibleBounds(refItem) || refItem.visibleBounds;
-    var objB = getVisibleBounds(objItem) || objItem.visibleBounds;
+    var deltas = [];
 
-    var x1, y1, x2, y2;
+    // 遍历所有目标对象，计算相对位置
+    for (var j = 0; j < objItems.length; j++) {
+        var objItem = objItems[j];
+        var objB = getVisibleBounds(objItem) || objItem.visibleBounds;
 
-    // 基于角点取坐标
-    switch (corner) {
-        case "TR": // Top-Right
-            x1 = refB[2]; y1 = refB[1];
-            x2 = objB[2]; y2 = objB[1];
-            break;
-        case "BL": // Bottom-Left
-            x1 = refB[0]; y1 = refB[3];
-            x2 = objB[0]; y2 = objB[3];
-            break;
-        case "BR": // Bottom-Right
-            x1 = refB[2]; y1 = refB[3];
-            x2 = objB[2]; y2 = objB[3];
-            break;
-        case "TL": // Top-Left
-        default:
-            x1 = refB[0]; y1 = refB[1];
-            x2 = objB[0]; y2 = objB[1];
-            break;
+        var x1, y1, x2, y2;
+        // 基于角点取坐标
+        switch (corner) {
+            case "TR": x1 = refB[2]; y1 = refB[1]; x2 = objB[2]; y2 = objB[1]; break;
+            case "BL": x1 = refB[0]; y1 = refB[3]; x2 = objB[0]; y2 = objB[3]; break;
+            case "BR": x1 = refB[2]; y1 = refB[3]; x2 = objB[2]; y2 = objB[3]; break;
+            default:   x1 = refB[0]; y1 = refB[1]; x2 = objB[0]; y2 = objB[1]; break; // TL
+        }
+
+        var deltaX = x2 - x1;
+        var deltaY = y2 - y1;
+        
+        deltas.push({
+            deltaX: pointsToMm(deltaX),
+            deltaY: pointsToMm(deltaY)
+        });
     }
 
-    var deltaX = x2 - x1;
-    var deltaY = y2 - y1;
-
-    return pointsToMm(deltaX) + "," + pointsToMm(deltaY);
+    // 返回包含所有相对位置信息的 JSON 字符串
+    return simpleJsonStringify(deltas);
 }
 
-function pasteRelativePosition(deltaX, deltaY, reverse, corner, order, reverseOrder) {
+function pasteRelativePosition(deltasJSON, reverse, corner, order, reverseOrder, overrideDeltaX, overrideDeltaY) {
     if (app.documents.length === 0) return "Error: No document open.";
+    // 都不为null或都不为0
+    var useOverride = (overrideDeltaX !== null && overrideDeltaX !== 0) && (overrideDeltaY !== null && overrideDeltaY !== 0);
+
+    if (!useOverride && !deltasJSON) return "Error: No relative position data provided.";
 
     var doc = app.activeDocument;
     var selection = doc.selection;
+    var deltas;
+
+    if (!useOverride) {
+        try {
+            deltas = eval('(' + deltasJSON + ')');
+            if (!deltas || typeof deltas.length === "undefined") throw new Error("Invalid data format.");
+        } catch(e) {
+            return "Error: Invalid relative position data. " + e.message;
+        }
+    }
+
+    if (selection.length < 2) {
+        return "Error: Please select at least two items.";
+    }
+
+    if (!useOverride && (selection.length - 1 !== deltas.length)) {
+        return "Error: The number of items to move (" + (selection.length - 1) + ") does not match the saved data count (" + deltas.length + ").";
+    }
 
     var ord = order || "stacking";
     var revOrd = !!reverseOrder;
 
-    if (selection.length < 2) {
-        return "Error: Please select at least two items (the new reference and the object to move).";
-    }
+    var ordered = getOrderedSelection(selection, ord, revOrd);
 
-    var newReference, objectToMove;
-    if (selection.length === 2 && ord === "stacking" && !revOrd) {
-        newReference = reverse ? selection[0] : selection[1];
-        objectToMove = reverse ? selection[1] : selection[0];
-    } else {
-        var ordered = getOrderedSelection(selection, ord, revOrd);
-        // 取前两个：遵照 copy 中的定义 second 为参考、first 为目标，再结合 reverse 参数交换
-        var first = ordered[0];
-        var second = ordered[1];
-        var baseRef = second;
-        var baseObj = first;
-        newReference = reverse ? baseObj : baseRef;
-        objectToMove = reverse ? baseRef : baseObj;
-    }
-
-    // 使用可视边界，确保剪切蒙版/复合路径时位置计算正确
-    var refBounds = getVisibleBounds(newReference) || newReference.visibleBounds;
-    var objBounds = getVisibleBounds(objectToMove) || objectToMove.visibleBounds;
-
-    var finalDeltaX = reverse ? -deltaX : deltaX;
-    var finalDeltaY = reverse ? -deltaY : deltaY;
-
-    // Convert mm from UI back to points for ExtendScript
-    var deltaXPt = mmToPoints(finalDeltaX);
-    var deltaYPt = mmToPoints(finalDeltaY);
+    var newReference = (ord === "stacking") ? ordered[ordered.length - 1] : ordered[0];
     
-    var newX, newY;
+    var objectsToMove = [];
+    for (var i = 0; i < ordered.length; i++) {
+        if (ordered[i] !== newReference) {
+            objectsToMove.push(ordered[i]);
+        }
+    }
+    
+    var refBounds = getVisibleBounds(newReference) || newReference.visibleBounds;
 
-    // Calculate new position based on the selected corner
-    switch (corner) {
-        case "TL": // Top-Left
-            newX = refBounds[0] + deltaXPt;
-            newY = refBounds[1] + deltaYPt;
-            objectToMove.translate(newX - objBounds[0], newY - objBounds[1]);
-            break;
-        case "TR": // Top-Right
-             newX = refBounds[2] + deltaXPt;
-             newY = refBounds[1] + deltaYPt;
-             objectToMove.translate(newX - objBounds[2], newY - objBounds[1]);
-            break;
-        case "BL": // Bottom-Left
-             newX = refBounds[0] + deltaXPt;
-             newY = refBounds[3] + deltaYPt;
-             objectToMove.translate(newX - objBounds[0], newY - objBounds[3]);
-            break;
-        case "BR": // Bottom-Right
-             newX = refBounds[2] + deltaXPt;
-             newY = refBounds[3] + deltaYPt;
-             objectToMove.translate(newX - objBounds[2], newY - objBounds[3]);
-            break;
-        default: // Default to Top-Left
-            newX = refBounds[0] + deltaXPt;
-            newY = refBounds[1] + deltaYPt;
-            objectToMove.translate(newX - objBounds[0], newY - objBounds[1]);
-            break;
+    for (var k = 0; k < objectsToMove.length; k++) {
+        var objectToMove = objectsToMove[k];
+        var objBounds = getVisibleBounds(objectToMove) || objectToMove.visibleBounds;
+        
+        var deltaXPt, deltaYPt;
+        if (useOverride) {
+            deltaXPt = mmToPoints(overrideDeltaX);
+            deltaYPt = mmToPoints(overrideDeltaY);
+        } else {
+            var delta = deltas[k];
+            deltaXPt = mmToPoints(delta.deltaX);
+            deltaYPt = mmToPoints(delta.deltaY);
+        }
+        
+        var newX, newY;
+
+        switch (corner) {
+            case "TR":
+                newX = refBounds[2] + deltaXPt; newY = refBounds[1] + deltaYPt;
+                objectToMove.translate(newX - objBounds[2], newY - objBounds[1]);
+                break;
+            case "BL":
+                newX = refBounds[0] + deltaXPt; newY = refBounds[3] + deltaYPt;
+                objectToMove.translate(newX - objBounds[0], newY - objBounds[3]);
+                break;
+            case "BR":
+                newX = refBounds[2] + deltaXPt; newY = refBounds[3] + deltaYPt;
+                objectToMove.translate(newX - objBounds[2], newY - objBounds[3]);
+                break;
+            default: // TL
+                newX = refBounds[0] + deltaXPt; newY = refBounds[1] + deltaYPt;
+                objectToMove.translate(newX - objBounds[0], newY - objBounds[1]);
+                break;
+        }
     }
 
     return "Success";
