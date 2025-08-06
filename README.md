@@ -15,27 +15,30 @@
 
 - 复制粘贴相对位置：快速实现不同图同一个位置添加同一个标注，一个图排版好，就可以复制粘贴给其他图
 
-  ![image](https://assets.b3logfile.com/siyuan/1610205759005/assets/image-20250806121358-036gmd6.png)​
+  ![PixPin_2025-08-06_17-59-49](https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-08-06_17-59-49-20250806175952-m1f90jv.png)​
+- 形状大小批量复制：复制一个形状的宽高或者手动输入宽高，点击Paste Size即可对选择的形状进行批量粘贴形状，宽高前有勾选框，默认全部勾选，只勾选其中一个，比如只勾选宽度则只粘贴宽度，高度根据原来宽高比自动调整
+
+  ![PixPin_2025-08-06_17-56-39](https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-08-06_17-56-39-20250806175650-enk1w8e.png)​
 - 一键排列图片：可以批量调整图片宽高、一键排列整齐
 
-  ![image](https://assets.b3logfile.com/siyuan/1610205759005/assets/image-20250806121535-4wmql7s.png)​
+  ![PixPin_2025-08-06_17-59-37](https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-08-06_17-59-37-20250806175940-zw3soci.png)​
 - 一键添加label
 
-  ![image](https://assets.b3logfile.com/siyuan/1610205759005/assets/image-20250806121541-0tppy18.png)​
+  ![PixPin_2025-08-06_18-00-32](https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-08-06_18-00-32-20250806180034-teeikze.png)​
 
 ## 3 如何使用本插件
 
-1. 下载插件zip
+1. 下载插件zip：[https://github.com/Achuan-2/illustrator_sci_plugin/releases](https://github.com/Achuan-2/illustrator_sci_plugin/releases)
 
-    ![PixPin_2025-08-06_12-07-53](https://assets.b3logfile.com/siyuan/1610205759005/assets/PixPin_2025-08-06_12-07-53-20250806120759-910uvu0.png)
+    ![PixPin_2025-08-06_18-36-01](https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-08-06_18-36-01-20250806183604-ngu9fp9.png)
 2. 解压，复制插件文件夹到Adobe 插件文件夹
 
     - windows
 
       - 32位版本：`C:\Program Files (x86)\Common Files\Adobe\CEP\extensions\`​
-      - 64位版本：`C:\Program Files\Common Files\Adobe\CEP\extensions`（illustrator版本比较新的一般都是64位版本，32位版本应该都是比较老的版本）
+      - 64位版本：`C:\Program Files\Common Files\Adobe\CEP\extensions`（illustrator版本比较新一般都是64位版本，32位版本应该都是比较老的版本）
 
-      ![PixPin_2025-08-06_12-07-37](https://assets.b3logfile.com/siyuan/1610205759005/assets/PixPin_2025-08-06_12-07-37-20250806120739-cquahfa.png)
+      ![PixPin_2025-08-06_12-07-37](https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-08-06_12-07-37-20250806120739-cquahfa.png)
 
     - MacOS
 
@@ -50,7 +53,7 @@
       - ​`win+r`输入`regedit`，打开注册表
       - 找到`计算机\HKEY_CURRENT_USER\Software\Adobe\`（可以直接在地址栏粘贴跳转）+`CSXS.版本号`：新建字符串，名称为 PlayerDebugMode，然后双击输入值为1。
 
-        ![PixPin_2025-08-06_09-54-07](https://assets.b3logfile.com/siyuan/1610205759005/assets/PixPin_2025-08-06_09-54-07-20250806095411-4s02uhq.png)
+        ![PixPin_2025-08-06_09-54-07](https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-08-06_09-54-07-20250806095411-4s02uhq.png)
     - Mac系统解决方法
 
       - 打开终端，输入
@@ -70,10 +73,10 @@
 
     - 窗口-扩展功能，选择本插件
 
-      ![PixPin_2025-08-06_13-25-43](https://assets.b3logfile.com/siyuan/1610205759005/assets/PixPin_2025-08-06_13-25-43-20250806132550-sz59wup.png)
+      ![PixPin_2025-08-06_13-25-43](https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-08-06_13-25-43-20250806132550-sz59wup.png)
     - 窗口可以拖拽到侧栏方便使用
 
-      ![PixPin_2025-08-06_13-26-22](https://assets.b3logfile.com/siyuan/1610205759005/assets/PixPin_2025-08-06_13-26-22-20250806132631-ib04jm0.png)​
+      ![PixPin_2025-08-06_13-26-22](https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-08-06_13-26-22-20250806132631-ib04jm0.png)​
 
 ## ❤️用爱发电
 
