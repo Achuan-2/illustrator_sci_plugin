@@ -44,6 +44,8 @@
 
       - 系统目录：`/Library/Application Support/Adobe/CEP/extensions`​
       - 用户目录：`~/Library/Application Support/Adobe/CEP/extensions`​
+      
+      选一个即可 
 3. 由于插件没有打包，需要额外设置PlayerDebugMode，才能使用本插件
 
     启用允许开发者扩展（PlayerDebugMode=1）步骤
