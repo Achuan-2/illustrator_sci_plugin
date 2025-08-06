@@ -32,7 +32,16 @@
                             <Height>300</Height>
                             <Width>300</Width>
                         </Size>
+                        <MinSize>
+                            <Height>150</Height>
+                            <Width>200</Width>
+                        </MinSize>
+                        <MaxSize>
+                            <Height>2000</Height>
+                            <Width>2000</Width>
+                        </MaxSize>
                     </Geometry>
+                    <UIScalePolicy>None</UIScalePolicy>
                 </UI>
             </DispatchInfo>
         </Extension>
