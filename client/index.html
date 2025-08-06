@@ -147,6 +147,7 @@
     <div class="app">
         <div class="tabs" id="tabs">
             <div class="tab active" data-target="panel-relative" data-hash="relative">Relative Position</div>
+            <div class="tab" data-target="panel-size" data-hash="size">Size Formater</div>
             <div class="tab" data-target="panel-arrange" data-hash="arrange">Arrange Images</div>
             <div class="tab" data-target="panel-labels" data-hash="labels">Image Labels</div>
         </div>
@@ -284,6 +285,23 @@
                     <button class="btn btn-primary" id="add-label-button">Add Labels</button>
                 </div>
             </div>
+            <!-- Size Formater Panel -->
+            <div class="panel" id="panel-size">
+                <div class="grid">
+                    <div class="input-group">
+                        <label>Width (mm):</label>
+                        <input type="number" id="size-w" value="0">
+                    </div>
+                    <div class="input-group">
+                        <label>Height (mm):</label>
+                        <input type="number" id="size-h" value="0">
+                    </div>
+                </div>
+                <div class="toolbar">
+                    <button class="btn" id="copy-size-button">Copy Size</button>
+                    <button class="btn btn-primary" id="paste-size-button">Paste Size</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -300,6 +318,7 @@
                 let target = 'panel-relative';
                 if (hash === 'arrange') target = 'panel-arrange';
                 else if (hash === 'labels') target = 'panel-labels';
+                else if (hash === 'size') target = 'panel-size';
 
                 tabs.forEach(t => t.classList.toggle('active', t.dataset.target === target));
                 panels.forEach(p => p.classList.toggle('active', p.id === target));

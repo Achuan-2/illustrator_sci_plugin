@@ -38,11 +38,20 @@ var labelTemplateSelect = document.querySelector("#label-template");
 var labelsOrderSelect = document.querySelector("#labels-order");
 var labelsReverseOrderCheckbox = document.querySelector("#labels-reverse-order");
 
+// Size Formater UI Elements
+var sizeWInput = document.querySelector("#size-w");
+var sizeHInput = document.querySelector("#size-h");
+var copySizeButton = document.querySelector("#copy-size-button");
+var pasteSizeButton = document.querySelector("#paste-size-button");
+
 // Event Listeners
 arrangeButton.addEventListener("click", handleArrange);
 addLabelButton.addEventListener("click", handleAddLabel);
 copyPosButton.addEventListener("click", handleCopyPosition);
 pastePosButton.addEventListener("click", handlePastePosition);
+
+copySizeButton.addEventListener("click", handleCopySize);
+pasteSizeButton.addEventListener("click", handlePasteSize);
 
 // Handler Functions
 function handleCopyPosition() {
@@ -166,6 +175,46 @@ function handleArrange() {
     `, function(result) {
         if (result === 'EvalScript error.') {
             alert('Error executing the script');
+        }
+    });
+}
+
+function handleCopySize() {
+    console.log("Copy Size button clicked");
+    csInterface.evalScript(`$.evalFile("${csInterface.getSystemPath(SystemPath.EXTENSION)}/jsx/arrange.jsx")`);
+    csInterface.evalScript('copySize()', function (result) {
+        if (result && result.indexOf("Error:") === 0) {
+            alert(result);
+            return;
+        }
+        if (result && result !== 'EvalScript error.') {
+            try {
+                var size = eval('(' + result + ')');
+                sizeWInput.value = parseFloat(size.width).toFixed(3);
+                sizeHInput.value = parseFloat(size.height).toFixed(3);
+            } catch (e) {
+                alert("Failed to parse size data: " + e.message);
+            }
+        }
+    });
+}
+
+function handlePasteSize() {
+    console.log("Paste Size button clicked");
+    var width = parseFloat(sizeWInput.value);
+    var height = parseFloat(sizeHInput.value);
+
+    if (isNaN(width) || isNaN(height)) {
+        alert("Please enter a valid width and height.");
+        return;
+    }
+
+    csInterface.evalScript(`$.evalFile("${csInterface.getSystemPath(SystemPath.EXTENSION)}/jsx/arrange.jsx")`);
+    csInterface.evalScript(`pasteSize(${width}, ${height})`, function (result) {
+        if (result && result.indexOf("Error:") === 0) {
+            alert(result);
+        } else if (result === 'EvalScript error.') {
+            alert('Error executing the pasteSize script.');
         }
     });
 }

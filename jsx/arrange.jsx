@@ -453,3 +453,42 @@ function pasteRelativePosition(deltasJSON, reverse, corner, order, reverseOrder,
 
     return "Success";
 }
+
+function copySize() {
+    if (app.documents.length === 0) return "Error: No document open.";
+    var selection = app.activeDocument.selection;
+    if (selection.length === 0) return "Error: Please select an item.";
+
+    var item = selection[0];
+    var info = getVisibleInfo(item);
+
+    var size = {
+        width: pointsToMm(info.width),
+        height: pointsToMm(info.height)
+    };
+    return '{"width":' + size.width + ',"height":' + size.height + '}';
+}
+
+function pasteSize(width, height) {
+    if (app.documents.length === 0) return "Error: No document open.";
+    if (isNaN(width) || isNaN(height)) return "Error: Invalid width or height.";
+
+    var selection = app.activeDocument.selection;
+    if (selection.length === 0) return "Error: Please select items to resize.";
+
+    var targetWidthPt = mmToPoints(width);
+    var targetHeightPt = mmToPoints(height);
+
+    for (var i = 0; i < selection.length; i++) {
+        var item = selection[i];
+        var info = getVisibleInfo(item);
+        
+        if (info.width > 0 && info.height > 0) {
+            var scaleX = targetWidthPt / info.width * 100;
+            var scaleY = targetHeightPt / info.height * 100;
+            // Note: This performs non-uniform scaling if aspect ratios differ.
+            item.resize(scaleX, scaleY, true, true, true, true, 100, Transformation.CENTER);
+        }
+    }
+    return "Success";
+}
