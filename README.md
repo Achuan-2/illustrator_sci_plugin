@@ -33,7 +33,7 @@
     - windows
 
       - 32位版本：`C:\Program Files (x86)\Common Files\Adobe\CEP\extensions\`​
-      - 64位版本：`C:\Program Files\Common Files\Adobe\CEP\extensions`（illustrator版本比较新一般都是64位版本，32位版本应该都是比较老的版本）
+      - 64位版本：`C:\Program Files\Common Files\Adobe\CEP\extensions`（illustrator版本比较新的一般都是64位版本，32位版本应该都是比较老的版本）
 
       ![PixPin_2025-08-06_12-07-37](https://assets.b3logfile.com/siyuan/1610205759005/assets/PixPin_2025-08-06_12-07-37-20250806120739-cquahfa.png)
 
