@@ -96,11 +96,12 @@
 
         label {
             color: var(--muted);
-            flex: 0 0 120px;   /* 默认标签宽 */
-            max-width: 50%;
+            flex-shrink: 0; /* 防止标签被压缩 */
             white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+        }
+        /* 为特定面板的标签设置宽度 */
+        #panel-size .input-group > label {
+            flex-basis: 75px;
         }
         /* 控件尽量占据剩余空间，避免固定像素宽度导致溢出 */
         input[type="number"], input[type="text"], select {
@@ -290,14 +291,14 @@
             <div class="panel" id="panel-size">
                 <div class="grid">
                     <div class="input-group">
-                            <span>Width (mm):</span>
-                        <input type="number" id="size-w" value="0">
-                        <input type="checkbox" id="use-size-w" checked>
+                        <label for="size-w">Width (mm):</label>
+                        <input type="number" id="size-w" value="0" style="flex: 0 1 60px;">
+                        <input type="checkbox" id="use-size-w" checked title="Use Width">
                     </div>
                     <div class="input-group">
-                        <span>Height (mm):</span>
-                        <input type="number" id="size-h" value="0">
-                        <input type="checkbox" id="use-size-h" checked>
+                        <label for="size-h">Height (mm):</label>
+                        <input type="number" id="size-h" value="0" style="flex: 0 1 60px;">
+                        <input type="checkbox" id="use-size-h" checked title="Use Height">
                     </div>
                 </div>
                 <div class="toolbar">
