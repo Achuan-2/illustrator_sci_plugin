@@ -5,7 +5,6 @@ var arrangeButton = document.querySelector("#arrange-button");
 var addLabelButton = document.querySelector("#add-label-button");
 var copyPosButton = document.querySelector("#copy-pos-button");
 var pastePosButton = document.querySelector("#paste-pos-button");
-var negatePosButton = document.querySelector("#negate-pos-button");
 
 var reverseMoveCheckbox = document.querySelector("#reverse-move-checkbox");
 var relativeCornerSelect = document.querySelector("#relative-corner");
@@ -44,7 +43,6 @@ arrangeButton.addEventListener("click", handleArrange);
 addLabelButton.addEventListener("click", handleAddLabel);
 copyPosButton.addEventListener("click", handleCopyPosition);
 pastePosButton.addEventListener("click", handlePastePosition);
-negatePosButton.addEventListener("click", handleNegatePosition);
 
 // Handler Functions
 function handleCopyPosition() {
@@ -128,33 +126,6 @@ function handlePastePosition() {
     });
 }
 
-function handleNegatePosition() {
-    try {
-        var deltas = JSON.parse(copiedDeltasJSON);
-        if (!deltas || !deltas.length) return;
-
-        for (var i = 0; i < deltas.length; i++) {
-            deltas[i].deltaX = -deltas[i].deltaX;
-            deltas[i].deltaY = -deltas[i].deltaY;
-        }
-        
-        copiedDeltasJSON = JSON.stringify(deltas);
-
-        // Update UI
-        if (deltas.length === 1) {
-            deltaXInput.value = parseFloat(deltas[0].deltaX).toFixed(2);
-            deltaYInput.value = parseFloat(deltas[0].deltaY).toFixed(2);
-        } else if (deltas.length > 1) {
-            deltaXInput.value = '[Multiple]';
-            deltaYInput.value = '[Multiple]';
-        } else {
-            deltaXInput.value = '0.00';
-            deltaYInput.value = '0.00';
-        }
-    } catch (e) {
-        alert('Could not negate positions. Stored data is invalid.');
-    }
-}
 
 function handleArrange() {
     console.log("Arrange button clicked");
