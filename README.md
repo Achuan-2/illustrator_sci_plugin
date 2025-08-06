@@ -27,7 +27,7 @@
     windows解决方法
 
     - win+r输入regedit，打开注册表
-    - 找到`计算机\HKEY_CURRENT_USER\Software\Adobe\`+`CSXS版本`（可以直接在地址栏粘贴）：新建字符串，名称为 PlayerDebugMode，然后双击输入值为1。
+    - 找到`计算机\HKEY_CURRENT_USER\Software\Adobe\`+`CSXS.版本号`（可以直接在地址栏粘贴）：新建字符串，名称为 PlayerDebugMode，然后双击输入值为1。
 
       ![PixPin_2025-08-06_09-54-07](https://assets.b3logfile.com/siyuan/1610205759005/assets/PixPin_2025-08-06_09-54-07-20250806095411-4s02uhq.png)
 
