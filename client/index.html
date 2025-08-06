@@ -172,9 +172,19 @@
                             <option value="BR">Bottom-Right</option>
                         </select>
                     </div>
+
+                    <!-- New: Order options for Relative Position -->
                     <div class="input-group">
-                        <label>Reverse</label>
-                        <input type="checkbox" id="reverse-move-checkbox" title="Reverse move direction">
+                        <label>Order:</label>
+                        <select id="relative-order">
+                            <option value="stacking" selected>stacking order</option>
+                            <option value="horizontal">horizontal order</option>
+                            <option value="vertical">vertical order</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Reverse Order:</label>
+                        <input type="checkbox" id="reverse-move-checkbox" title="Reverse order and move direction">
                     </div>
                 </div>
                 <div class="toolbar">
@@ -210,6 +220,20 @@
                         <input type="number" id="uniform-height" value="100" min="0">
                         <input type="checkbox" id="use-uniform-height" title="Use Uniform Height">
                     </div>
+
+                    <!-- New: Order options for Arrange Images -->
+                    <div class="input-group">
+                        <label>Order:</label>
+                        <select id="arrange-order">
+                            <option value="stacking" selected>stacking order</option>
+                            <option value="horizontal">horizontal order</option>
+                            <option value="vertical">vertical order</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Reverse order</label>
+                        <input type="checkbox" id="arrange-reverse-order" title="Reverse ordered list">
+                    </div>
                 </div>
                 <div class="toolbar">
                     <button class="btn btn-primary" id="arrange-button">Arrange Images</button>
@@ -244,6 +268,20 @@
                             <option value="A)">A)</option>
                             <option value="a)">a)</option>
                         </select>
+                    </div>
+
+                    <!-- New: Order options for Image Labels -->
+                    <div class="input-group">
+                        <label>Order:</label>
+                        <select id="labels-order">
+                            <option value="stacking" selected>stacking order</option>
+                            <option value="horizontal">horizontal order</option>
+                            <option value="vertical">vertical order</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Reverse order</label>
+                        <input type="checkbox" id="labels-reverse-order" title="Reverse ordered list">
                     </div>
                 </div>
                 <div class="toolbar">

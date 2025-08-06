@@ -135,7 +135,56 @@ function moveItemTopLeftTo(item, xLeft, yTop) {
     item.translate(dx, dy);
 }
 
-function arrangeImages(columns, rowGap, colGap, useWidth, wVal, useHeight, hVal) {
+/**
+ * 根据 order 与 reverse 对 selection 进行排序
+ * order: "stacking" | "horizontal" | "vertical"
+ * reverse: boolean
+ */
+function getOrderedSelection(selection, order, reverse) {
+    var arr = [];
+    for (var i = 0; i < selection.length; i++) arr.push(selection[i]);
+
+    var ord = order || "stacking";
+    if (ord === "horizontal" || ord === "vertical") {
+        arr.sort(function (a, b) {
+            var ia = getVisibleInfo(a);
+            var ib = getVisibleInfo(b);
+            var cxA = (ia.left + ia.right) / 2;
+            var cyA = (ia.top + ia.bottom) / 2;
+            var cxB = (ib.left + ib.right) / 2;
+            var cyB = (ib.top + ib.bottom) / 2;
+
+            if (ord === "horizontal") {
+                // 从左到右
+                if (cxA < cxB) return -1;
+                if (cxA > cxB) return 1;
+                // 次级按 Y 从上到下（top 值大在前）
+                if (cyA > cyB) return -1;
+                if (cyA < cyB) return 1;
+                return 0;
+            } else {
+                // vertical: 从上到下（top 值大在前）
+                if (cyA > cyB) return -1;
+                if (cyA < cyB) return 1;
+                // 次级按 X 从左到右
+                if (cxA < cxB) return -1;
+                if (cxA > cxB) return 1;
+                return 0;
+            }
+        });
+    } // stacking: 保持原顺序
+
+    if (reverse) {
+        var i = 0, j = arr.length - 1, tmp;
+        while (i < j) {
+            tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+            i++; j--;
+        }
+    }
+    return arr;
+}
+
+function arrangeImages(columns, rowGap, colGap, useWidth, wVal, useHeight, hVal, order, reverseOrder) {
     if (app.documents.length === 0) return;
 
     var doc = app.activeDocument;
@@ -152,14 +201,17 @@ function arrangeImages(columns, rowGap, colGap, useWidth, wVal, useHeight, hVal)
     var wValPt = useWidth ? mmToPoints(wVal) : 0;
     var hValPt = useHeight ? mmToPoints(hVal) : 0;
 
-    // 起点：第一个对象的可视左上
-    var firstInfo = getVisibleInfo(selection[0]);
+    // 使用排序后的序列进行排列
+    var ordered = getOrderedSelection(selection, order || "stacking", !!reverseOrder);
+
+    // 起点：排序后第一个对象的可视左上
+    var firstInfo = getVisibleInfo(ordered[0]);
     var startX = firstInfo.left;
     var startY = firstInfo.top;
 
     // 先按需要统一缩放（基于可视宽/高）
-    for (var i = 0; i < selection.length; i++) {
-        var it = selection[i];
+    for (var i = 0; i < ordered.length; i++) {
+        var it = ordered[i];
         if (useHeight && hVal > 0) {
             scaleItemToVisibleHeight(it, hValPt);
         }
@@ -174,8 +226,8 @@ function arrangeImages(columns, rowGap, colGap, useWidth, wVal, useHeight, hVal)
     var maxRowHeight = 0;
     var count = 0;
 
-    for (var j = 0; j < selection.length; j++) {
-        var item = selection[j];
+    for (var j = 0; j < ordered.length; j++) {
+        var item = ordered[j];
         // 将当前 item 的可视左上角对齐到 currentX/currentY
         moveItemTopLeftTo(item, currentX, currentY);
 
@@ -201,7 +253,7 @@ function arrangeImages(columns, rowGap, colGap, useWidth, wVal, useHeight, hVal)
     }
 }
 
-function addLabelsToImages(fontFamily, fontSize, labelOffsetX, labelOffsetY, labelTemplate) {
+function addLabelsToImages(fontFamily, fontSize, labelOffsetX, labelOffsetY, labelTemplate, order, reverseOrder) {
     if (app.documents.length === 0) return;
 
     var doc = app.activeDocument;
@@ -220,9 +272,11 @@ function addLabelsToImages(fontFamily, fontSize, labelOffsetX, labelOffsetY, lab
     };
 
     var labels = templates[labelTemplate] || templates["A"];
-    for (var i = 0; i < selection.length; i++) {
+    var ordered = getOrderedSelection(selection, order || "stacking", !!reverseOrder);
+
+    for (var i = 0; i < ordered.length; i++) {
         try {
-            var item = selection[i];
+            var item = ordered[i];
             var label = labels[i % labels.length];
             if (labelTemplate === "A)" || labelTemplate === "a)") {
                 label += ")";
@@ -250,19 +304,30 @@ function addLabelsToImages(fontFamily, fontSize, labelOffsetX, labelOffsetY, lab
 }
 
 
-function copyRelativePosition(corner) {
+function copyRelativePosition(corner, order, reverseOrder) {
     if (app.documents.length === 0) return "Error: No document open.";
 
     var doc = app.activeDocument;
     var selection = doc.selection;
 
-    if (selection.length !== 2) {
-        return "Error: Please select exactly two items (first the reference object, then the object to measure).";
+    var ord = order || "stacking";
+    var rev = !!reverseOrder;
+
+    if (selection.length < 2) {
+        return "Error: Please select at least two items (the reference and the object to measure).";
     }
 
-    // 约定：selection[1] 是参考对象（先选），selection[0] 是被测对象（后选）
-    var refItem = selection[1];
-    var objItem = selection[0];
+    var refItem, objItem;
+    if (selection.length === 2 && ord === "stacking" && !rev) {
+        // 保持原有语义：selection[1] 是参考，selection[0] 是被测
+        refItem = selection[1];
+        objItem = selection[0];
+    } else {
+        var ordered = getOrderedSelection(selection, ord, rev);
+        // 遵照原约定：ref 为第二个，obj 为第一个
+        objItem = ordered[0];
+        refItem = ordered[1];
+    }
 
     // 使用可视边界，适配剪切蒙版/复合路径
     var refB = getVisibleBounds(refItem) || refItem.visibleBounds;
@@ -297,18 +362,33 @@ function copyRelativePosition(corner) {
     return pointsToMm(deltaX) + "," + pointsToMm(deltaY);
 }
 
-function pasteRelativePosition(deltaX, deltaY, reverse, corner) {
+function pasteRelativePosition(deltaX, deltaY, reverse, corner, order, reverseOrder) {
     if (app.documents.length === 0) return "Error: No document open.";
 
     var doc = app.activeDocument;
     var selection = doc.selection;
 
-    if (selection.length !== 2) {
-        return "Error: Please select exactly two items (first the new reference object, then the object to move).";
+    var ord = order || "stacking";
+    var revOrd = !!reverseOrder;
+
+    if (selection.length < 2) {
+        return "Error: Please select at least two items (the new reference and the object to move).";
     }
 
-    var newReference = reverse ? selection[0] : selection[1];
-    var objectToMove = reverse ? selection[1] : selection[0];
+    var newReference, objectToMove;
+    if (selection.length === 2 && ord === "stacking" && !revOrd) {
+        newReference = reverse ? selection[0] : selection[1];
+        objectToMove = reverse ? selection[1] : selection[0];
+    } else {
+        var ordered = getOrderedSelection(selection, ord, revOrd);
+        // 取前两个：遵照 copy 中的定义 second 为参考、first 为目标，再结合 reverse 参数交换
+        var first = ordered[0];
+        var second = ordered[1];
+        var baseRef = second;
+        var baseObj = first;
+        newReference = reverse ? baseObj : baseRef;
+        objectToMove = reverse ? baseRef : baseObj;
+    }
 
     var refBounds = newReference.geometricBounds;
     var objBounds = objectToMove.geometricBounds;
