@@ -1,6 +1,48 @@
-![PixPin_2025-01-20_16-52-08](https://github.com/user-attachments/assets/948ca36b-77ce-4049-b26d-b377047671da)
+# README
 
+## 1 功能介绍
 
-## 使用方式
+- 复制粘贴相对位置：快速实现不同图同一个位置添加同一个标注，一个图排版好，就可以复制粘贴给其他图
 
-复制插件文件到`C:\Program Files\Common Files\Adobe\CEP\extensions\ImageArrange`
+  ![image](https://assets.b3logfile.com/siyuan/1610205759005/assets/image-20250806121358-036gmd6.png)​
+- 一键排列图片：可以批量调整图片宽高、一键排列整齐
+
+  ![image](https://assets.b3logfile.com/siyuan/1610205759005/assets/image-20250806121535-4wmql7s.png)​
+- 一键添加label
+
+  ![image](https://assets.b3logfile.com/siyuan/1610205759005/assets/image-20250806121541-0tppy18.png)​
+
+## 2 如何使用本插件
+
+1. 下载插件zip
+
+    ![PixPin_2025-08-06_12-07-53](https://assets.b3logfile.com/siyuan/1610205759005/assets/PixPin_2025-08-06_12-07-53-20250806120759-910uvu0.png)
+2. 解压，复制插件文件夹到`C:\Program Files\Common Files\Adobe\CEP\extensions`​
+
+    ![PixPin_2025-08-06_12-07-37](https://assets.b3logfile.com/siyuan/1610205759005/assets/PixPin_2025-08-06_12-07-37-20250806120739-cquahfa.png)
+3. 由于插件没有打包，需要额外设置PlayerDebugMode，才能使用本插件
+
+    启用允许开发者扩展（PlayerDebugMode=1）步骤
+
+    windows解决方法
+
+    - win+r输入regedit，打开注册表
+    - 找到`计算机\HKEY_CURRENT_USER\Software\Adobe\`+`CSXS版本`（可以直接在地址栏粘贴）：新建字符串，名称为 PlayerDebugMode，然后双击输入值为1。
+
+      ![PixPin_2025-08-06_09-54-07](https://assets.b3logfile.com/siyuan/1610205759005/assets/PixPin_2025-08-06_09-54-07-20250806095411-4s02uhq.png)
+
+    Mac系统解决方法
+
+    - 打开终端，输入
+
+      ```bash
+      defaults write com.adobe.CSXS.版本号 PlayerDebugMode 1
+      ```
+
+## ❤️用爱发电
+
+如果喜欢我的作品，欢迎给我买杯咖啡，这会激励我继续维护项目和持续创作新项目。
+
+个人时间和精力有限，优先考虑赞赏用户提的功能建议和bug反馈
+
+![](https://camo.githubusercontent.com/8cf1ad8251e7cecf3dbd2f818706e8aad08aeab824c8bed49b6826f2df443000/68747470733a2f2f63646e2e6e6c61726b2e636f6d2f79757175652f302f323032342f6a7065672f313430383034362f313731343735343537333339332d39633766373062302d303565632d343839652d623561322d3161333766623638316636662e6a7065673f782d6f73732d70726f636573733d696d616765253246666f726d617425324377656270253246696e7465726c61636525324331)
