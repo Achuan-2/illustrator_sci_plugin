@@ -47,6 +47,14 @@
       ```bash
       defaults write com.adobe.CSXS.版本号 PlayerDebugMode 1
       ```
+4. 打开插件
+
+    - 窗口-扩展功能，选择本插件
+
+      ![PixPin_2025-08-06_13-25-43](https://assets.b3logfile.com/siyuan/1610205759005/assets/PixPin_2025-08-06_13-25-43-20250806132550-sz59wup.png)
+    - 窗口可以拖拽到侧栏方便使用
+
+      ![PixPin_2025-08-06_13-26-22](https://assets.b3logfile.com/siyuan/1610205759005/assets/PixPin_2025-08-06_13-26-22-20250806132631-ib04jm0.png)​
 
 ## ❤️用爱发电
 
