@@ -15,22 +15,22 @@
 
 - 复制粘贴相对位置：快速实现不同图同一个位置添加同一个标注，一个图排版好，就可以复制粘贴给其他图
 
-  ![PixPin_2025-08-06_17-59-49](https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-08-06_17-59-49-20250806175952-m1f90jv.png)​
+  <img alt="PixPin_2025-08-06_17-59-49" src="https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-08-06_17-59-49-20250806175952-m1f90jv.png" style="width: 284px;" />​
 - 形状大小批量复制：复制一个形状的宽高或者手动输入宽高，点击Paste Size即可对选择的形状进行批量粘贴形状，宽高前有勾选框，默认全部勾选，只勾选其中一个，比如只勾选宽度则只粘贴宽度，高度根据原来宽高比自动调整
 
-  ![PixPin_2025-08-06_17-56-39](https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-08-06_17-56-39-20250806175650-enk1w8e.png)​
+  <img alt="PixPin_2025-08-06_17-56-39" src="https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-08-06_17-56-39-20250806175650-enk1w8e.png" style="width: 278px;" />​
 - 一键排列图片：可以批量调整图片宽高、一键排列整齐
 
-  ![PixPin_2025-08-06_17-59-37](https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-08-06_17-59-37-20250806175940-zw3soci.png)​
+  <img alt="PixPin_2025-08-06_17-59-37" src="https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-08-06_17-59-37-20250806175940-zw3soci.png" style="width: 298px;" />​
 - 一键添加label
 
-  ![PixPin_2025-08-06_18-00-32](https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-08-06_18-00-32-20250806180034-teeikze.png)​
+  <img alt="PixPin_2025-08-06_18-00-32" src="https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-08-06_18-00-32-20250806180034-teeikze.png" style="width: 334px;" />​
 
 ## 3 如何使用本插件
 
 1. 下载插件zip：[https://github.com/Achuan-2/illustrator_sci_plugin/releases](https://github.com/Achuan-2/illustrator_sci_plugin/releases)
 
-    ![PixPin_2025-08-06_18-36-01](https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-08-06_18-36-01-20250806183604-ngu9fp9.png)
+    <img alt="PixPin_2025-08-06_18-36-01" src="https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-08-06_18-36-01-20250806183604-ngu9fp9.png" />
 2. 解压，复制插件文件夹到Adobe 插件文件夹
 
     - windows
@@ -38,24 +38,25 @@
       - 32位版本：`C:\Program Files (x86)\Common Files\Adobe\CEP\extensions\`​
       - 64位版本：`C:\Program Files\Common Files\Adobe\CEP\extensions`（illustrator版本比较新一般都是64位版本，32位版本应该都是比较老的版本）
 
-      ![PixPin_2025-08-06_12-07-37](https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-08-06_12-07-37-20250806120739-cquahfa.png)
+      <img alt="PixPin_2025-08-06_12-07-37" src="https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-08-06_12-07-37-20250806120739-cquahfa.png" />
 
     - MacOS
 
       - 系统目录：`/Library/Application Support/Adobe/CEP/extensions`​
       - 用户目录：`~/Library/Application Support/Adobe/CEP/extensions`​
-      
-      选一个即可 
+
+      > 选一个即可
+      >
 3. 由于插件没有打包，需要额外设置PlayerDebugMode，才能使用本插件
 
     启用允许开发者扩展（PlayerDebugMode=1）步骤
 
-    - windows解决方法
+    - Windows解决方法
 
       - ​`win+r`输入`regedit`，打开注册表
       - 找到`计算机\HKEY_CURRENT_USER\Software\Adobe\`（可以直接在地址栏粘贴跳转）下的`CSXS.版本号`文件夹：新建字符串，名称为 PlayerDebugMode，然后双击输入值为1。如果CSXS有多个版本，最好每个版本都复制下PlayerDebugMode文件
 
-        ![PixPin_2025-08-06_09-54-07](https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-08-06_09-54-07-20250806095411-4s02uhq.png)
+        <img alt="PixPin_2025-08-06_09-54-07" src="https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-08-06_09-54-07-20250806095411-4s02uhq.png" />
     - Mac系统解决方法
 
       - 打开终端，输入
@@ -75,10 +76,10 @@
 
     - 窗口-扩展功能，选择本插件
 
-      ![PixPin_2025-08-06_13-25-43](https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-08-06_13-25-43-20250806132550-sz59wup.png)
+      <img alt="PixPin_2025-08-06_13-25-43" src="https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-08-06_13-25-43-20250806132550-sz59wup.png" />
     - 窗口可以拖拽到侧栏方便使用
 
-      ![PixPin_2025-08-06_13-26-22](https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-08-06_13-26-22-20250806132631-ib04jm0.png)​
+      <img alt="PixPin_2025-08-06_13-26-22" src="https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-08-06_13-26-22-20250806132631-ib04jm0.png" style="width: 384px;" />​
 
 ## ❤️用爱发电
 
@@ -86,4 +87,4 @@
 
 个人时间和精力有限，优先考虑赞赏用户提的功能建议和bug反馈
 
-![](https://camo.githubusercontent.com/8cf1ad8251e7cecf3dbd2f818706e8aad08aeab824c8bed49b6826f2df443000/68747470733a2f2f63646e2e6e6c61726b2e636f6d2f79757175652f302f323032342f6a7065672f313430383034362f313731343735343537333339332d39633766373062302d303565632d343839652d623561322d3161333766623638316636662e6a7065673f782d6f73732d70726f636573733d696d616765253246666f726d617425324377656270253246696e7465726c61636525324331)
+<img alt="" src="https://camo.githubusercontent.com/8cf1ad8251e7cecf3dbd2f818706e8aad08aeab824c8bed49b6826f2df443000/68747470733a2f2f63646e2e6e6c61726b2e636f6d2f79757175652f302f323032342f6a7065672f313430383034362f313731343735343537333339332d39633766373062302d303565632d343839652d623561322d3161333766623638316636662e6a7065673f782d6f73732d70726f636573733d696d616765253246666f726d617425324377656270253246696e7465726c61636525324331" style="width: 450px;" />
