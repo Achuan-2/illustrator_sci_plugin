@@ -5,6 +5,7 @@ var arrangeButton = document.querySelector("#arrange-button");
 var addLabelButton = document.querySelector("#add-label-button");
 var copyPosButton = document.querySelector("#copy-pos-button");
 var pastePosButton = document.querySelector("#paste-pos-button");
+var swapButton = document.querySelector("#swap-button");
 
 var reverseMoveCheckbox = document.querySelector("#reverse-move-checkbox");
 var relativeCornerSelect = document.querySelector("#relative-corner");
@@ -52,6 +53,7 @@ arrangeButton.addEventListener("click", handleArrange);
 addLabelButton.addEventListener("click", handleAddLabel);
 copyPosButton.addEventListener("click", handleCopyPosition);
 pastePosButton.addEventListener("click", handlePastePosition);
+if (swapButton) swapButton.addEventListener("click", handleSwap);
 
 copySizeButton.addEventListener("click", handleCopySize);
 pasteSizeButton.addEventListener("click", handlePasteSize);
@@ -254,6 +256,18 @@ function handleAddLabel() {
     `, function (result) {
         if (result === 'EvalScript error.') {
             alert('Error executing the script');
+        }
+    });
+}
+
+function handleSwap() {
+    console.log("Swap button clicked");
+    csInterface.evalScript(`$.evalFile("${csInterface.getSystemPath(SystemPath.EXTENSION)}/jsx/arrange.jsx")`);
+    csInterface.evalScript('swapSelectedPositions()', function (result) {
+        if (result && result.indexOf("Error:") === 0) {
+            alert(result);
+        } else if (result === 'EvalScript error.') {
+            alert('Error executing the swapSelectedPositions script.');
         }
     });
 }

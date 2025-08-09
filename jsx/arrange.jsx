@@ -510,3 +510,28 @@ function pasteSize(width, height, useW, useH) {
     }
     return "Success";
 }
+
+/**
+ * Swap positions of exactly two selected items based on their visible top-left corners.
+ * Returns "Success" or "Error: ..." string for host to handle.
+ */
+function swapSelectedPositions() {
+    if (app.documents.length === 0) return "Error: No document open.";
+    var selection = app.activeDocument.selection;
+    if (!selection || selection.length !== 2) {
+        return "Error: Please select exactly two items.";
+    }
+
+    var a = selection[0];
+    var b = selection[1];
+
+    // Record original visible top-lefts before any movement
+    var infoA = getVisibleInfo(a);
+    var infoB = getVisibleInfo(b);
+
+    // Move each to the other's original position
+    moveItemTopLeftTo(a, infoB.left, infoB.top);
+    moveItemTopLeftTo(b, infoA.left, infoA.top);
+
+    return "Success";
+}

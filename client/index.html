@@ -151,6 +151,7 @@
             <div class="tab active" data-target="panel-relative" data-hash="relative">Relative Position</div>
             <div class="tab" data-target="panel-size" data-hash="size">Size Paste</div>
             <div class="tab" data-target="panel-arrange" data-hash="arrange">Arrange Images</div>
+            <div class="tab" data-target="panel-swap" data-hash="swap">Swap</div>
             <div class="tab" data-target="panel-labels" data-hash="labels">Image Labels</div>
         </div>
         <div class="content">
@@ -244,6 +245,13 @@
                 </div>
             </div>
 
+            <!-- Swap Panel -->
+            <div class="panel" id="panel-swap">
+                <div class="toolbar">
+                    <button class="btn btn-primary" id="swap-button">Swap Positions</button>
+                </div>
+            </div>
+
             <!-- Image Labels Panel -->
             <div class="panel" id="panel-labels">
                 <div class="grid">
@@ -327,6 +335,7 @@
                 if (hash === 'arrange') target = 'panel-arrange';
                 else if (hash === 'labels') target = 'panel-labels';
                 else if (hash === 'size') target = 'panel-size';
+                else if (hash === 'swap') target = 'panel-swap';
 
                 tabs.forEach(t => t.classList.toggle('active', t.dataset.target === target));
                 panels.forEach(p => p.classList.toggle('active', p.id === target));
