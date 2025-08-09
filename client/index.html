@@ -285,9 +285,15 @@
                         </select>
                     </div>
 
-                    <!-- New: Order options for Image Labels -->
+                    <!-- New: Start Count for Image Labels -->
                     <div class="input-group">
-                        <label>Order:</label>
+                        <label>Label Index</label>
+                        <input type="number" id="label-start-count" value="1" min="1">
+                    </div>
+ 
+                     <!-- New: Order options for Image Labels -->
+                     <div class="input-group">
+                         <label>Order:</label>
                         <select id="labels-order">
                             <option value="stacking">stacking order</option>
                             <option value="horizontal">horizontal order</option>

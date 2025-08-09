@@ -36,6 +36,7 @@ var fontSizeInput = document.querySelector("#font-size");
 var labelOffsetXInput = document.querySelector("#label-offset-x");
 var labelOffsetYInput = document.querySelector("#label-offset-y");
 var labelTemplateSelect = document.querySelector("#label-template");
+var labelStartCountInput = document.querySelector("#label-start-count");
 
 // New: Labels order controls
 var labelsOrderSelect = document.querySelector("#labels-order");
@@ -248,6 +249,7 @@ function handleAddLabel() {
     var labelOffsetX = parseFloat(labelOffsetXInput.value) || -12;
     var labelOffsetY = parseFloat(labelOffsetYInput.value) || -6;
     var labelTemplate = labelTemplateSelect.value || "A";
+    var startCount = parseInt(labelStartCountInput.value) || 1;
 
     var order = (labelsOrderSelect && labelsOrderSelect.value) || "stacking";
     var revOrder = !!(labelsReverseOrderCheckbox && labelsReverseOrderCheckbox.checked);
@@ -261,11 +263,20 @@ function handleAddLabel() {
             ${labelOffsetY},
             "${labelTemplate}",
             "${order}",
-            ${revOrder}
+            ${revOrder},
+            ${startCount}
         )
     `, function (result) {
         if (result === 'EvalScript error.') {
             alert('Error executing the script');
+        } else if (result.indexOf("Error:") === 0) {
+            alert(result);
+        } else {
+            // Update the start count with the new count
+            var nextCount = parseInt(result);
+            if (!isNaN(nextCount)) {
+                labelStartCountInput.value = nextCount;
+            }
         }
     });
 }

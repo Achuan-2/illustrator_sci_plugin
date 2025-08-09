@@ -283,16 +283,19 @@ function arrangeImages(columns, rowGap, colGap, useWidth, wVal, useHeight, hVal,
     }
 }
 
-function addLabelsToImages(fontFamily, fontSize, labelOffsetX, labelOffsetY, labelTemplate, order, reverseOrder) {
-    if (app.documents.length === 0) return;
+function addLabelsToImages(fontFamily, fontSize, labelOffsetX, labelOffsetY, labelTemplate, order, reverseOrder, startCount) {
+    if (app.documents.length === 0) return "Error: No document open.";
 
     var doc = app.activeDocument;
     var selection = doc.selection;
 
     if (selection.length === 0) {
-        alert("Please select items to label");
-        return;
+        return "Error: Please select items to label";
     }
+
+    startCount = parseInt(startCount) || 1;
+    // Adjust to be 0-indexed for array access
+    var startIndex = startCount - 1;
 
     var templates = {
         "A": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
@@ -307,7 +310,8 @@ function addLabelsToImages(fontFamily, fontSize, labelOffsetX, labelOffsetY, lab
     for (var i = 0; i < ordered.length; i++) {
         try {
             var item = ordered[i];
-            var label = labels[i % labels.length];
+            var labelIndex = (startIndex + i) % labels.length;
+            var label = labels[labelIndex];
             if (labelTemplate === "A)" || labelTemplate === "a)") {
                 label += ")";
             }
@@ -324,13 +328,15 @@ function addLabelsToImages(fontFamily, fontSize, labelOffsetX, labelOffsetY, lab
             try {
                 textFrame.textRange.characterAttributes.textFont = app.textFonts.getByName(fontFamily === "Arial" ? "ArialMT" : fontFamily);
             } catch (e) {
-                alert("Font not found: " + fontFamily);
+                // Return error font not found.
+                return "Error: Font not found: " + fontFamily;
             }
         } catch (e) {
-            // Handle errors without stopping the loop
-            alert("Error adding label to item " + (i + 1) + ": " + e.message);
+            return "Error: Error adding label to item " + (i + 1) + ": " + e.message;
         }
     }
+    // Return the next starting count (1-indexed)
+    return (startCount + ordered.length).toString();
 }
 
 
