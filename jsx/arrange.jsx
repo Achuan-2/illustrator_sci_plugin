@@ -371,7 +371,7 @@ function copyRelativePosition(corner, order, reverseOrder) {
     return simpleJsonStringify(deltas);
 }
 
-function pasteRelativePosition(deltasJSON, reverse, corner, order, reverseOrder, overrideDeltaX, overrideDeltaY) {
+function pasteRelativePosition(deltasJSON, reverse, corner, order, reverseOrder, overrideDeltaX, overrideDeltaY, allowMismatch) {
     if (app.documents.length === 0) return "Error: No document open.";
     // 都不为null或都不为0
     var useOverride = (overrideDeltaX !== null && overrideDeltaX !== 0) && (overrideDeltaY !== null && overrideDeltaY !== 0);
@@ -389,6 +389,9 @@ function pasteRelativePosition(deltasJSON, reverse, corner, order, reverseOrder,
         } catch(e) {
             return "Error: Invalid relative position data. " + e.message;
         }
+        if (deltas.length === 0) {
+            return "Error: No relative position data provided.";
+        }
     }
 
     if (selection.length < 2) {
@@ -396,7 +399,9 @@ function pasteRelativePosition(deltasJSON, reverse, corner, order, reverseOrder,
     }
 
     if (!useOverride && (selection.length - 1 !== deltas.length)) {
-        return "Error: The number of items to move (" + (selection.length - 1) + ") does not match the saved data count (" + deltas.length + ").";
+        if (!allowMismatch) {
+            return "Error: The number of items to move (" + (selection.length - 1) + ") does not match the saved data count (" + deltas.length + ").";
+        }
     }
 
     var ord = order || "stacking";
@@ -424,7 +429,8 @@ function pasteRelativePosition(deltasJSON, reverse, corner, order, reverseOrder,
             deltaXPt = mmToPoints(overrideDeltaX);
             deltaYPt = mmToPoints(overrideDeltaY);
         } else {
-            var delta = deltas[k];
+            var idx = k % deltas.length;
+            var delta = deltas[idx];
             deltaXPt = mmToPoints(delta.deltaX);
             deltaYPt = mmToPoints(delta.deltaY);
         }

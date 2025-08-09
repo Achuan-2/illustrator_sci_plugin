@@ -11,6 +11,7 @@ var relativeCornerSelect = document.querySelector("#relative-corner");
 var deltaXInput = document.querySelector("#delta-x");
 var deltaYInput = document.querySelector("#delta-y");
 var copiedDeltasJSON = '[]';
+var allowMismatchPasteCheckbox = document.querySelector("#allow-mismatch-paste");
 
 // New: Relative order controls
 var relativeOrderSelect = document.querySelector("#relative-order");
@@ -83,8 +84,8 @@ function handleCopyPosition() {
                 } else if (deltas && deltas.length > 1) {
                     deltaXInput.value = ''; // Clear the input
                     deltaYInput.value = '';
-                    deltaXInput.placeholder = 'Multiple Values';
-                    deltaYInput.placeholder = 'Multiple Values';
+                    deltaXInput.placeholder = 'Multiple Values (' + deltas.length + ')';
+                    deltaYInput.placeholder = 'Multiple Values (' + deltas.length + ')';
                 } else {
                     deltaXInput.value = '0.00';
                     deltaYInput.value = '0.00';
@@ -129,7 +130,7 @@ function handlePastePosition() {
 
     csInterface.evalScript(`$.evalFile("${csInterface.getSystemPath(SystemPath.EXTENSION)}/jsx/arrange.jsx")`);
 
-    var script = `pasteRelativePosition('${copiedDeltasJSON}', ${reverse}, "${corner}", "${order}", ${revOrder}, ${useOverride ? overrideDeltaX : 'null'}, ${useOverride ? overrideDeltaY : 'null'})`;
+    var script = `pasteRelativePosition('${copiedDeltasJSON}', ${reverse}, "${corner}", "${order}", ${revOrder}, ${useOverride ? overrideDeltaX : 'null'}, ${useOverride ? overrideDeltaY : 'null'}, ${allowMismatchPasteCheckbox && allowMismatchPasteCheckbox.checked})`;
     csInterface.evalScript(script, function (result) {
         if (result && result.indexOf("Error:") === 0) {
             alert(result);
