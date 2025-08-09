@@ -334,7 +334,7 @@ function addLabelsToImages(fontFamily, fontSize, labelOffsetX, labelOffsetY, lab
 }
 
 
-function copyRelativePosition(corner, order, reverseOrder) {
+function copyRelativePosition(corner, order, reverseOrder, useArtboardRef) {
     if (app.documents.length === 0) return "Error: No document open.";
 
     var doc = app.activeDocument;
@@ -344,25 +344,52 @@ function copyRelativePosition(corner, order, reverseOrder) {
         return "Error: Please select at least one item.";
     }
 
-     // 当仅选中 1 个对象时：复制其“相对于所属画板”的位置（按所选角点）
-    if (selection.length === 1) {
-        var it = selection[0];
-        var b = getVisibleBounds(it) || it.visibleBounds;
-        var x, y;
-        switch (corner) {
-            case "TR": x = b[2]; y = b[1]; break;
-            case "BL": x = b[0]; y = b[3]; break;
-            case "BR": x = b[2]; y = b[3]; break;
-            default:   x = b[0]; y = b[1]; break; // TL
-        }
-        var abIndex = getItemArtboardIndex(it);
-        var abRect = app.activeDocument.artboards[abIndex].artboardRect; // [L, T, R, B]
-        // 以画板左上为原点，X 向右为正，Y 向下为正
-        var relXmm = pointsToMm(x - abRect[0]);
-        var relYmm = pointsToMm(abRect[1] - y);
-        return '{"abs":true,"x":' + relXmm + ',"y":' + relYmm + ',"ab":' + abIndex + '}';
-    }
+      // 当仅选中 1 个对象时：复制其“相对于画板”的位置（按所选角点）
+     if (selection.length === 1) {
+         var it = selection[0];
+         var b = getVisibleBounds(it) || it.visibleBounds;
+         var x, y;
+         switch (corner) {
+             case "TR": x = b[2]; y = b[1]; break;
+             case "BL": x = b[0]; y = b[3]; break;
+             case "BR": x = b[2]; y = b[3]; break;
+             default:   x = b[0]; y = b[1]; break; // TL
+         }
+         var abIndex = useArtboardRef ? app.activeDocument.artboards.getActiveArtboardIndex() : getItemArtboardIndex(it);
+         var abRect = app.activeDocument.artboards[abIndex].artboardRect; // [L, T, R, B]
+         // 以画板左上为原点，X 向右为正，Y 向下为正
+         var relXmm = pointsToMm(x - abRect[0]);
+         var relYmm = pointsToMm(abRect[1] - y);
+         return '{"abs":true,"x":' + relXmm + ',"y":' + relYmm + ',"ab":' + abIndex + '}';
+     }
 
+        // useArtboardRef 多选：将所有选中的形状位置复制为“相对于当前活动画板”的坐标列表
+        if (useArtboardRef && selection.length > 1) {
+            var activeAbIdx = app.activeDocument.artboards.getActiveArtboardIndex();
+            var activeAbRect = app.activeDocument.artboards[activeAbIdx].artboardRect; // [L, T, R, B]
+    
+            var ordCopy = order || "stacking";
+            var revOrdCopy = !!reverseOrder;
+            var orderedCopy = getOrderedSelection(selection, ordCopy, revOrdCopy);
+    
+            var partsAbs = [];
+            for (var m = 0; m < orderedCopy.length; m++) {
+                var it = orderedCopy[m];
+                var bb = getVisibleBounds(it) || it.visibleBounds;
+                var cx, cy;
+                switch (corner) {
+                    case "TR": cx = bb[2]; cy = bb[1]; break;
+                    case "BL": cx = bb[0]; cy = bb[3]; break;
+                    case "BR": cx = bb[2]; cy = bb[3]; break;
+                    default:   cx = bb[0]; cy = bb[1]; break; // TL
+                }
+                var relXmmM = pointsToMm(cx - activeAbRect[0]);
+                var relYmmM = pointsToMm(activeAbRect[1] - cy);
+                partsAbs.push('{"abs":true,"x":' + relXmmM + ',"y":' + relYmmM + ',"ab":' + activeAbIdx + '}');
+            }
+            return '[' + partsAbs.join(',') + ']';
+        }
+    
     // 其余情况：沿用相对位置复制逻辑
     var ord = order || "stacking";
     var revOrd = !!reverseOrder;
@@ -410,7 +437,7 @@ function copyRelativePosition(corner, order, reverseOrder) {
     return simpleJsonStringify(deltas);
 }
 
-function pasteRelativePosition(deltasJSON, reverse, corner, order, reverseOrder, overrideDeltaX, overrideDeltaY, allowMismatch) {
+function pasteRelativePosition(deltasJSON, reverse, corner, order, reverseOrder, overrideDeltaX, overrideDeltaY, allowMismatch, useArtboardRef) {
     if (app.documents.length === 0) return "Error: No document open.";
 
     // 允许 0 值作为覆盖坐标（只要不是 null 且是数字）
@@ -430,44 +457,113 @@ function pasteRelativePosition(deltasJSON, reverse, corner, order, reverseOrder,
         }
     }
     var isAbs = (data && typeof data === "object" && data.abs === true);
+    var isAbsArray = (data && typeof data.length !== "undefined" && data.length > 0 && typeof data[0].x !== "undefined");
 
-    // 绝对位置粘贴（当复制的是单形状绝对位置时）
-    if (isAbs) {
-        if (!selection || selection.length === 0) {
-            return "Error: Please select items to move.";
-        }
-
-        // 允许用覆盖坐标替代拷贝到的绝对坐标（此坐标为“相对各自画板”的 mm）
-        var targetXmm = useOverride ? overrideDeltaX : data.x;
-        var targetYmm = useOverride ? overrideDeltaY : data.y;
-
-        for (var i = 0; i < selection.length; i++) {
-            var obj = selection[i];
-            var objB = getVisibleBounds(obj) || obj.visibleBounds;
-
-            // 对每个对象，使用其“所属画板”的坐标系
-            var objAbIdx = getItemArtboardIndex(obj);
-            var objAbRect = doc.artboards[objAbIdx].artboardRect; // [L, T, R, B]
-            var targetXAbs = objAbRect[0] + mmToPoints(targetXmm);
-            var targetYAbs = objAbRect[1] - mmToPoints(targetYmm);
-
-            switch (corner) {
-                case "TR":
-                    obj.translate(targetXAbs - objB[2], targetYAbs - objB[1]);
-                    break;
-                case "BL":
-                    obj.translate(targetXAbs - objB[0], targetYAbs - objB[3]);
-                    break;
-                case "BR":
-                    obj.translate(targetXAbs - objB[2], targetYAbs - objB[3]);
-                    break;
-                default: // TL
-                    obj.translate(targetXAbs - objB[0], targetYAbs - objB[1]);
-                    break;
-            }
-        }
-        return "Success";
-    }
+      // 绝对位置粘贴：支持 单对象 abs、abs 数组、或在 useArtboardRef 勾选下使用覆盖坐标
+     if (isAbs || isAbsArray || (useArtboardRef && useOverride)) {
+         if (!selection || selection.length === 0) {
+             return "Error: Please select items to move.";
+         }
+     
+         // 使用排序后的选择，保证与复制/用户期望的一致顺序
+         var ordAbs = order || "stacking";
+         var revOrdAbs = !!reverseOrder;
+         var orderedAbs = getOrderedSelection(selection, ordAbs, revOrdAbs);
+     
+         // 覆盖坐标：所有对象使用相同的画板相对坐标（各自画板）
+         if (useArtboardRef && useOverride) {
+             var ox = overrideDeltaX;
+             var oy = overrideDeltaY;
+             for (var i = 0; i < orderedAbs.length; i++) {
+                 var obj = orderedAbs[i];
+                 var objB = getVisibleBounds(obj) || obj.visibleBounds;
+     
+                 var objAbIdx = getItemArtboardIndex(obj);
+                 var objAbRect = doc.artboards[objAbIdx].artboardRect; // [L, T, R, B]
+                 var targetXAbs = objAbRect[0] + mmToPoints(ox);
+                 var targetYAbs = objAbRect[1] - mmToPoints(oy);
+     
+                 switch (corner) {
+                     case "TR":
+                         obj.translate(targetXAbs - objB[2], targetYAbs - objB[1]);
+                         break;
+                     case "BL":
+                         obj.translate(targetXAbs - objB[0], targetYAbs - objB[3]);
+                         break;
+                     case "BR":
+                         obj.translate(targetXAbs - objB[2], targetYAbs - objB[3]);
+                         break;
+                     default: // TL
+                         obj.translate(targetXAbs - objB[0], targetYAbs - objB[1]);
+                         break;
+                 }
+             }
+             return "Success";
+         }
+     
+         // 单对象 abs：所有对象贴到统一画板相对坐标（各自画板）
+         if (isAbs) {
+             var targetXmm = data.x;
+             var targetYmm = data.y;
+             for (var j = 0; j < orderedAbs.length; j++) {
+                 var obj1 = orderedAbs[j];
+                 var objB1 = getVisibleBounds(obj1) || obj1.visibleBounds;
+     
+                 var objAbIdx1 = getItemArtboardIndex(obj1);
+                 var objAbRect1 = doc.artboards[objAbIdx1].artboardRect;
+                 var targetXAbs1 = objAbRect1[0] + mmToPoints(targetXmm);
+                 var targetYAbs1 = objAbRect1[1] - mmToPoints(targetYmm);
+     
+                 switch (corner) {
+                     case "TR":
+                         obj1.translate(targetXAbs1 - objB1[2], targetYAbs1 - objB1[1]);
+                         break;
+                     case "BL":
+                         obj1.translate(targetXAbs1 - objB1[0], targetYAbs1 - objB1[3]);
+                         break;
+                     case "BR":
+                         obj1.translate(targetXAbs1 - objB1[2], targetYAbs1 - objB1[3]);
+                         break;
+                     default: // TL
+                         obj1.translate(targetXAbs1 - objB1[0], targetYAbs1 - objB1[1]);
+                         break;
+                 }
+             }
+             return "Success";
+         }
+     
+         // abs 数组：每个对象使用对应条目的画板相对坐标（可循环）
+         var absArr = data;
+         if ((orderedAbs.length !== absArr.length) && !allowMismatch) {
+             return "Error: The number of items to move (" + orderedAbs.length + ") does not match the saved data count (" + absArr.length + ").";
+         }
+         for (var k = 0; k < orderedAbs.length; k++) {
+             var entry = absArr[k % absArr.length];
+             var obj2 = orderedAbs[k];
+             var objB2 = getVisibleBounds(obj2) || obj2.visibleBounds;
+     
+             var objAbIdx2 = getItemArtboardIndex(obj2);
+             var objAbRect2 = doc.artboards[objAbIdx2].artboardRect;
+             var targetXAbs2 = objAbRect2[0] + mmToPoints(entry.x);
+             var targetYAbs2 = objAbRect2[1] - mmToPoints(entry.y);
+     
+             switch (corner) {
+                 case "TR":
+                     obj2.translate(targetXAbs2 - objB2[2], targetYAbs2 - objB2[1]);
+                     break;
+                 case "BL":
+                     obj2.translate(targetXAbs2 - objB2[0], targetYAbs2 - objB2[3]);
+                     break;
+                 case "BR":
+                     obj2.translate(targetXAbs2 - objB2[2], targetYAbs2 - objB2[3]);
+                     break;
+                 default: // TL
+                     obj2.translate(targetXAbs2 - objB2[0], targetYAbs2 - objB2[1]);
+                     break;
+             }
+         }
+         return "Success";
+     }
 
     // 相对位置粘贴
     // 当未复制相对数据但提供了覆盖数值时，也允许继续（覆盖作为相对位移）
