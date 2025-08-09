@@ -119,6 +119,26 @@ function getVisibleInfo(item) {
     };
 }
 
+// 获取对象所在画板索引（通过对象可视边界中心点命中 artboardRect）
+function getItemArtboardIndex(item) {
+    var doc = app.activeDocument;
+    var b = getVisibleBounds(item) || item.visibleBounds;
+    var cx = (b[0] + b[2]) / 2;
+    var cy = (b[1] + b[3]) / 2;
+    for (var i = 0; i < doc.artboards.length; i++) {
+        var r = doc.artboards[i].artboardRect; // [left, top, right, bottom]
+        if (cx >= r[0] && cx <= r[2] && cy <= r[1] && cy >= r[3]) {
+            return i;
+        }
+    }
+    // 回退：当前活动画板或 0
+    try {
+        return doc.artboards.getActiveArtboardIndex();
+    } catch (e) {
+        return 0;
+    }
+}
+
 // 按目标“可视宽度”进行等比缩放（基于 getVisibleBounds 计算比例）
 function scaleItemToVisibleWidth(item, targetW) {
     if (!targetW || targetW <= 0) return;
@@ -320,10 +340,30 @@ function copyRelativePosition(corner, order, reverseOrder) {
     var doc = app.activeDocument;
     var selection = doc.selection;
 
-    if (selection.length < 2) {
-        return "Error: Please select at least two items.";
+    if (!selection || selection.length === 0) {
+        return "Error: Please select at least one item.";
     }
 
+     // 当仅选中 1 个对象时：复制其“相对于所属画板”的位置（按所选角点）
+    if (selection.length === 1) {
+        var it = selection[0];
+        var b = getVisibleBounds(it) || it.visibleBounds;
+        var x, y;
+        switch (corner) {
+            case "TR": x = b[2]; y = b[1]; break;
+            case "BL": x = b[0]; y = b[3]; break;
+            case "BR": x = b[2]; y = b[3]; break;
+            default:   x = b[0]; y = b[1]; break; // TL
+        }
+        var abIndex = getItemArtboardIndex(it);
+        var abRect = app.activeDocument.artboards[abIndex].artboardRect; // [L, T, R, B]
+        // 以画板左上为原点，X 向右为正，Y 向下为正
+        var relXmm = pointsToMm(x - abRect[0]);
+        var relYmm = pointsToMm(abRect[1] - y);
+        return '{"abs":true,"x":' + relXmm + ',"y":' + relYmm + ',"ab":' + abIndex + '}';
+    }
+
+    // 其余情况：沿用相对位置复制逻辑
     var ord = order || "stacking";
     var revOrd = !!reverseOrder;
     var ordered = getOrderedSelection(selection, ord, revOrd);
@@ -367,26 +407,79 @@ function copyRelativePosition(corner, order, reverseOrder) {
         });
     }
 
-    // 返回包含所有相对位置信息的 JSON 字符串
     return simpleJsonStringify(deltas);
 }
 
 function pasteRelativePosition(deltasJSON, reverse, corner, order, reverseOrder, overrideDeltaX, overrideDeltaY, allowMismatch) {
     if (app.documents.length === 0) return "Error: No document open.";
-    // 都不为null或都不为0
-    var useOverride = (overrideDeltaX !== null && overrideDeltaX !== 0) && (overrideDeltaY !== null && overrideDeltaY !== 0);
 
-    if (!useOverride && !deltasJSON) return "Error: No relative position data provided.";
+    // 允许 0 值作为覆盖坐标（只要不是 null 且是数字）
+    var useOverride = (overrideDeltaX !== null && overrideDeltaY !== null &&
+                       !isNaN(overrideDeltaX) && !isNaN(overrideDeltaY));
 
     var doc = app.activeDocument;
     var selection = doc.selection;
-    var deltas;
 
-    if (!useOverride) {
+    // 解析传入数据，支持绝对位置对象或相对位移数组
+    var data = null;
+    if (deltasJSON && deltasJSON !== '[]') {
         try {
-            deltas = eval('(' + deltasJSON + ')');
+            data = eval('(' + deltasJSON + ')');
+        } catch (e) {
+            // 保持为 null，后续分支会处理
+        }
+    }
+    var isAbs = (data && typeof data === "object" && data.abs === true);
+
+    // 绝对位置粘贴（当复制的是单形状绝对位置时）
+    if (isAbs) {
+        if (!selection || selection.length === 0) {
+            return "Error: Please select items to move.";
+        }
+
+        // 允许用覆盖坐标替代拷贝到的绝对坐标（此坐标为“相对各自画板”的 mm）
+        var targetXmm = useOverride ? overrideDeltaX : data.x;
+        var targetYmm = useOverride ? overrideDeltaY : data.y;
+
+        for (var i = 0; i < selection.length; i++) {
+            var obj = selection[i];
+            var objB = getVisibleBounds(obj) || obj.visibleBounds;
+
+            // 对每个对象，使用其“所属画板”的坐标系
+            var objAbIdx = getItemArtboardIndex(obj);
+            var objAbRect = doc.artboards[objAbIdx].artboardRect; // [L, T, R, B]
+            var targetXAbs = objAbRect[0] + mmToPoints(targetXmm);
+            var targetYAbs = objAbRect[1] - mmToPoints(targetYmm);
+
+            switch (corner) {
+                case "TR":
+                    obj.translate(targetXAbs - objB[2], targetYAbs - objB[1]);
+                    break;
+                case "BL":
+                    obj.translate(targetXAbs - objB[0], targetYAbs - objB[3]);
+                    break;
+                case "BR":
+                    obj.translate(targetXAbs - objB[2], targetYAbs - objB[3]);
+                    break;
+                default: // TL
+                    obj.translate(targetXAbs - objB[0], targetYAbs - objB[1]);
+                    break;
+            }
+        }
+        return "Success";
+    }
+
+    // 相对位置粘贴
+    // 当未复制相对数据但提供了覆盖数值时，也允许继续（覆盖作为相对位移）
+    var deltas;
+    if (useOverride) {
+        deltas = [{ deltaX: overrideDeltaX, deltaY: overrideDeltaY }];
+    } else {
+        if (!deltasJSON) return "Error: No relative position data provided.";
+        try {
+            deltas = data || eval('(' + deltasJSON + ')');
             if (!deltas || typeof deltas.length === "undefined") throw new Error("Invalid data format.");
-        } catch(e) {
+        } catch (e) {
             return "Error: Invalid relative position data. " + e.message;
         }
         if (deltas.length === 0) {
@@ -394,14 +487,12 @@ function pasteRelativePosition(deltasJSON, reverse, corner, order, reverseOrder,
         }
     }
 
-    if (selection.length < 2) {
+    if (!selection || selection.length < 2) {
         return "Error: Please select at least two items.";
     }
 
-    if (!useOverride && (selection.length - 1 !== deltas.length)) {
-        if (!allowMismatch) {
-            return "Error: The number of items to move (" + (selection.length - 1) + ") does not match the saved data count (" + deltas.length + ").";
-        }
+    if (!useOverride && (selection.length - 1 !== deltas.length) && !allowMismatch) {
+        return "Error: The number of items to move (" + (selection.length - 1) + ") does not match the saved data count (" + deltas.length + ").";
     }
 
     var ord = order || "stacking";
@@ -424,16 +515,10 @@ function pasteRelativePosition(deltasJSON, reverse, corner, order, reverseOrder,
         var objectToMove = objectsToMove[k];
         var objBounds = getVisibleBounds(objectToMove) || objectToMove.visibleBounds;
         
-        var deltaXPt, deltaYPt;
-        if (useOverride) {
-            deltaXPt = mmToPoints(overrideDeltaX);
-            deltaYPt = mmToPoints(overrideDeltaY);
-        } else {
-            var idx = k % deltas.length;
-            var delta = deltas[idx];
-            deltaXPt = mmToPoints(delta.deltaX);
-            deltaYPt = mmToPoints(delta.deltaY);
-        }
+        var idx = k % deltas.length;
+        var delta = deltas[idx];
+        var deltaXPt = mmToPoints(delta.deltaX);
+        var deltaYPt = mmToPoints(delta.deltaY);
         
         var newX, newY;
 

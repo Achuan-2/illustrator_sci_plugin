@@ -78,16 +78,25 @@ function handleCopyPosition() {
         if (result && result !== 'EvalScript error.') {
             copiedDeltasJSON = result; // Store the raw JSON string
             try {
-                // In ExtendScript, we're now using eval, which gives us an object directly.
-                var deltas = eval('(' + result + ')');
-                if (deltas && deltas.length === 1) {
-                    deltaXInput.value = parseFloat(deltas[0].deltaX).toFixed(2);
-                    deltaYInput.value = parseFloat(deltas[0].deltaY).toFixed(2);
-                } else if (deltas && deltas.length > 1) {
-                    deltaXInput.value = ''; // Clear the input
-                    deltaYInput.value = '';
-                    deltaXInput.placeholder = 'Multiple Values (' + deltas.length + ')';
-                    deltaYInput.placeholder = 'Multiple Values (' + deltas.length + ')';
+                var data = eval('(' + result + ')');
+                if (data && data.abs) {
+                    // Absolute canvas position copy
+                    deltaXInput.value = parseFloat(data.x).toFixed(2);
+                    deltaYInput.value = parseFloat(data.y).toFixed(2);
+                } else if (data && typeof data.length !== 'undefined') {
+                    // Array of relative deltas
+                    if (data.length === 1) {
+                        deltaXInput.value = parseFloat(data[0].deltaX).toFixed(2);
+                        deltaYInput.value = parseFloat(data[0].deltaY).toFixed(2);
+                    } else if (data.length > 1) {
+                        deltaXInput.value = '';
+                        deltaYInput.value = '';
+                        deltaXInput.placeholder = 'Multiple Values (' + data.length + ')';
+                        deltaYInput.placeholder = 'Multiple Values (' + data.length + ')';
+                    } else {
+                        deltaXInput.value = '0.00';
+                        deltaYInput.value = '0.00';
+                    }
                 } else {
                     deltaXInput.value = '0.00';
                     deltaYInput.value = '0.00';
