@@ -1,7 +1,10 @@
 ## v1.1.0 / 20250809
 - ✨ 复制粘贴相对位置，支持复制单个形状的位置 [#3](https://github.com/Achuan-2/illustrator_sci_plugin/issues/3)
 - ✨ 支持交换形状位置 [#2](https://github.com/Achuan-2/illustrator_sci_plugin/issues/2)
-- ✨ 复制粘贴位置支持一个checkbox选项，如果复制和粘贴的条目不对，依然允许粘贴 [#1](https://github.com/Achuan-2/illustrator_sci_plugin/issues/1)
+- ✨ 复制粘贴位置支持设置如果复制和粘贴的条目不对，依然允许粘贴 [#1](https://github.com/Achuan-2/illustrator_sci_plugin/issues/1)
+- ✨ 复制粘贴位置支持以画布为参考 [#4](https://github.com/Achuan-2/illustrator_sci_plugin/issues/4)
+
+
 
 ## v1.0.0 / 20250806
 
