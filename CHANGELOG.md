@@ -1,6 +1,8 @@
 
 ## v1.3.0 / 20250810
-- ✨ 新增一个About Tab [#6](https://github.com/Achuan-2/illustrator_sci_plugin/issues/6)
+- ✨ 新增About Tab [#6](https://github.com/Achuan-2/illustrator_sci_plugin/issues/6)
+
+<img width="582" height="801" alt="PixPin_2025-08-10_10-44-17" src="https://github.com/user-attachments/assets/4165dd8d-6e8d-4c29-b142-53702517cf2a" />
 
 ## v1.2.0 / 20250809
 
