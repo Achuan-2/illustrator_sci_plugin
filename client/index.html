@@ -153,6 +153,7 @@
             <div class="tab" data-target="panel-arrange" data-hash="arrange">Arrange Images</div>
             <div class="tab" data-target="panel-swap" data-hash="swap">Swap</div>
             <div class="tab" data-target="panel-labels" data-hash="labels">Image Labels</div>
+            <div class="tab" data-target="panel-about" data-hash="about">About</div>
         </div>
         <div class="content">
             <!-- Relative Position Panel -->
@@ -328,6 +329,14 @@
                     <button class="btn btn-primary" id="paste-size-button">Paste Size</button>
                 </div>
             </div>
+            <!-- About Panel -->
+            <div class="panel" id="panel-about">
+                <h3>About This Plugin</h3>
+                <p>Author: Achuan-2</p>
+                <p>GitHub: <a href="https://github.com/Achuan-2/illustrator_sci_plugin" target="_blank"
+                        style="color: var(--primary); text-decoration: none;">Achuan-2/illustrator_sci_plugin</a>
+                </p>
+            </div>
         </div>
     </div>
 
@@ -346,6 +355,7 @@
                 else if (hash === 'labels') target = 'panel-labels';
                 else if (hash === 'size') target = 'panel-size';
                 else if (hash === 'swap') target = 'panel-swap';
+                else if (hash === 'about') target = 'panel-about';
 
                 tabs.forEach(t => t.classList.toggle('active', t.dataset.target === target));
                 panels.forEach(p => p.classList.toggle('active', p.id === target));
