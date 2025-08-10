@@ -1,3 +1,7 @@
+
+## v1.3.0 / 20250810
+- ✨ 新增一个About Tab close [#6](https://github.com/Achuan-2/illustrator_sci_plugin/issues/6)
+
 ## v1.2.0 / 20250809
 
 - ✨ 图片添加标签新增计数器 [#5](https://github.com/Achuan-2/illustrator_sci_plugin/issues/5)
