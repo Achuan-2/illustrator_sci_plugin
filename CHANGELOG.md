@@ -1,6 +1,6 @@
 
 ## v1.3.0 / 20250810
-- ✨ 新增一个About Tab close [#6](https://github.com/Achuan-2/illustrator_sci_plugin/issues/6)
+- ✨ 新增一个About Tab [#6](https://github.com/Achuan-2/illustrator_sci_plugin/issues/6)
 
 ## v1.2.0 / 20250809
 
