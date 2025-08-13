@@ -20,7 +20,8 @@
   - 快速统一label位置：一个图加了label，其他图的label位置也需要一样，也可以快速统一
   - 可以设置画布为参考位置，进行跨画布统一位置
 
-  <img width="400" alt="PixPin_2025-08-13_10-49-26" src="https://github.com/user-attachments/assets/7cc7726e-652a-484b-8247-ee4904f0754a" />
+  <img width="400" alt="PixPin_2025-08-13_10-53-10" src="https://github.com/user-attachments/assets/35ce01c7-20b2-43ab-83ce-f910b2724ce4" />
+
 ​
 - 形状大小批量复制：复制一个形状的宽高或者手动输入宽高，点击Paste Size即可对选择的形状进行批量粘贴形状，宽高前有勾选框，默认全部勾选，只勾选其中一个，比如只勾选宽度则只粘贴宽度，高度根据原来宽高比自动调整
 
