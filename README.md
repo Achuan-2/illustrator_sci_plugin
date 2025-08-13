@@ -18,7 +18,7 @@
   - 快速实现不同图同一个位置添加同一个标注，一个图排版好，就可以复制粘贴给其他图
   - 快速统一排列方式：如果已经排好了一组图，想对另一组图也按照之前那组图的排布方式排布，也可以一键复制并粘贴相对位置就瞬间排好了
   - 快速统一label位置：一个图加了label，其他图的label位置也需要一样，也可以快速统一
-  - 可以设置画布为参考位置，进行跨画布统一位置
+  - 可以设置画布为参考位置（默认是第一个形状为参考位置），进行跨画布统一位置
 
   <img width="400" alt="PixPin_2025-08-13_10-53-10" src="https://github.com/user-attachments/assets/35ce01c7-20b2-43ab-83ce-f910b2724ce4" />
 
@@ -31,7 +31,7 @@
 
   <img width="400" alt="PixPin_2025-08-13_10-50-57" src="https://github.com/user-attachments/assets/d6bbd7ce-81d9-4592-a144-475733aff449" />
 ​
-- 一键添加label
+- 一键快速添加label：可以全选形状一起添加，也可以一个个单独添加，通过修改label index设置label值
 
   <img width="400" alt="PixPin_2025-08-13_10-51-12" src="https://github.com/user-attachments/assets/b5664a39-1ee2-417f-8444-c02a8aea2fce" />
 ​
