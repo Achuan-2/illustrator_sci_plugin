@@ -20,16 +20,20 @@
   - 快速统一label位置：一个图加了label，其他图的label位置也需要一样，也可以快速统一
   - 可以设置画布为参考位置，进行跨画布统一位置
 
-  <img alt="PixPin_2025-08-06_17-59-49" src="https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-08-06_17-59-49-20250806175952-m1f90jv.png" style="width: 284px;" />​
+  <img width="400" alt="PixPin_2025-08-13_10-49-26" src="https://github.com/user-attachments/assets/7cc7726e-652a-484b-8247-ee4904f0754a" />
+​
 - 形状大小批量复制：复制一个形状的宽高或者手动输入宽高，点击Paste Size即可对选择的形状进行批量粘贴形状，宽高前有勾选框，默认全部勾选，只勾选其中一个，比如只勾选宽度则只粘贴宽度，高度根据原来宽高比自动调整
 
-  <img alt="PixPin_2025-08-06_17-56-39" src="https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-08-06_17-56-39-20250806175650-enk1w8e.png" style="width: 278px;" />​
+  <img width="400"  alt="PixPin_2025-08-13_10-49-54" src="https://github.com/user-attachments/assets/457420af-e5cf-4fc5-a069-d709bb68c890" />
+​
 - 一键排列图片：可以批量调整图片宽高、一键排列整齐
 
-  <img alt="PixPin_2025-08-06_17-59-37" src="https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-08-06_17-59-37-20250806175940-zw3soci.png" style="width: 298px;" />​
+  <img width="400" alt="PixPin_2025-08-13_10-50-57" src="https://github.com/user-attachments/assets/d6bbd7ce-81d9-4592-a144-475733aff449" />
+​
 - 一键添加label
 
-  <img alt="PixPin_2025-08-06_18-00-32" src="https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-08-06_18-00-32-20250806180034-teeikze.png" style="width: 334px;" />​
+  <img width="400" alt="PixPin_2025-08-13_10-51-12" src="https://github.com/user-attachments/assets/b5664a39-1ee2-417f-8444-c02a8aea2fce" />
+​
 
 ## 3 如何使用本插件
 
