@@ -273,10 +273,10 @@ function handlePasteSize() {
 
 function handleAddLabel() {
     var fontFamily = fontFamilyInput.value || "Arial";
-    var fontSize = parseFloat(fontSizeInput.value) || 12;
-    var labelOffsetX = parseFloat(labelOffsetXInput.value) || -12;
-    var labelOffsetY = parseFloat(labelOffsetYInput.value) || -6;
-    var labelTemplate = labelTemplateSelect.value || "A";
+    var fontSize = parseFloat(fontSizeInput.value) || 6;
+    var labelOffsetX = parseFloat(labelOffsetXInput.value) || 0;
+    var labelOffsetY = parseFloat(labelOffsetYInput.value) || 0;
+    var labelTemplate = labelTemplateSelect.value || "a";
     var startCount = parseInt(labelStartCountInput.value) || 1;
 
     // Store current index in history before making changes
