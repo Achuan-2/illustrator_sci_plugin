@@ -69,7 +69,8 @@
 
 1. 下载插件zip：[https://github.com/Achuan-2/illustrator_sci_plugin/releases](https://github.com/Achuan-2/illustrator_sci_plugin/releases)
 
-    <img alt="PixPin_2025-08-06_18-36-01" src="https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-08-06_18-36-01-20250806183604-ngu9fp9.png" />
+    <img width="1906" height="840" alt="PixPin_2025-09-10_20-33-46" src="https://github.com/user-attachments/assets/491b912e-0c07-46c1-967a-3cf4b8e68d24" />
+
 2. 解压，复制插件文件夹到Adobe 插件文件夹
 
     - windows
