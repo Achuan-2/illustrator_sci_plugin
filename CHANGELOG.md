@@ -1,4 +1,4 @@
-## v1.4.0 / 20250910
+## v1.5.0 / 20250910
 
 - [✨排列图片row gap和column gap支持设置为0](https://github.com/Achuan-2/illustrator_sci_plugin/issues/10)
 - [✨改进添加标签交互](https://github.com/Achuan-2/illustrator_sci_plugin/issues/11)
