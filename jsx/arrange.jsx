@@ -283,7 +283,7 @@ function arrangeImages(columns, rowGap, colGap, useWidth, wVal, useHeight, hVal,
     }
 }
 
-function addLabelsToImages(fontFamily, fontSize, labelOffsetX, labelOffsetY, labelTemplate, order, reverseOrder, startCount) {
+function addLabelsToImages(fontFamily, fontSize, labelOffsetX, labelOffsetY, labelTemplate, order, reverseOrder, startCount, sessionId) {
     if (app.documents.length === 0) return "Error: No document open.";
 
     var doc = app.activeDocument;
@@ -294,7 +294,6 @@ function addLabelsToImages(fontFamily, fontSize, labelOffsetX, labelOffsetY, lab
     }
 
     startCount = parseInt(startCount) || 1;
-    // Adjust to be 0-indexed for array access
     var startIndex = startCount - 1;
 
     var templates = {
@@ -315,7 +314,6 @@ function addLabelsToImages(fontFamily, fontSize, labelOffsetX, labelOffsetY, lab
             if (labelTemplate === "A)" || labelTemplate === "a)") {
                 label += ")";
             }
-            // 基于可视区域定位标签
             var v = getVisibleInfo(item);
             var textFrame = doc.textFrames.add();
             textFrame.contents = label;
@@ -323,22 +321,23 @@ function addLabelsToImages(fontFamily, fontSize, labelOffsetX, labelOffsetY, lab
             textFrame.top = v.top - labelOffsetY;
             textFrame.left = v.left + labelOffsetX;
 
-            // Style the text
+            // Style
             textFrame.textRange.characterAttributes.size = fontSize;
             try {
                 textFrame.textRange.characterAttributes.textFont = app.textFonts.getByName(fontFamily === "Arial" ? "ArialMT" : fontFamily);
             } catch (e) {
-                // Return error font not found.
                 return "Error: Font not found: " + fontFamily;
             }
+
+            // 记录基准信息与会话ID在 note，JSON 字符串
+            var payload = '{"sid":' + (sessionId || 0) + ',"baseL":' + v.left + ',"baseT":' + v.top + '}';
+            try { textFrame.note = payload; } catch (e) { }
         } catch (e) {
             return "Error: Error adding label to item " + (i + 1) + ": " + e.message;
         }
     }
-    // Return the next starting count (1-indexed)
     return (startCount + ordered.length).toString();
 }
-
 
 function copyRelativePosition(corner, order, reverseOrder, useArtboardRef) {
     if (app.documents.length === 0) return "Error: No document open.";
@@ -350,52 +349,52 @@ function copyRelativePosition(corner, order, reverseOrder, useArtboardRef) {
         return "Error: Please select at least one item.";
     }
 
-      // 当仅选中 1 个对象时：复制其“相对于画板”的位置（按所选角点）
-     if (selection.length === 1) {
-         var it = selection[0];
-         var b = getVisibleBounds(it) || it.visibleBounds;
-         var x, y;
-         switch (corner) {
-             case "TR": x = b[2]; y = b[1]; break;
-             case "BL": x = b[0]; y = b[3]; break;
-             case "BR": x = b[2]; y = b[3]; break;
-             default:   x = b[0]; y = b[1]; break; // TL
-         }
-         var abIndex = useArtboardRef ? app.activeDocument.artboards.getActiveArtboardIndex() : getItemArtboardIndex(it);
-         var abRect = app.activeDocument.artboards[abIndex].artboardRect; // [L, T, R, B]
-         // 以画板左上为原点，X 向右为正，Y 向下为正
-         var relXmm = pointsToMm(x - abRect[0]);
-         var relYmm = pointsToMm(abRect[1] - y);
-         return '{"abs":true,"x":' + relXmm + ',"y":' + relYmm + ',"ab":' + abIndex + '}';
-     }
-
-        // useArtboardRef 多选：将所有选中的形状位置复制为“相对于当前活动画板”的坐标列表
-        if (useArtboardRef && selection.length > 1) {
-            var activeAbIdx = app.activeDocument.artboards.getActiveArtboardIndex();
-            var activeAbRect = app.activeDocument.artboards[activeAbIdx].artboardRect; // [L, T, R, B]
-    
-            var ordCopy = order || "stacking";
-            var revOrdCopy = !!reverseOrder;
-            var orderedCopy = getOrderedSelection(selection, ordCopy, revOrdCopy);
-    
-            var partsAbs = [];
-            for (var m = 0; m < orderedCopy.length; m++) {
-                var it = orderedCopy[m];
-                var bb = getVisibleBounds(it) || it.visibleBounds;
-                var cx, cy;
-                switch (corner) {
-                    case "TR": cx = bb[2]; cy = bb[1]; break;
-                    case "BL": cx = bb[0]; cy = bb[3]; break;
-                    case "BR": cx = bb[2]; cy = bb[3]; break;
-                    default:   cx = bb[0]; cy = bb[1]; break; // TL
-                }
-                var relXmmM = pointsToMm(cx - activeAbRect[0]);
-                var relYmmM = pointsToMm(activeAbRect[1] - cy);
-                partsAbs.push('{"abs":true,"x":' + relXmmM + ',"y":' + relYmmM + ',"ab":' + activeAbIdx + '}');
-            }
-            return '[' + partsAbs.join(',') + ']';
+    // 当仅选中 1 个对象时：复制其“相对于画板”的位置（按所选角点）
+    if (selection.length === 1) {
+        var it = selection[0];
+        var b = getVisibleBounds(it) || it.visibleBounds;
+        var x, y;
+        switch (corner) {
+            case "TR": x = b[2]; y = b[1]; break;
+            case "BL": x = b[0]; y = b[3]; break;
+            case "BR": x = b[2]; y = b[3]; break;
+            default: x = b[0]; y = b[1]; break; // TL
         }
-    
+        var abIndex = useArtboardRef ? app.activeDocument.artboards.getActiveArtboardIndex() : getItemArtboardIndex(it);
+        var abRect = app.activeDocument.artboards[abIndex].artboardRect; // [L, T, R, B]
+        // 以画板左上为原点，X 向右为正，Y 向下为正
+        var relXmm = pointsToMm(x - abRect[0]);
+        var relYmm = pointsToMm(abRect[1] - y);
+        return '{"abs":true,"x":' + relXmm + ',"y":' + relYmm + ',"ab":' + abIndex + '}';
+    }
+
+    // useArtboardRef 多选：将所有选中的形状位置复制为“相对于当前活动画板”的坐标列表
+    if (useArtboardRef && selection.length > 1) {
+        var activeAbIdx = app.activeDocument.artboards.getActiveArtboardIndex();
+        var activeAbRect = app.activeDocument.artboards[activeAbIdx].artboardRect; // [L, T, R, B]
+
+        var ordCopy = order || "stacking";
+        var revOrdCopy = !!reverseOrder;
+        var orderedCopy = getOrderedSelection(selection, ordCopy, revOrdCopy);
+
+        var partsAbs = [];
+        for (var m = 0; m < orderedCopy.length; m++) {
+            var it = orderedCopy[m];
+            var bb = getVisibleBounds(it) || it.visibleBounds;
+            var cx, cy;
+            switch (corner) {
+                case "TR": cx = bb[2]; cy = bb[1]; break;
+                case "BL": cx = bb[0]; cy = bb[3]; break;
+                case "BR": cx = bb[2]; cy = bb[3]; break;
+                default: cx = bb[0]; cy = bb[1]; break; // TL
+            }
+            var relXmmM = pointsToMm(cx - activeAbRect[0]);
+            var relYmmM = pointsToMm(activeAbRect[1] - cy);
+            partsAbs.push('{"abs":true,"x":' + relXmmM + ',"y":' + relYmmM + ',"ab":' + activeAbIdx + '}');
+        }
+        return '[' + partsAbs.join(',') + ']';
+    }
+
     // 其余情况：沿用相对位置复制逻辑
     var ord = order || "stacking";
     var revOrd = !!reverseOrder;
@@ -412,7 +411,7 @@ function copyRelativePosition(corner, order, reverseOrder, useArtboardRef) {
             objItems.push(ordered[i]);
         }
     }
-    
+
     // 使用可视边界，适配剪切蒙版/复合路径
     var refB = getVisibleBounds(refItem) || refItem.visibleBounds;
     var deltas = [];
@@ -428,12 +427,12 @@ function copyRelativePosition(corner, order, reverseOrder, useArtboardRef) {
             case "TR": x1 = refB[2]; y1 = refB[1]; x2 = objB[2]; y2 = objB[1]; break;
             case "BL": x1 = refB[0]; y1 = refB[3]; x2 = objB[0]; y2 = objB[3]; break;
             case "BR": x1 = refB[2]; y1 = refB[3]; x2 = objB[2]; y2 = objB[3]; break;
-            default:   x1 = refB[0]; y1 = refB[1]; x2 = objB[0]; y2 = objB[1]; break; // TL
+            default: x1 = refB[0]; y1 = refB[1]; x2 = objB[0]; y2 = objB[1]; break; // TL
         }
 
         var deltaX = x2 - x1;
         var deltaY = y2 - y1;
-        
+
         deltas.push({
             deltaX: pointsToMm(deltaX),
             deltaY: pointsToMm(deltaY)
@@ -448,7 +447,7 @@ function pasteRelativePosition(deltasJSON, reverse, corner, order, reverseOrder,
 
     // 允许 0 值作为覆盖坐标（只要不是 null 且是数字）
     var useOverride = (overrideDeltaX !== null && overrideDeltaY !== null &&
-                       !isNaN(overrideDeltaX) && !isNaN(overrideDeltaY));
+        !isNaN(overrideDeltaX) && !isNaN(overrideDeltaY));
 
     var doc = app.activeDocument;
     var selection = doc.selection;
@@ -465,111 +464,111 @@ function pasteRelativePosition(deltasJSON, reverse, corner, order, reverseOrder,
     var isAbs = (data && typeof data === "object" && data.abs === true);
     var isAbsArray = (data && typeof data.length !== "undefined" && data.length > 0 && typeof data[0].x !== "undefined");
 
-      // 绝对位置粘贴：支持 单对象 abs、abs 数组、或在 useArtboardRef 勾选下使用覆盖坐标
-     if (isAbs || isAbsArray || (useArtboardRef && useOverride)) {
-         if (!selection || selection.length === 0) {
-             return "Error: Please select items to move.";
-         }
-     
-         // 使用排序后的选择，保证与复制/用户期望的一致顺序
-         var ordAbs = order || "stacking";
-         var revOrdAbs = !!reverseOrder;
-         var orderedAbs = getOrderedSelection(selection, ordAbs, revOrdAbs);
-     
-         // 覆盖坐标：所有对象使用相同的画板相对坐标（各自画板）
-         if (useArtboardRef && useOverride) {
-             var ox = overrideDeltaX;
-             var oy = overrideDeltaY;
-             for (var i = 0; i < orderedAbs.length; i++) {
-                 var obj = orderedAbs[i];
-                 var objB = getVisibleBounds(obj) || obj.visibleBounds;
-     
-                 var objAbIdx = getItemArtboardIndex(obj);
-                 var objAbRect = doc.artboards[objAbIdx].artboardRect; // [L, T, R, B]
-                 var targetXAbs = objAbRect[0] + mmToPoints(ox);
-                 var targetYAbs = objAbRect[1] - mmToPoints(oy);
-     
-                 switch (corner) {
-                     case "TR":
-                         obj.translate(targetXAbs - objB[2], targetYAbs - objB[1]);
-                         break;
-                     case "BL":
-                         obj.translate(targetXAbs - objB[0], targetYAbs - objB[3]);
-                         break;
-                     case "BR":
-                         obj.translate(targetXAbs - objB[2], targetYAbs - objB[3]);
-                         break;
-                     default: // TL
-                         obj.translate(targetXAbs - objB[0], targetYAbs - objB[1]);
-                         break;
-                 }
-             }
-             return "Success";
-         }
-     
-         // 单对象 abs：所有对象贴到统一画板相对坐标（各自画板）
-         if (isAbs) {
-             var targetXmm = data.x;
-             var targetYmm = data.y;
-             for (var j = 0; j < orderedAbs.length; j++) {
-                 var obj1 = orderedAbs[j];
-                 var objB1 = getVisibleBounds(obj1) || obj1.visibleBounds;
-     
-                 var objAbIdx1 = getItemArtboardIndex(obj1);
-                 var objAbRect1 = doc.artboards[objAbIdx1].artboardRect;
-                 var targetXAbs1 = objAbRect1[0] + mmToPoints(targetXmm);
-                 var targetYAbs1 = objAbRect1[1] - mmToPoints(targetYmm);
-     
-                 switch (corner) {
-                     case "TR":
-                         obj1.translate(targetXAbs1 - objB1[2], targetYAbs1 - objB1[1]);
-                         break;
-                     case "BL":
-                         obj1.translate(targetXAbs1 - objB1[0], targetYAbs1 - objB1[3]);
-                         break;
-                     case "BR":
-                         obj1.translate(targetXAbs1 - objB1[2], targetYAbs1 - objB1[3]);
-                         break;
-                     default: // TL
-                         obj1.translate(targetXAbs1 - objB1[0], targetYAbs1 - objB1[1]);
-                         break;
-                 }
-             }
-             return "Success";
-         }
-     
-         // abs 数组：每个对象使用对应条目的画板相对坐标（可循环）
-         var absArr = data;
-         if ((orderedAbs.length !== absArr.length) && !allowMismatch) {
-             return "Error: The number of items to move (" + orderedAbs.length + ") does not match the saved data count (" + absArr.length + ").";
-         }
-         for (var k = 0; k < orderedAbs.length; k++) {
-             var entry = absArr[k % absArr.length];
-             var obj2 = orderedAbs[k];
-             var objB2 = getVisibleBounds(obj2) || obj2.visibleBounds;
-     
-             var objAbIdx2 = getItemArtboardIndex(obj2);
-             var objAbRect2 = doc.artboards[objAbIdx2].artboardRect;
-             var targetXAbs2 = objAbRect2[0] + mmToPoints(entry.x);
-             var targetYAbs2 = objAbRect2[1] - mmToPoints(entry.y);
-     
-             switch (corner) {
-                 case "TR":
-                     obj2.translate(targetXAbs2 - objB2[2], targetYAbs2 - objB2[1]);
-                     break;
-                 case "BL":
-                     obj2.translate(targetXAbs2 - objB2[0], targetYAbs2 - objB2[3]);
-                     break;
-                 case "BR":
-                     obj2.translate(targetXAbs2 - objB2[2], targetYAbs2 - objB2[3]);
-                     break;
-                 default: // TL
-                     obj2.translate(targetXAbs2 - objB2[0], targetYAbs2 - objB2[1]);
-                     break;
-             }
-         }
-         return "Success";
-     }
+    // 绝对位置粘贴：支持 单对象 abs、abs 数组、或在 useArtboardRef 勾选下使用覆盖坐标
+    if (isAbs || isAbsArray || (useArtboardRef && useOverride)) {
+        if (!selection || selection.length === 0) {
+            return "Error: Please select items to move.";
+        }
+
+        // 使用排序后的选择，保证与复制/用户期望的一致顺序
+        var ordAbs = order || "stacking";
+        var revOrdAbs = !!reverseOrder;
+        var orderedAbs = getOrderedSelection(selection, ordAbs, revOrdAbs);
+
+        // 覆盖坐标：所有对象使用相同的画板相对坐标（各自画板）
+        if (useArtboardRef && useOverride) {
+            var ox = overrideDeltaX;
+            var oy = overrideDeltaY;
+            for (var i = 0; i < orderedAbs.length; i++) {
+                var obj = orderedAbs[i];
+                var objB = getVisibleBounds(obj) || obj.visibleBounds;
+
+                var objAbIdx = getItemArtboardIndex(obj);
+                var objAbRect = doc.artboards[objAbIdx].artboardRect; // [L, T, R, B]
+                var targetXAbs = objAbRect[0] + mmToPoints(ox);
+                var targetYAbs = objAbRect[1] - mmToPoints(oy);
+
+                switch (corner) {
+                    case "TR":
+                        obj.translate(targetXAbs - objB[2], targetYAbs - objB[1]);
+                        break;
+                    case "BL":
+                        obj.translate(targetXAbs - objB[0], targetYAbs - objB[3]);
+                        break;
+                    case "BR":
+                        obj.translate(targetXAbs - objB[2], targetYAbs - objB[3]);
+                        break;
+                    default: // TL
+                        obj.translate(targetXAbs - objB[0], targetYAbs - objB[1]);
+                        break;
+                }
+            }
+            return "Success";
+        }
+
+        // 单对象 abs：所有对象贴到统一画板相对坐标（各自画板）
+        if (isAbs) {
+            var targetXmm = data.x;
+            var targetYmm = data.y;
+            for (var j = 0; j < orderedAbs.length; j++) {
+                var obj1 = orderedAbs[j];
+                var objB1 = getVisibleBounds(obj1) || obj1.visibleBounds;
+
+                var objAbIdx1 = getItemArtboardIndex(obj1);
+                var objAbRect1 = doc.artboards[objAbIdx1].artboardRect;
+                var targetXAbs1 = objAbRect1[0] + mmToPoints(targetXmm);
+                var targetYAbs1 = objAbRect1[1] - mmToPoints(targetYmm);
+
+                switch (corner) {
+                    case "TR":
+                        obj1.translate(targetXAbs1 - objB1[2], targetYAbs1 - objB1[1]);
+                        break;
+                    case "BL":
+                        obj1.translate(targetXAbs1 - objB1[0], targetYAbs1 - objB1[3]);
+                        break;
+                    case "BR":
+                        obj1.translate(targetXAbs1 - objB1[2], targetYAbs1 - objB1[3]);
+                        break;
+                    default: // TL
+                        obj1.translate(targetXAbs1 - objB1[0], targetYAbs1 - objB1[1]);
+                        break;
+                }
+            }
+            return "Success";
+        }
+
+        // abs 数组：每个对象使用对应条目的画板相对坐标（可循环）
+        var absArr = data;
+        if ((orderedAbs.length !== absArr.length) && !allowMismatch) {
+            return "Error: The number of items to move (" + orderedAbs.length + ") does not match the saved data count (" + absArr.length + ").";
+        }
+        for (var k = 0; k < orderedAbs.length; k++) {
+            var entry = absArr[k % absArr.length];
+            var obj2 = orderedAbs[k];
+            var objB2 = getVisibleBounds(obj2) || obj2.visibleBounds;
+
+            var objAbIdx2 = getItemArtboardIndex(obj2);
+            var objAbRect2 = doc.artboards[objAbIdx2].artboardRect;
+            var targetXAbs2 = objAbRect2[0] + mmToPoints(entry.x);
+            var targetYAbs2 = objAbRect2[1] - mmToPoints(entry.y);
+
+            switch (corner) {
+                case "TR":
+                    obj2.translate(targetXAbs2 - objB2[2], targetYAbs2 - objB2[1]);
+                    break;
+                case "BL":
+                    obj2.translate(targetXAbs2 - objB2[0], targetYAbs2 - objB2[3]);
+                    break;
+                case "BR":
+                    obj2.translate(targetXAbs2 - objB2[2], targetYAbs2 - objB2[3]);
+                    break;
+                default: // TL
+                    obj2.translate(targetXAbs2 - objB2[0], targetYAbs2 - objB2[1]);
+                    break;
+            }
+        }
+        return "Success";
+    }
 
     // 相对位置粘贴
     // 当未复制相对数据但提供了覆盖数值时，也允许继续（覆盖作为相对位移）
@@ -603,25 +602,25 @@ function pasteRelativePosition(deltasJSON, reverse, corner, order, reverseOrder,
     var ordered = getOrderedSelection(selection, ord, revOrd);
 
     var newReference = (ord === "stacking") ? ordered[ordered.length - 1] : ordered[0];
-    
+
     var objectsToMove = [];
     for (var i = 0; i < ordered.length; i++) {
         if (ordered[i] !== newReference) {
             objectsToMove.push(ordered[i]);
         }
     }
-    
+
     var refBounds = getVisibleBounds(newReference) || newReference.visibleBounds;
 
     for (var k = 0; k < objectsToMove.length; k++) {
         var objectToMove = objectsToMove[k];
         var objBounds = getVisibleBounds(objectToMove) || objectToMove.visibleBounds;
-        
+
         var idx = k % deltas.length;
         var delta = deltas[idx];
         var deltaXPt = mmToPoints(delta.deltaX);
         var deltaYPt = mmToPoints(delta.deltaY);
-        
+
         var newX, newY;
 
         switch (corner) {
@@ -664,19 +663,19 @@ function copySize() {
 
 function pasteSize(width, height, useW, useH) {
     if (app.documents.length === 0) return "Error: No document open.";
-    
+
     var selection = app.activeDocument.selection;
     if (selection.length === 0) return "Error: Please select items to resize.";
 
     if (!useW && !useH) return "Success: No action taken.";
-    
+
     var targetWidthPt = useW ? mmToPoints(width) : 0;
     var targetHeightPt = useH ? mmToPoints(height) : 0;
 
     for (var i = 0; i < selection.length; i++) {
         var item = selection[i];
         var info = getVisibleInfo(item);
-        
+
         if (info.width <= 0 || info.height <= 0) continue;
 
         var scaleX = 100, scaleY = 100;
@@ -720,5 +719,42 @@ function swapSelectedPositions() {
     moveItemTopLeftTo(a, infoB.left, infoB.top);
     moveItemTopLeftTo(b, infoA.left, infoA.top);
 
+    return "Success";
+}
+
+/**
+ * Update label offsets for recently added labels in real-time
+ * This function updates the position of all text items in the document
+ * based on new offset values, calculating from the original base position
+ */
+function updateLabelOffsets(newOffsetX, newOffsetY, sessionId) {
+    if (app.documents.length === 0) return "Error: No document open.";
+    var doc = app.activeDocument;
+    var textFrames = doc.textFrames;
+    if (textFrames.length === 0) {
+        return "Error: No text labels found to update.";
+    }
+    var sid = (typeof sessionId === 'number') ? sessionId : sessionId * 1;
+    var ox = newOffsetX;
+    var oy = newOffsetY;
+
+    // 遍历文本框，按会话ID筛选，并使用记录的基准点重置位置
+    var updated = 0;
+    for (var i = 0; i < textFrames.length; i++) {
+        var tf = textFrames[i];
+        var noteStr = '';
+        try { noteStr = tf.note || ''; } catch (e) { noteStr = ''; }
+        if (!noteStr) continue;
+        // 解析 JSON
+        var s = null;
+        try { s = eval('(' + noteStr + ')'); } catch (e) { s = null; }
+        if (!s) continue;
+        if (sid && s.sid !== sid) continue; // 只更新当前会话新增的标签
+        // 基于基准位置 + 新偏移设置
+        tf.left = s.baseL + ox;
+        tf.top = s.baseT - oy;
+        updated++;
+    }
+    if (updated === 0) return "Error: No labels matched current session.";
     return "Success";
 }

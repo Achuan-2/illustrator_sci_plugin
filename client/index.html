@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8">
     <title>Achuan-2's Plugin</title>
@@ -18,7 +19,9 @@
             --radius-sm: 6px;
             --spacing: 10px;
         }
-        html, body {
+
+        html,
+        body {
             height: 100%;
             background: var(--bg);
             color: var(--text);
@@ -26,13 +29,16 @@
             font-size: 13px;
             margin: 0;
         }
+
         /* 让根容器在 CEP 面板内可自适应宽度与高度 */
         .app {
             display: flex;
             flex-direction: column;
             height: 100%;
-            min-width: 100px; /* 防止过窄挤压到不可用 */
+            min-width: 100px;
+            /* 防止过窄挤压到不可用 */
         }
+
         /* 顶部标签栏：横向排布，可在狭窄面板时换行 */
         .tabs {
             display: flex;
@@ -45,6 +51,7 @@
             background: var(--bg);
             z-index: 2;
         }
+
         .tab {
             padding: 6px 10px;
             border-radius: var(--radius-sm);
@@ -52,10 +59,20 @@
             cursor: pointer;
             user-select: none;
             transition: all .15s ease;
-            flex: 0 1 auto; /* 允许压缩 */
+            flex: 0 1 auto;
+            /* 允许压缩 */
         }
-        .tab:hover { background: var(--bg-panel); color: var(--text); }
-        .tab.active { background: var(--primary); color: #0d1117; }
+
+        .tab:hover {
+            background: var(--bg-panel);
+            color: var(--text);
+        }
+
+        .tab.active {
+            background: var(--primary);
+            color: #0d1117;
+        }
+
         /* 内容区：填满剩余空间并允许滚动 */
         .content {
             padding: 12px;
@@ -65,6 +82,7 @@
             flex-direction: column;
             gap: 12px;
         }
+
         /* 面板容器：使用 block 切换可见，但内部采用自适应布局 */
         .panel {
             display: none;
@@ -73,12 +91,17 @@
             border-radius: var(--radius);
             padding: 12px;
         }
-        .panel.active { display: block; }
+
+        .panel.active {
+            display: block;
+        }
+
         .panel h3 {
             margin: 0 0 10px;
             font-size: 14px;
             color: var(--text);
         }
+
         /* 表单区域改为响应式网格：根据宽度自动填充列 */
         .grid {
             display: grid;
@@ -86,25 +109,32 @@
             gap: 10px 14px;
             align-items: start;
         }
+
         /* 输入行：标签与控件在宽时同排，窄时换行 */
         .input-group {
             display: flex;
             align-items: center;
             gap: 8px;
-            flex-wrap: wrap; /* 允许在窄宽度时换行 */
+            flex-wrap: wrap;
+            /* 允许在窄宽度时换行 */
         }
 
         label {
             color: var(--muted);
-            flex-shrink: 0; /* 防止标签被压缩 */
+            flex-shrink: 0;
+            /* 防止标签被压缩 */
             white-space: nowrap;
         }
+
         /* 为特定面板的标签设置宽度 */
-        #panel-size .input-group > label {
+        #panel-size .input-group>label {
             flex-basis: 75px;
         }
+
         /* 控件尽量占据剩余空间，避免固定像素宽度导致溢出 */
-        input[type="number"], input[type="text"], select {
+        input[type="number"],
+        input[type="text"],
+        select {
             flex: 1 1 100px;
             /* min-width: 80px; */
             padding: 6px 8px;
@@ -113,9 +143,14 @@
             color: var(--text);
             border-radius: var(--radius-sm);
             outline: none;
-            width: auto; /* 覆盖旧的固定宽度 */
+            width: auto;
+            /* 覆盖旧的固定宽度 */
         }
-        input[type="checkbox"] { transform: scale(1.1); }
+
+        input[type="checkbox"] {
+            transform: scale(1.1);
+        }
+
         /* 按钮区域：自动换行并留出间距 */
         .btn {
             padding: 8px 14px;
@@ -127,24 +162,50 @@
             transition: all .15s ease;
             flex: 0 0 auto;
         }
-        .btn:hover { filter: brightness(1.1); }
+
+        .btn:hover {
+            filter: brightness(1.1);
+        }
+
         .btn-primary {
             background: var(--primary);
             border-color: var(--primary-600);
             color: #0d1117;
         }
-        .btn-danger { background: #3a2323; border-color: #5a2b2b; color: #ffcccc; }
+
+        .btn-danger {
+            background: #3a2323;
+            border-color: #5a2b2b;
+            color: #ffcccc;
+        }
+
         .toolbar {
             display: flex;
             gap: 8px;
             flex-wrap: wrap;
             margin-top: 8px;
         }
+
         /* 小型辅助行：保持可换行 */
-        .row { display: flex; gap: 14px; flex-wrap: wrap; }
-        .spacer { height: 8px; }
+        .row {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .spacer {
+            height: 8px;
+        }
+
+        /* Label offset editing mode styles */
+        .input-group input.editing-mode {
+            border-color: var(--danger);
+            background: rgba(255, 92, 92, 0.1);
+            color: #ffcccc;
+        }
     </style>
 </head>
+
 <body>
     <div class="app">
         <div class="tabs" id="tabs">
@@ -192,11 +253,13 @@
                     </div>
                     <div class="input-group">
                         <label>Force Paste on Mismatch</label>
-                        <input type="checkbox" id="allow-mismatch-paste" title="When counts mismatch, still paste using cyclic deltas">
+                        <input type="checkbox" id="allow-mismatch-paste"
+                            title="When counts mismatch, still paste using cyclic deltas">
                     </div>
                     <div class="input-group">
                         <label>Artboard Reference</label>
-                        <input type="checkbox" id="use-artboard-ref" title="Use current artboard as copy reference; paste using each shape's own artboard-relative position">
+                        <input type="checkbox" id="use-artboard-ref"
+                            title="Use current artboard as copy reference; paste using each shape's own artboard-relative position">
                     </div>
                 </div>
                 <div class="toolbar">
@@ -265,16 +328,16 @@
                         <input type="text" id="font-family" value="Arial">
                     </div>
                     <div class="input-group">
-                        <label>Font Size:</label>
+                        <label>Font Size(pt):</label>
                         <input type="number" id="font-size" value="6" min="1">
                     </div>
                     <div class="input-group">
-                        <label>Label Offset X:</label>
-                        <input type="number" id="label-offset-x" value="-6">
+                        <label>Offset X(pt):</label>
+                        <input type="number" id="label-offset-x" value="-6" title="">
                     </div>
                     <div class="input-group">
-                        <label>Label Offset Y:</label>
-                        <input type="number" id="label-offset-y" value="-6">
+                        <label>Offset Y(pt) :</label>
+                        <input type="number" id="label-offset-y" value="-6" title="">
                     </div>
                     <div class="input-group">
                         <label>Label Template:</label>
@@ -290,12 +353,13 @@
                     <div class="input-group">
                         <label>Label Index</label>
                         <input type="number" id="label-start-count" value="1" min="1">
-                        <button class="btn" id="undo-label-index" title="Undo to previous label index" style="flex: 0 0 auto; padding: 6px 10px;">↶</button>
+                        <button class="btn" id="undo-label-index" title="Undo to previous label index"
+                            style="flex: 0 0 auto; padding: 6px 10px;">↶</button>
                     </div>
- 
-                     <!-- New: Order options for Image Labels -->
-                     <div class="input-group">
-                         <label>Order:</label>
+
+                    <!-- New: Order options for Image Labels -->
+                    <div class="input-group">
+                        <label>Order:</label>
                         <select id="labels-order">
                             <option value="stacking">stacking order</option>
                             <option value="horizontal">horizontal order</option>
@@ -348,7 +412,7 @@
     <script type="text/javascript" src="../host/index.jsx" defer></script>
     <!-- Tabs logic: keep ids intact for existing scripts -->
     <script>
-        (function() {
+        (function () {
             const tabs = document.querySelectorAll('.tab');
             const panels = document.querySelectorAll('.panel');
 
@@ -373,7 +437,7 @@
                 t.addEventListener('click', () => {
                     const hash = t.dataset.hash;
                     // update URL hash (non-breaking for CEP)
-                    try { location.hash = hash; } catch(e) {}
+                    try { location.hash = hash; } catch (e) { }
                     activate(hash);
                 });
             });
@@ -384,4 +448,5 @@
         })();
     </script>
 </body>
+
 </html>

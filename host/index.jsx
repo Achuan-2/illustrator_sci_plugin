@@ -41,6 +41,8 @@ var undoLabelIndexButton = document.querySelector("#undo-label-index");
 
 // Store label index history for multiple undo functionality
 var labelIndexHistory = [1];
+var lastAddedLabels = []; // Store references to labels for editing
+var currentLabelSessionId = null; // Session id for the latest added labels
 
 // New: Labels order controls
 var labelsOrderSelect = document.querySelector("#labels-order");
@@ -66,6 +68,23 @@ pasteSizeButton.addEventListener("click", handlePasteSize);
 
 // Add event listener for undo label index button
 undoLabelIndexButton.addEventListener("click", handleUndoLabelIndex);
+
+// Add event listeners for label offset editing mode
+labelOffsetXInput.addEventListener("input", handleLabelOffsetChange);
+labelOffsetYInput.addEventListener("input", handleLabelOffsetChange);
+
+// Add mouse wheel support for label offset inputs
+labelOffsetXInput.addEventListener("wheel", handleLabelOffsetWheel);
+labelOffsetYInput.addEventListener("wheel", handleLabelOffsetWheel);
+
+// Add event listeners to exit editing mode when other inputs are clicked
+var allInputs = document.querySelectorAll("input, select, button");
+allInputs.forEach(function (input) {
+    if (input !== labelOffsetXInput && input !== labelOffsetYInput) {
+        input.addEventListener("focus", exitLabelEditingMode);
+        input.addEventListener("click", exitLabelEditingMode);
+    }
+});
 
 // Handler Functions
 function handleCopyPosition() {
@@ -266,6 +285,9 @@ function handleAddLabel() {
     var order = (labelsOrderSelect && labelsOrderSelect.value) || "stacking";
     var revOrder = !!(labelsReverseOrderCheckbox && labelsReverseOrderCheckbox.checked);
 
+    // Generate a session id for this labeling action
+    currentLabelSessionId = Date.now();
+
     csInterface.evalScript(`$.evalFile("${csInterface.getSystemPath(SystemPath.EXTENSION)}/jsx/arrange.jsx")`);
     csInterface.evalScript(`
         addLabelsToImages(
@@ -276,7 +298,8 @@ function handleAddLabel() {
             "${labelTemplate}",
             "${order}",
             ${revOrder},
-            ${startCount}
+            ${startCount},
+            ${currentLabelSessionId}
         )
     `, function (result) {
         if (result === 'EvalScript error.') {
@@ -289,22 +312,25 @@ function handleAddLabel() {
             if (!isNaN(nextCount)) {
                 labelStartCountInput.value = nextCount;
             }
+
+            // Enable editing mode for label offsets after adding labels
+            enterLabelEditingMode();
         }
     });
 }
 
 function handleUndoLabelIndex() {
     console.log("Undo Label Index button clicked");
-    
+
     // Remove the last entry from history if it's not the only one
     if (labelIndexHistory.length > 1) {
         labelIndexHistory.pop();
     }
-    
+
     // Get the previous value from history
     var previousIndex = labelIndexHistory[labelIndexHistory.length - 1];
     labelStartCountInput.value = previousIndex;
-    
+
     // If we've reached 1, don't allow further undos by keeping only [1] in history
     if (previousIndex === 1) {
         labelIndexHistory = [1];
@@ -321,4 +347,63 @@ function handleSwap() {
             alert('Error executing the swapSelectedPositions script.');
         }
     });
+}
+
+// Functions for label offset editing mode
+function enterLabelEditingMode() {
+    labelOffsetXInput.classList.add("editing-mode");
+    labelOffsetYInput.classList.add("editing-mode");
+    
+    // Set tooltips for editing mode
+    labelOffsetXInput.title = "更改数值，将实时移动标签位置";
+    labelOffsetYInput.title = "更改数值，将实时移动标签位置";
+}
+
+function exitLabelEditingMode() {
+    labelOffsetXInput.classList.remove("editing-mode");
+    labelOffsetYInput.classList.remove("editing-mode");
+    
+    // Clear tooltips when exiting editing mode
+    labelOffsetXInput.title = "";
+    labelOffsetYInput.title = "";
+}
+
+function handleLabelOffsetChange() {
+    // Only handle real-time updates if in editing mode
+    if (!labelOffsetXInput.classList.contains("editing-mode") ||
+        !labelOffsetYInput.classList.contains("editing-mode")) {
+        return;
+    }
+
+    var newOffsetX = parseFloat(labelOffsetXInput.value) || 0;
+    var newOffsetY = parseFloat(labelOffsetYInput.value) || 0;
+    var sid = (typeof currentLabelSessionId === 'number') ? currentLabelSessionId : -1;
+
+    // Update label positions in real-time
+    csInterface.evalScript(`$.evalFile("${csInterface.getSystemPath(SystemPath.EXTENSION)}/jsx/arrange.jsx")`);
+    csInterface.evalScript(`updateLabelOffsets(${newOffsetX}, ${newOffsetY}, ${sid})`, function (result) {
+        if (result && result.indexOf("Error:") === 0) {
+            console.log("Error updating label offsets: " + result);
+        }
+    });
+}
+
+function handleLabelOffsetWheel(event) {
+    // Only handle wheel events in editing mode
+    if (!labelOffsetXInput.classList.contains("editing-mode") ||
+        !labelOffsetYInput.classList.contains("editing-mode")) {
+        return;
+    }
+
+    event.preventDefault();
+    
+    var input = event.target;
+    var currentValue = parseFloat(input.value) || 0;
+    var step = event.shiftKey ? 10 : 1; // Hold Shift for larger steps
+    var delta = event.deltaY > 0 ? -step : step; // Scroll up = increase, down = decrease
+    
+    input.value = currentValue + delta;
+    
+    // Trigger the input change handler to update labels in real-time
+    handleLabelOffsetChange();
 }
