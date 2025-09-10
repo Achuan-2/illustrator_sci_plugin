@@ -353,7 +353,7 @@ function handleSwap() {
 function enterLabelEditingMode() {
     labelOffsetXInput.classList.add("editing-mode");
     labelOffsetYInput.classList.add("editing-mode");
-    
+
     // Set tooltips for editing mode
     labelOffsetXInput.title = "更改数值，将实时移动标签位置";
     labelOffsetYInput.title = "更改数值，将实时移动标签位置";
@@ -362,7 +362,7 @@ function enterLabelEditingMode() {
 function exitLabelEditingMode() {
     labelOffsetXInput.classList.remove("editing-mode");
     labelOffsetYInput.classList.remove("editing-mode");
-    
+
     // Clear tooltips when exiting editing mode
     labelOffsetXInput.title = "";
     labelOffsetYInput.title = "";
@@ -396,14 +396,14 @@ function handleLabelOffsetWheel(event) {
     }
 
     event.preventDefault();
-    
+
     var input = event.target;
     var currentValue = parseFloat(input.value) || 0;
     var step = event.shiftKey ? 10 : 1; // Hold Shift for larger steps
     var delta = event.deltaY > 0 ? -step : step; // Scroll up = increase, down = decrease
-    
+
     input.value = currentValue + delta;
-    
+
     // Trigger the input change handler to update labels in real-time
     handleLabelOffsetChange();
 }
