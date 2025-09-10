@@ -37,6 +37,10 @@ var labelOffsetXInput = document.querySelector("#label-offset-x");
 var labelOffsetYInput = document.querySelector("#label-offset-y");
 var labelTemplateSelect = document.querySelector("#label-template");
 var labelStartCountInput = document.querySelector("#label-start-count");
+var undoLabelIndexButton = document.querySelector("#undo-label-index");
+
+// Store label index history for multiple undo functionality
+var labelIndexHistory = [1];
 
 // New: Labels order controls
 var labelsOrderSelect = document.querySelector("#labels-order");
@@ -59,6 +63,9 @@ if (swapButton) swapButton.addEventListener("click", handleSwap);
 
 copySizeButton.addEventListener("click", handleCopySize);
 pasteSizeButton.addEventListener("click", handlePasteSize);
+
+// Add event listener for undo label index button
+undoLabelIndexButton.addEventListener("click", handleUndoLabelIndex);
 
 // Handler Functions
 function handleCopyPosition() {
@@ -253,6 +260,9 @@ function handleAddLabel() {
     var labelTemplate = labelTemplateSelect.value || "A";
     var startCount = parseInt(labelStartCountInput.value) || 1;
 
+    // Store current index in history before making changes
+    labelIndexHistory.push(startCount);
+
     var order = (labelsOrderSelect && labelsOrderSelect.value) || "stacking";
     var revOrder = !!(labelsReverseOrderCheckbox && labelsReverseOrderCheckbox.checked);
 
@@ -281,6 +291,24 @@ function handleAddLabel() {
             }
         }
     });
+}
+
+function handleUndoLabelIndex() {
+    console.log("Undo Label Index button clicked");
+    
+    // Remove the last entry from history if it's not the only one
+    if (labelIndexHistory.length > 1) {
+        labelIndexHistory.pop();
+    }
+    
+    // Get the previous value from history
+    var previousIndex = labelIndexHistory[labelIndexHistory.length - 1];
+    labelStartCountInput.value = previousIndex;
+    
+    // If we've reached 1, don't allow further undos by keeping only [1] in history
+    if (previousIndex === 1) {
+        labelIndexHistory = [1];
+    }
 }
 
 function handleSwap() {
