@@ -155,8 +155,10 @@ function handlePastePosition() {
 function handleArrange() {
     console.log("Arrange button clicked");
     var columns = parseInt(columnsInput.value) || 3;
-    var rowGap = parseFloat(rowGapInput.value) || 10;
-    var colGap = parseFloat(colGapInput.value) || 10;
+    var rowGap = parseFloat(rowGapInput.value);
+    if (isNaN(rowGap)) rowGap = 10;
+    var colGap = parseFloat(colGapInput.value);
+    if (isNaN(colGap)) colGap = 10;
     if (
         useUniformWidthCheckbox.checked &&
         parseFloat(uniformWidthInput.value) < 0
@@ -188,7 +190,7 @@ function handleArrange() {
             "${order}",
             ${revOrder}
         )
-    `, function(result) {
+    `, function (result) {
         if (result === 'EvalScript error.') {
             alert('Error executing the script');
         }
@@ -226,7 +228,7 @@ function handlePasteSize() {
         alert("Please enter a valid width and height for the selected options.");
         return;
     }
-    
+
     if (!useW && !useH) {
         alert("Please select at least one dimension (Width or Height) to paste.");
         return;
