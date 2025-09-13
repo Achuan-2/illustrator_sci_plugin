@@ -1,3 +1,14 @@
+## v1.7.0 / 20250913
+- ✨ 复制相对位置的ΔY需要取反 [#12](https://github.com/Achuan-2/illustrator_sci_plugin/issues/12)
+  - ΔX：right为正，left为负
+  - ΔY：down为正，up为负
+
+
+
+## v1.6.0 / 20250910
+
+- ✨尝试添加验证文件，无需设置playerdebugmode，也能使用插件
+
 ## v1.5.0 / 20250910
 
 - [✨排列图片row gap和column gap支持设置为0](https://github.com/Achuan-2/illustrator_sci_plugin/issues/10)
