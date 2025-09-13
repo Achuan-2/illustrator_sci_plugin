@@ -31,7 +31,7 @@
   <img alt="PixPin_2025-09-10_16-18-33" src="https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-09-10_16-18-33-20250910161836-eiui89p.png" style="width: 214px;" />
 
   <br>
-  <img alt="PixPin_2025-08-06_17-59-37" src="https://github.com/user-attachments/assets/6a85f732-a325-4864-a7af-5cb9dc0796e4" />
+  <img alt="PixPin_2025-08-06_17-59-37" src="https://github.com/user-attachments/assets/6a85f732-a325-4864-a7af-5cb9dc0796e4" width="70%"/>
 
 ​
 - 形状大小批量复制：
