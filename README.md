@@ -112,14 +112,14 @@
       - 用户目录：`~/Library/Application Support/Adobe/CEP/extensions`
     - 如何判断路径正确，如果打开的路径正确，文件夹是本来就存在的，并且里面有一些文件夹
     
-    如果打开插件后显示页面空白，需要额外设置PlayerDebugMode，才能使用本插件
+   如果选择zip解压方式安装，打开插件后若显示页面空白，需要额外设置PlayerDebugMode，才能使用本插件
 
    启用允许开发者扩展（PlayerDebugMode=1）步骤
     
     - Windows解决方法
     
       - `win+r`输入`regedit`，打开注册表
-      - 找到`计算机\HKEY_CURRENT_USER\Software\Adobe\`（可以直接在地址栏粘贴跳转）下的`CSXS.版本号`文件夹：新建字符串，名称为 PlayerDebugMode，然后双击输入值为1。如果CSXS有多个版本，最好每个版本都复制下PlayerDebugMode文件
+      - 找到`计算机\HKEY_CURRENT_USER\Software\Adobe\`（可以直接在地址栏粘贴跳转）下的`CSXS.版本号`文件夹：右键新建【字符串值】，名称为 PlayerDebugMode，然后双击输入值为1。如果CSXS有多个版本，最好每个版本都复制下PlayerDebugMode文件
     
         <img width="1902" height="1103" alt="image" src="https://github.com/user-attachments/assets/9d2e4b7d-201b-48e6-95ea-4dc02bdf0986" />
 
