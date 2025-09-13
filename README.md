@@ -80,66 +80,40 @@
 
 ## 3 如何使用本插件
 
-1. 下载插件zip：[https://github.com/Achuan-2/illustrator_sci_plugin/releases](https://github.com/Achuan-2/illustrator_sci_plugin/releases)
+1. 下载插件zip或zxp文件（选一个就好）：[https://github.com/Achuan-2/illustrator_sci_plugin/releases](https://github.com/Achuan-2/illustrator_sci_plugin/releases)
 
-    <img width="1906" height="840" alt="PixPin_2025-09-10_20-33-46" src="https://github.com/user-attachments/assets/491b912e-0c07-46c1-967a-3cf4b8e68d24" />
+    <img width="1521" height="461" alt="PixPin_2025-09-13_09-24-45" src="https://github.com/user-attachments/assets/69ef348b-2ab4-4c69-9670-2b77573581bb" />
 
-2. 解压，复制插件文件夹到Adobe 插件文件夹
 
-    - windows
+2. 安装方法
 
-      - 32位版本：`C:\Program Files (x86)\Common Files\Adobe\CEP\extensions\`​
+    【方法一：zip文件安装】
+
+    下载zip文件后，解压为文件夹，复制到Adobe 插件文件夹
+
+    - windows：
+
+      - 32位版本：`C:\Program Files (x86)\Common Files\Adobe\CEP\extensions\`
       - 64位版本：`C:\Program Files\Common Files\Adobe\CEP\extensions`（illustrator版本比较新一般都是64位版本，32位版本应该都是比较老的版本）
 
-      <img alt="PixPin_2025-08-06_12-07-37" src="https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-08-06_12-07-37-20250806120739-cquahfa.png" />
-
+      <img alt="PixPin_2025-08-06_12-07-37" src="https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-08-06_12-07-37-20250806120739-cquahfa.png" style="width: 50%;" />
     - MacOS
 
-      - 系统目录：`/Library/Application Support/Adobe/CEP/extensions`​
-      - 用户目录：`~/Library/Application Support/Adobe/CEP/extensions`​
+      - 系统目录：`/Library/Application Support/Adobe/CEP/extensions`
+      - 用户目录：`~/Library/Application Support/Adobe/CEP/extensions`
+    - 如何判断路径正确，如果打开的路径正确，文件夹是本来就存在的，并且里面有一些文件夹
 
-      > 选一个即可
-      >
-3. 由于插件没有打包，需要额外设置PlayerDebugMode，才能使用本插件
+    【方法二:zxp文件安装】
 
-    > 如果不设置PlayerDebugMode，或者没设置好PlayerDebugMode，打开本插件界面为空白
-    >
+    下载zxp文件后，安装[ZXP/UXP Installer](https://aescripts.com/learn/zxp-installer/?srsltid=AfmBOoo-EVsObqPpzaZW0PvdAs_QcLleVQPtl2Yy00HAkA4rzndfdAcI)，打开软件拖进zxp文件进行安装
 
-    启用允许开发者扩展（PlayerDebugMode=1）步骤
+    <img alt="PixPin_2025-09-10_20-49-35" src="https://github.com/user-attachments/assets/d2b7c2a6-65f6-438a-9b52-5ce08b614717" style="width: 50%;" />
 
-    - Windows解决方法
+    <img alt="PixPin_2025-09-13_09-22-10" src="https://github.com/user-attachments/assets/3abec6d2-b8ef-4e5e-ad24-3e0bc68a9f0c" style="width: 50%;" />
 
-      - ​`win+r`输入`regedit`，打开注册表
-      - 找到`计算机\HKEY_CURRENT_USER\Software\Adobe\`（可以直接在地址栏粘贴跳转）下的`CSXS.版本号`文件夹：新建字符串，名称为 PlayerDebugMode，然后双击输入值为1。如果CSXS有多个版本，最好每个版本都复制下PlayerDebugMode文件
+    <img alt="PixPin_2025-09-13_09-22-15" src="https://github.com/user-attachments/assets/bf0359aa-f05c-4a88-97f0-9196a83b93ea" style="width: 50%;" />
 
-        <img alt="PixPin_2025-08-06_09-54-07" src="https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-08-06_09-54-07-20250806095411-4s02uhq.png" />
-    - Mac系统解决方法
 
-      - 打开终端，输入
-
-        ```bash
-        defaults write com.adobe.CSXS.版本号 PlayerDebugMode 1
-        ```
-
-        如
-
-        ```bash
-        defaults write com.adobe.CSXS.1 PlayerDebugMode 1
-        defaults write com.adobe.CSXS.2 PlayerDebugMode 1
-        defaults write com.adobe.CSXS.3 PlayerDebugMode 1
-        defaults write com.adobe.CSXS.4 PlayerDebugMode 1
-        defaults write com.adobe.CSXS.5 PlayerDebugMode 1
-        defaults write com.adobe.CSXS.6 PlayerDebugMode 1
-        defaults write com.adobe.CSXS.7 PlayerDebugMode 1
-        defaults write com.adobe.CSXS.8 PlayerDebugMode 1
-        defaults write com.adobe.CSXS.9 PlayerDebugMode 1
-        defaults write com.adobe.CSXS.10 PlayerDebugMode 1
-        defaults write com.adobe.CSXS.11 PlayerDebugMode 1
-        defaults write com.adobe.CSXS.12 PlayerDebugMode 1
-        ```
-
-        > 如果不知道你的版本号，其实可以把1到12都设置一个遍
-        >
 4. 打开插件
 
     - 窗口-扩展功能，选择本插件
