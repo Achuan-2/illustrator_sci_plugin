@@ -17,7 +17,7 @@
 - 复制粘贴相对位置：
 
   使用技巧
-
+  - 修改ΔX和ΔY可以手动设置两个对象的相对位置，比如想让文字距离矩形左上角x轴移动2mm，y轴移动2mm
   - 复制一个对象的相对位置时，默认以画板为参考，这样可以先把一个形状移出去，然后对下面的形状进行改动，然后再粘贴回原来位置
   - 复制两个对象以上的相对位置，默认以第一个对象为参考对象，复制后面的对象对于第一个对象的相对位置，可以更改Order来调整对象顺序，插件支持根据垂直位置、水平位置以及图层顺序来确定对象顺序。如果你想以最后一个对象为参考对象，可以把“Reverse Order”打上勾，这样就是以最后一个对象为参考点
   - 当需要对多个对象进行跨画布统一位置时，勾选Artboard Reference
@@ -29,7 +29,12 @@
   - 快速统一label位置：一个图加了label，其他图的label位置也需要一样，也可以快速统一
   - 可以基于画布复制多选形状的位置，进行跨画布统一位置
 
-  <img alt="PixPin_2025-09-10_16-18-33" src="https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-09-10_16-18-33-20250910161836-eiui89p.png" style="width: 214px;" />​
+  <img alt="PixPin_2025-09-10_16-18-33" src="https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-09-10_16-18-33-20250910161836-eiui89p.png" style="width: 214px;" />
+
+  <br>
+  <img alt="PixPin_2025-08-06_17-59-37" src="https://github.com/user-attachments/assets/6a85f732-a325-4864-a7af-5cb9dc0796e4" style="width: 350px;" />
+
+​
 - 形状大小批量复制：
 
   复制一个形状的宽高或者手动输入宽高，点击Paste Size即可对选择的形状进行批量粘贴形状。
@@ -46,7 +51,11 @@
   - Resize Height：如果打上勾，会统一设置所有对象的Height
   - Order：判断对象的先后顺序，插件支持根据垂直位置、水平位置以及图层顺序来确定对象顺序。
 
-  <img alt="PixPin_2025-08-06_17-59-37" src="https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-08-06_17-59-37-20250806175940-zw3soci.png" style="width: 298px;" />​
+  <img alt="PixPin_2025-08-06_17-59-37" src="https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-08-06_17-59-37-20250806175940-zw3soci.png" style="width: 298px;" />
+  <br>
+  <img alt="PixPin_2025-08-06_17-59-37" src="https://github.com/user-attachments/assets/3baad6da-798d-449b-9023-69c8698db78e" style="width: 350px;" />
+
+​
 - 交换两个形状的位置
 
   用途
@@ -54,7 +63,11 @@
   - 一组图已经排版好，复制一份，然后用swap position功能，把新图和原来的图替换
   - 组图后需要修改，交换两个图的位置
 
-  <img alt="PixPin_2025-08-09_22-50-15" src="https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-08-09_22-50-15-20250809225017-bwuzfj6.png" style="width: 453px;" />​
+  <img alt="PixPin_2025-08-09_22-50-15" src="https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-08-09_22-50-15-20250809225017-bwuzfj6.png" style="width: 453px;" />
+  <br>
+  <img alt="PixPin_2025-08-06_17-59-37" src="https://github.com/user-attachments/assets/b1024d68-50e9-402a-9034-8ffc22f5947b" style="width: 350px;" />
+
+​
 - 一键添加label
 
   使用技巧
@@ -62,7 +75,7 @@
   - 添加label后，offset 输入框变红，修改值就会自动实时更改label offset，还支持鼠标滚动修改，要退出这个状态只需要随意点击其他按钮、输入框即可
 
   <img alt="PixPin_2025-09-10_16-34-58" src="https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-09-10_16-34-58-20250910163500-46cw2gv.png" />
-
+  <br>
   <img alt="PixPin_2025-09-10_16-09-36" src="https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-09-10_16-09-36-20250910163518-gs9tdog.gif" />
 
 ## 3 如何使用本插件
