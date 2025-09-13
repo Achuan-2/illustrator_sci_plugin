@@ -86,7 +86,7 @@
 
 2. 安装方法
 
-    【方法一:zxp文件安装】
+    【方法一: zxp文件安装】
 
     下载zxp文件后，安装[ZXP/UXP Installer](https://aescripts.com/learn/zxp-installer/?srsltid=AfmBOoo-EVsObqPpzaZW0PvdAs_QcLleVQPtl2Yy00HAkA4rzndfdAcI)，打开软件拖进zxp文件进行安装
 
