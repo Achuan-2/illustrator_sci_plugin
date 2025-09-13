@@ -115,7 +115,7 @@ function handleCopyPosition() {
                     // Array of relative deltas
                     if (data.length === 1) {
                         deltaXInput.value = parseFloat(data[0].deltaX).toFixed(2);
-                        deltaYInput.value = parseFloat(data[0].deltaY).toFixed(2);
+                        deltaYInput.value = parseFloat(-data[0].deltaY).toFixed(2); // 取反以匹配用户期望的坐标系（向下为正）
                     } else if (data.length > 1) {
                         deltaXInput.value = '';
                         deltaYInput.value = '';
@@ -152,7 +152,7 @@ function handlePastePosition() {
 
     if (useOverride) {
         overrideDeltaX = parseFloat(deltaXStr);
-        overrideDeltaY = parseFloat(deltaYStr);
+        overrideDeltaY = -parseFloat(deltaYStr); // 取反以补偿显示时的取反操作
         if (isNaN(overrideDeltaX) || isNaN(overrideDeltaY)) {
             alert("Invalid number format for ΔX or ΔY.");
             return;
