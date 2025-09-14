@@ -41,6 +41,7 @@ var labelTemplateSelect = document.querySelector("#label-template");
 var labelStartCountInput = document.querySelector("#label-start-count");
 var undoLabelIndexButton = document.querySelector("#undo-label-index");
 var labelPreview = document.querySelector("#label-preview");
+var autoUpdateIndexCheckbox = document.querySelector("#auto-update-index");
 
 // Store label index history for multiple undo functionality
 var labelIndexHistory = [1];
@@ -338,12 +339,14 @@ function handleAddLabel() {
         } else if (result.indexOf("Error:") === 0) {
             alert(result);
         } else {
-            // Update the start count with the new count
-            var nextCount = parseInt(result);
-            if (!isNaN(nextCount)) {
-                labelStartCountInput.value = nextCount;
-                // Update the label preview
-                updateLabelPreview();
+            // Update the start count with the new count only if auto-update is enabled
+            if (autoUpdateIndexCheckbox && autoUpdateIndexCheckbox.checked) {
+                var nextCount = parseInt(result);
+                if (!isNaN(nextCount)) {
+                    labelStartCountInput.value = nextCount;
+                    // Update the label preview
+                    updateLabelPreview();
+                }
             }
 
             // Enable editing mode for label offsets after adding labels
@@ -387,7 +390,8 @@ function handleUpdateLabel() {
                 var updateInfo = result.split('|'); // 假设返回格式为 "Success|count"
                 if (updateInfo.length === 2 && updateInfo[0] === "Success") {
                     var updatedCount = parseInt(updateInfo[1]);
-                    if (!isNaN(updatedCount)) {
+                    // Only update if auto-update is enabled
+                    if (!isNaN(updatedCount) && autoUpdateIndexCheckbox && autoUpdateIndexCheckbox.checked) {
                         var nextCount = startCount + updatedCount;
                         labelStartCountInput.value = nextCount;
                         

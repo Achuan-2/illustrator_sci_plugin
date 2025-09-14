@@ -355,6 +355,7 @@
                         <input type="number" id="label-start-count" value="1" min="1">
                         <button class="btn" id="undo-label-index" title="Undo to previous label index"
                             style="flex: 0 0 auto; padding: 6px 10px;">↶</button>
+                        <input type="checkbox" id="auto-update-index" checked title="Update automatically">
                     </div>
                     <div class="input-group">
                         <label>Preview:</label>
@@ -429,7 +430,8 @@
                 labelOffsetY: -6,
                 labelTemplate: "a",
                 labelsOrder: "vertical",
-                labelsReverseOrder: false
+                labelsReverseOrder: false,
+                autoUpdateIndex: true
             },
             
             // 保存设置到localStorage
@@ -442,7 +444,8 @@
                         labelOffsetY: parseFloat(document.getElementById('label-offset-y').value),
                         labelTemplate: document.getElementById('label-template').value,
                         labelsOrder: document.getElementById('labels-order').value,
-                        labelsReverseOrder: document.getElementById('labels-reverse-order').checked
+                        labelsReverseOrder: document.getElementById('labels-reverse-order').checked,
+                        autoUpdateIndex: document.getElementById('auto-update-index').checked
                     };
                     localStorage.setItem('illustrator_sci_plugin_settings', JSON.stringify(settings));
                 } catch (e) {
@@ -465,6 +468,7 @@
                         document.getElementById('label-template').value = settings.labelTemplate || this.defaults.labelTemplate;
                         document.getElementById('labels-order').value = settings.labelsOrder || this.defaults.labelsOrder;
                         document.getElementById('labels-reverse-order').checked = settings.labelsReverseOrder || this.defaults.labelsReverseOrder;
+                        document.getElementById('auto-update-index').checked = settings.autoUpdateIndex !== undefined ? settings.autoUpdateIndex : this.defaults.autoUpdateIndex;
                         
                         console.log('Settings loaded successfully');
                     }
@@ -483,6 +487,7 @@
                 document.getElementById('label-template').value = this.defaults.labelTemplate;
                 document.getElementById('labels-order').value = this.defaults.labelsOrder;
                 document.getElementById('labels-reverse-order').checked = this.defaults.labelsReverseOrder;
+                document.getElementById('auto-update-index').checked = this.defaults.autoUpdateIndex;
             },
             
             // 初始化设置管理
@@ -501,7 +506,7 @@
                 // 添加设置变化监听器
                 var settingsInputs = [
                     'font-family', 'font-size', 'label-offset-x', 'label-offset-y', 
-                    'label-template', 'labels-order', 'labels-reverse-order'
+                    'label-template', 'labels-order', 'labels-reverse-order', 'auto-update-index'
                 ];
                 
                 settingsInputs.forEach(function(id) {
