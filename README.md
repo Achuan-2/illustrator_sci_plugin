@@ -126,7 +126,7 @@
     - Windows解决方法
     
       - `win+r`输入`regedit`，打开注册表
-      - 找到`计算机\HKEY_CURRENT_USER\Software\Adobe\`（可以直接在地址栏粘贴跳转）下的`CSXS.版本号`文件夹：右键新建【字符串值】，名称为 PlayerDebugMode，然后双击输入值为1。如果CSXS有多个版本，最好每个版本都复制下PlayerDebugMode文件
+      - 找到`计算机\HKEY_CURRENT_USER\Software\Adobe\`（可以直接在地址栏粘贴跳转）下的`CSXS.版本号`文件夹：右键新建【字符串值】，名称为 PlayerDebugMode，然后双击输入值为1。如果CSXS有多个版本，需要每个版本都创建PlayerDebugMode字符串！！！
     
         <img width="1902" height="1103" alt="image" src="https://github.com/user-attachments/assets/9d2e4b7d-201b-48e6-95ea-4dc02bdf0986" />
 
