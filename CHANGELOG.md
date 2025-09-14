@@ -1,3 +1,11 @@
+## v1.8.0 / 20250914
+
+- ✨新增“Select Only Text”按钮，可以快速过滤出选择对象中的文本框，方便更新Label和移动label
+- ✨新增“Update Labels”按钮，可以快速更新选择对象中的Label编号和字体大小、Template（字母是大写还是小写）
+- ✨Label的样式支持自动保存，下次打开illustrator依然生效
+- ✨Label index支持每次添加标签或者更新标签后，是否自动更新编号
+- ✨Label index下方添加预览编号功能，方便知道数字与字母之间的对应关系
+
 ## v1.7.0 / 20250913
 - ✨ 复制相对位置的ΔY需要取反 [#12](https://github.com/Achuan-2/illustrator_sci_plugin/issues/12)
   - ΔX：right为正，left为负
