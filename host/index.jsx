@@ -3,6 +3,7 @@ var csInterface = new CSInterface();
 // UI Elements
 var arrangeButton = document.querySelector("#arrange-button");
 var addLabelButton = document.querySelector("#add-label-button");
+var updateLabelButton = document.querySelector("#update-label-button");
 var copyPosButton = document.querySelector("#copy-pos-button");
 var pastePosButton = document.querySelector("#paste-pos-button");
 var swapButton = document.querySelector("#swap-button");
@@ -59,6 +60,7 @@ var useSizeHCheckbox = document.querySelector("#use-size-h");
 // Event Listeners
 arrangeButton.addEventListener("click", handleArrange);
 addLabelButton.addEventListener("click", handleAddLabel);
+updateLabelButton.addEventListener("click", handleUpdateLabel);
 copyPosButton.addEventListener("click", handleCopyPosition);
 pastePosButton.addEventListener("click", handlePastePosition);
 if (swapButton) swapButton.addEventListener("click", handleSwap);
@@ -315,6 +317,52 @@ function handleAddLabel() {
 
             // Enable editing mode for label offsets after adding labels
             enterLabelEditingMode();
+        }
+    });
+}
+
+function handleUpdateLabel() {
+    var fontFamily = fontFamilyInput.value || "Arial";
+    var fontSize = parseFloat(fontSizeInput.value) || 6;
+    var labelTemplate = labelTemplateSelect.value || "a";
+    var startCount = parseInt(labelStartCountInput.value) || 1;
+
+    var order = (labelsOrderSelect && labelsOrderSelect.value) || "stacking";
+    var revOrder = !!(labelsReverseOrderCheckbox && labelsReverseOrderCheckbox.checked);
+
+    csInterface.evalScript(`$.evalFile("${csInterface.getSystemPath(SystemPath.EXTENSION)}/jsx/arrange.jsx")`);
+    csInterface.evalScript(`
+        updateLabelIndex(
+            "${fontFamily}",
+            ${fontSize},
+            "${labelTemplate}",
+            "${order}",
+            ${revOrder},
+            ${startCount}
+        )
+    `, function (result) {
+        if (result === 'EvalScript error.') {
+            alert('Error executing the script');
+        } else if (result.indexOf("Error:") === 0) {
+            alert(result);
+        } else {
+            // 解析返回结果，如果包含更新的文本框数量，则更新Label Index
+            try {
+                var updateInfo = result.split('|'); // 假设返回格式为 "Success|count"
+                if (updateInfo.length === 2 && updateInfo[0] === "Success") {
+                    var updatedCount = parseInt(updateInfo[1]);
+                    if (!isNaN(updatedCount)) {
+                        var nextCount = startCount + updatedCount;
+                        labelStartCountInput.value = nextCount;
+                        
+                        // 也可以存储到历史记录中
+                        labelIndexHistory.push(nextCount);
+                    }
+                }
+            } catch (e) {
+                // 如果解析失败，仍然显示成功消息
+                console.log("Labels updated successfully");
+            }
         }
     });
 }

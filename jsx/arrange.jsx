@@ -339,6 +339,120 @@ function addLabelsToImages(fontFamily, fontSize, labelOffsetX, labelOffsetY, lab
     return (startCount + ordered.length).toString();
 }
 
+function updateLabelIndex(fontFamily, fontSize, labelTemplate, order, reverseOrder, startCount) {
+    if (app.documents.length === 0) return "Error: No document open.";
+
+    var doc = app.activeDocument;
+    var selection = doc.selection;
+
+    if (selection.length === 0) {
+        return "Error: 需要选中label所在的文本框";
+    }
+
+    // 筛选出textframe类型
+    var textFrames = [];
+    for (var i = 0; i < selection.length; i++) {
+        if (selection[i].typename === "TextFrame") {
+            textFrames.push(selection[i]);
+        }
+    }
+
+    if (textFrames.length === 0) {
+        return "Error: 需要选中label所在的文本框";
+    }
+
+    startCount = parseInt(startCount) || 1;
+    var startIndex = startCount - 1;
+
+    var templates = {
+        "A": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+        "a": "abcdefghijklmnopqrstuvwxyz",
+        "A)": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+        "a)": "abcdefghijklmnopqrstuvwxyz"
+    };
+
+    var labels = templates[labelTemplate] || templates["A"];
+    
+    // 对textframe进行排序
+    var ordered = getOrderedTextFrames(textFrames, order || "stacking", !!reverseOrder);
+
+    for (var j = 0; j < ordered.length; j++) {
+        try {
+            var textFrame = ordered[j];
+            var labelIndex = (startIndex + j) % labels.length;
+            var label = labels[labelIndex];
+            
+            if (labelTemplate === "A)" || labelTemplate === "a)") {
+                label += ")";
+            }
+
+            // 更新文本内容
+            textFrame.contents = label;
+
+            // 更新字体样式
+            textFrame.textRange.characterAttributes.size = fontSize;
+            try {
+                textFrame.textRange.characterAttributes.textFont = app.textFonts.getByName(fontFamily === "Arial" ? "ArialMT" : fontFamily);
+            } catch (e) {
+                // 如果字体不存在，使用默认字体
+                try {
+                    textFrame.textRange.characterAttributes.textFont = app.textFonts.getByName("ArialMT");
+                } catch (e2) {
+                    // 如果ArialMT也不存在，使用第一个可用字体
+                    if (app.textFonts.length > 0) {
+                        textFrame.textRange.characterAttributes.textFont = app.textFonts[0];
+                    }
+                }
+            }
+        } catch (e) {
+            return "Error: Error updating text frame " + (j + 1) + ": " + e.message;
+        }
+    }
+    
+    return "Success|" + ordered.length;
+}
+
+// 为textframe专门的排序函数
+function getOrderedTextFrames(textFrames, order, reverse) {
+    var arr = [];
+    for (var i = 0; i < textFrames.length; i++) arr.push(textFrames[i]);
+
+    var ord = order || "stacking";
+    if (ord === "horizontal" || ord === "vertical") {
+        arr.sort(function (a, b) {
+            var boundsA = a.geometricBounds; // textframe使用geometricBounds即可
+            var boundsB = b.geometricBounds;
+            var leftA = boundsA[0];
+            var topA = boundsA[1];
+            var leftB = boundsB[0];
+            var topB = boundsB[1];
+
+            if (ord === "horizontal") {
+                if (Math.abs(topA - topB) < 1) { // 同一行，按左边位置排序
+                    return leftA - leftB;
+                } else {
+                    return topB - topA; // 不同行，按从上到下排序
+                }
+            } else { // vertical
+                if (Math.abs(leftA - leftB) < 1) { // 同一列，按上边位置排序
+                    return topB - topA;
+                } else {
+                    return leftA - leftB; // 不同列，按从左到右排序
+                }
+            }
+        });
+    } // stacking: 保持原顺序
+
+    if (reverse) {
+        var i = 0, j = arr.length - 1, tmp;
+        while (i < j) {
+            tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+            i++; j--;
+        }
+    }
+    return arr;
+}
+
 function copyRelativePosition(corner, order, reverseOrder, useArtboardRef) {
     if (app.documents.length === 0) return "Error: No document open.";
 
