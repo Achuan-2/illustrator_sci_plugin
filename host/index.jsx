@@ -74,10 +74,29 @@ undoLabelIndexButton.addEventListener("click", handleUndoLabelIndex);
 
 // Add event listeners for label preview updates
 labelStartCountInput.addEventListener("input", updateLabelPreview);
-labelTemplateSelect.addEventListener("change", updateLabelPreview);
+labelTemplateSelect.addEventListener("change", function() {
+    updateLabelPreview();
+    // 触发设置保存
+    if (typeof PluginSettings !== 'undefined') {
+        clearTimeout(PluginSettings.saveTimeout);
+        PluginSettings.saveTimeout = setTimeout(function() {
+            PluginSettings.save();
+        }, 500);
+    }
+});
 
 // Initialize label preview on page load
 updateLabelPreview();
+
+// 确保在设置加载后更新预览
+window.addEventListener('load', function() {
+    // 延迟执行确保设置已加载
+    setTimeout(function() {
+        if (typeof updateLabelPreview === 'function') {
+            updateLabelPreview();
+        }
+    }, 100);
+});
 
 // Add event listeners for label offset editing mode
 labelOffsetXInput.addEventListener("input", handleLabelOffsetChange);
@@ -327,6 +346,11 @@ function handleAddLabel() {
 
             // Enable editing mode for label offsets after adding labels
             enterLabelEditingMode();
+            
+            // 保存设置到记忆
+            if (typeof PluginSettings !== 'undefined') {
+                PluginSettings.save();
+            }
         }
     });
 }
@@ -375,6 +399,11 @@ function handleUpdateLabel() {
             } catch (e) {
                 // 如果解析失败，仍然显示成功消息
                 console.log("Labels updated successfully");
+            }
+            
+            // 保存设置到记忆
+            if (typeof PluginSettings !== 'undefined') {
+                PluginSettings.save();
             }
         }
     });
