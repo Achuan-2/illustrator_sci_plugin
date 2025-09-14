@@ -4,6 +4,7 @@ var csInterface = new CSInterface();
 var arrangeButton = document.querySelector("#arrange-button");
 var addLabelButton = document.querySelector("#add-label-button");
 var updateLabelButton = document.querySelector("#update-label-button");
+var filterTextButton = document.querySelector("#filter-text-button");
 var copyPosButton = document.querySelector("#copy-pos-button");
 var pastePosButton = document.querySelector("#paste-pos-button");
 var swapButton = document.querySelector("#swap-button");
@@ -62,6 +63,7 @@ var useSizeHCheckbox = document.querySelector("#use-size-h");
 arrangeButton.addEventListener("click", handleArrange);
 addLabelButton.addEventListener("click", handleAddLabel);
 updateLabelButton.addEventListener("click", handleUpdateLabel);
+filterTextButton.addEventListener("click", handleFilterText);
 copyPosButton.addEventListener("click", handleCopyPosition);
 pastePosButton.addEventListener("click", handlePastePosition);
 if (swapButton) swapButton.addEventListener("click", handleSwap);
@@ -404,6 +406,34 @@ function handleUpdateLabel() {
             // 保存设置到记忆
             if (typeof PluginSettings !== 'undefined') {
                 PluginSettings.save();
+            }
+        }
+    });
+}
+
+function handleFilterText() {
+    console.log("Filter Text button clicked");
+    
+    csInterface.evalScript(`$.evalFile("${csInterface.getSystemPath(SystemPath.EXTENSION)}/jsx/arrange.jsx")`);
+    csInterface.evalScript('filterTextFrames()', function (result) {
+        if (result === 'EvalScript error.') {
+            alert('Error executing the script');
+        } else if (result.indexOf("Error:") === 0) {
+            alert(result);
+        } else {
+            // 解析结果显示筛选信息
+            try {
+                var filterInfo = result.split('|');
+                if (filterInfo.length === 2 && filterInfo[0] === "Success") {
+                    var textCount = parseInt(filterInfo[1]);
+                    if (textCount === 0) {
+                        alert('没有找到文本框对象');
+                    } else {
+                        console.log('已筛选出 ' + textCount + ' 个文本框');
+                    }
+                }
+            } catch (e) {
+                console.log("Text filtering completed");
             }
         }
     });

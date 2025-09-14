@@ -453,6 +453,39 @@ function getOrderedTextFrames(textFrames, order, reverse) {
     return arr;
 }
 
+function filterTextFrames() {
+    if (app.documents.length === 0) return "Error: No document open.";
+
+    var doc = app.activeDocument;
+    var selection = doc.selection;
+
+    if (selection.length === 0) {
+        return "Error: 请先选择一些对象";
+    }
+
+    // 筛选出所有的文本框
+    var textFrames = [];
+    for (var i = 0; i < selection.length; i++) {
+        if (selection[i].typename === "TextFrame") {
+            textFrames.push(selection[i]);
+        }
+    }
+
+    if (textFrames.length === 0) {
+        return "Error: 选中的对象中没有文本框";
+    }
+
+    // 清空当前选择
+    doc.selection = null;
+    
+    // 重新选择只包含文本框的对象
+    for (var j = 0; j < textFrames.length; j++) {
+        textFrames[j].selected = true;
+    }
+
+    return "Success|" + textFrames.length;
+}
+
 function copyRelativePosition(corner, order, reverseOrder, useArtboardRef) {
     if (app.documents.length === 0) return "Error: No document open.";
 
