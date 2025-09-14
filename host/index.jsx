@@ -39,6 +39,7 @@ var labelOffsetYInput = document.querySelector("#label-offset-y");
 var labelTemplateSelect = document.querySelector("#label-template");
 var labelStartCountInput = document.querySelector("#label-start-count");
 var undoLabelIndexButton = document.querySelector("#undo-label-index");
+var labelPreview = document.querySelector("#label-preview");
 
 // Store label index history for multiple undo functionality
 var labelIndexHistory = [1];
@@ -70,6 +71,13 @@ pasteSizeButton.addEventListener("click", handlePasteSize);
 
 // Add event listener for undo label index button
 undoLabelIndexButton.addEventListener("click", handleUndoLabelIndex);
+
+// Add event listeners for label preview updates
+labelStartCountInput.addEventListener("input", updateLabelPreview);
+labelTemplateSelect.addEventListener("change", updateLabelPreview);
+
+// Initialize label preview on page load
+updateLabelPreview();
 
 // Add event listeners for label offset editing mode
 labelOffsetXInput.addEventListener("input", handleLabelOffsetChange);
@@ -313,6 +321,8 @@ function handleAddLabel() {
             var nextCount = parseInt(result);
             if (!isNaN(nextCount)) {
                 labelStartCountInput.value = nextCount;
+                // Update the label preview
+                updateLabelPreview();
             }
 
             // Enable editing mode for label offsets after adding labels
@@ -355,6 +365,9 @@ function handleUpdateLabel() {
                         var nextCount = startCount + updatedCount;
                         labelStartCountInput.value = nextCount;
                         
+                        // Update the label preview
+                        updateLabelPreview();
+                        
                         // 也可以存储到历史记录中
                         labelIndexHistory.push(nextCount);
                     }
@@ -382,6 +395,34 @@ function handleUndoLabelIndex() {
     // If we've reached 1, don't allow further undos by keeping only [1] in history
     if (previousIndex === 1) {
         labelIndexHistory = [1];
+    }
+
+    // Update the label preview
+    updateLabelPreview();
+}
+
+function updateLabelPreview() {
+    var startCount = parseInt(labelStartCountInput.value) || 1;
+    var labelTemplate = labelTemplateSelect.value || "a";
+    
+    var templates = {
+        "A": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+        "a": "abcdefghijklmnopqrstuvwxyz",
+        "A)": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+        "a)": "abcdefghijklmnopqrstuvwxyz"
+    };
+
+    var labels = templates[labelTemplate] || templates["a"];
+    var startIndex = startCount - 1;
+    var labelIndex = startIndex % labels.length;
+    var label = labels[labelIndex];
+    
+    if (labelTemplate === "A)" || labelTemplate === "a)") {
+        label += ")";
+    }
+
+    if (labelPreview) {
+        labelPreview.textContent = label;
     }
 }
 
