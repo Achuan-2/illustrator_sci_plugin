@@ -403,7 +403,7 @@ function updateLabelIndex(fontFamily, fontSize, fontBold, labelTemplate, order, 
     var labels = templates[labelTemplate] || templates["A"];
 
     // 对textframe进行排序
-    var ordered = getOrderedTextFrames(textFrames, order || "stacking", !!reverseOrder);
+    var ordered = getOrderedSelection(textFrames, order || "stacking", !!reverseOrder);
 
     for (var j = 0; j < ordered.length; j++) {
         try {
@@ -468,47 +468,6 @@ function updateLabelIndex(fontFamily, fontSize, fontBold, labelTemplate, order, 
     }
 
     return "Success|" + ordered.length;
-}
-
-// 为textframe专门的排序函数
-function getOrderedTextFrames(textFrames, order, reverse) {
-    var arr = [];
-    for (var i = 0; i < textFrames.length; i++) arr.push(textFrames[i]);
-
-    var ord = order || "stacking";
-    if (ord === "horizontal" || ord === "vertical") {
-        arr.sort(function (a, b) {
-            var boundsA = a.geometricBounds; // textframe使用geometricBounds即可
-            var boundsB = b.geometricBounds;
-            var leftA = boundsA[0];
-            var topA = boundsA[1];
-            var leftB = boundsB[0];
-            var topB = boundsB[1];
-
-            if (ord === "horizontal") {
-                if (Math.abs(topA - topB) < 1) { // 同一行，按左边位置排序
-                    return leftA - leftB;
-                } else {
-                    return topB - topA; // 不同行，按从上到下排序
-                }
-            } else { // vertical
-                if (Math.abs(leftA - leftB) < 1) { // 同一列，按上边位置排序
-                    return topB - topA;
-                } else {
-                    return leftA - leftB; // 不同列，按从左到右排序
-                }
-            }
-        });
-    } // stacking: 保持原顺序
-
-    if (reverse) {
-        var i = 0, j = arr.length - 1, tmp;
-        while (i < j) {
-            tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
-            i++; j--;
-        }
-    }
-    return arr;
 }
 
 function filterTextFrames() {
