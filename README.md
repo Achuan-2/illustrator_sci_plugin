@@ -86,6 +86,7 @@
 
 2. 安装方法
 
+     
     【方法一: zxp文件安装】
 
     下载zxp文件后，安装[ZXP/UXP Installer](https://aescripts.com/learn/zxp-installer/?srsltid=AfmBOoo-EVsObqPpzaZW0PvdAs_QcLleVQPtl2Yy00HAkA4rzndfdAcI)，打开软件拖进zxp文件进行安装
@@ -95,6 +96,8 @@
     <img alt="PixPin_2025-09-13_09-22-10" src="https://github.com/user-attachments/assets/3abec6d2-b8ef-4e5e-ad24-3e0bc68a9f0c" style="width: 50%;" />
 
     <img alt="PixPin_2025-09-13_09-22-15" src="https://github.com/user-attachments/assets/bf0359aa-f05c-4a88-97f0-9196a83b93ea" style="width: 50%;" />
+
+    安装后记得重启illustrator！！！
     
     【方法二：zip文件安装】
 
@@ -111,15 +114,19 @@
       - 系统目录：`/Library/Application Support/Adobe/CEP/extensions`
       - 用户目录：`~/Library/Application Support/Adobe/CEP/extensions`
     - 如何判断路径正确，如果打开的路径正确，文件夹是本来就存在的，并且里面有一些文件夹
-    
-   如果选择zip解压方式安装，打开插件后若显示页面空白，需要额外设置PlayerDebugMode，才能使用本插件
+
+    安装后记得重启illustrator！！！
+   
+    【设置PlayerDebugMode】
+   
+   如果打开插件后若显示页面空白，需要额外设置PlayerDebugMode，才能使用本插件
 
    启用允许开发者扩展（PlayerDebugMode=1）步骤
     
     - Windows解决方法
     
       - `win+r`输入`regedit`，打开注册表
-      - 找到`计算机\HKEY_CURRENT_USER\Software\Adobe\`（可以直接在地址栏粘贴跳转）下的`CSXS.版本号`文件夹：右键新建【字符串值】，名称为 PlayerDebugMode，然后双击输入值为1。如果CSXS有多个版本，最好每个版本都复制下PlayerDebugMode文件
+      - 找到`计算机\HKEY_CURRENT_USER\Software\Adobe\`（可以直接在地址栏粘贴跳转）下的`CSXS.版本号`文件夹：右键新建【字符串值】，名称为 PlayerDebugMode，然后双击输入值为1。如果CSXS有多个版本，需要每个版本都创建PlayerDebugMode字符串！！！
     
         <img width="1902" height="1103" alt="image" src="https://github.com/user-attachments/assets/9d2e4b7d-201b-48e6-95ea-4dc02bdf0986" />
 
