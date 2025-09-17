@@ -35,6 +35,7 @@ var arrangeReverseOrderCheckbox = document.querySelector("#arrange-reverse-order
 
 var fontFamilyInput = document.querySelector("#font-family");
 var fontSizeInput = document.querySelector("#font-size");
+var fontBoldCheckbox = document.querySelector("#font-bold");
 var labelOffsetXInput = document.querySelector("#label-offset-x");
 var labelOffsetYInput = document.querySelector("#label-offset-y");
 var labelTemplateSelect = document.querySelector("#label-template");
@@ -306,6 +307,7 @@ function handlePasteSize() {
 function handleAddLabel() {
     var fontFamily = fontFamilyInput.value || "Arial";
     var fontSize = parseFloat(fontSizeInput.value) || 6;
+    var fontBold = !!(fontBoldCheckbox && fontBoldCheckbox.checked);
     var labelOffsetX = parseFloat(labelOffsetXInput.value) || 0;
     var labelOffsetY = parseFloat(labelOffsetYInput.value) || 0;
     var labelTemplate = labelTemplateSelect.value || "a";
@@ -325,6 +327,7 @@ function handleAddLabel() {
         addLabelsToImages(
             "${fontFamily}",
             ${fontSize},
+            ${fontBold},
             ${labelOffsetX},
             ${labelOffsetY},
             "${labelTemplate}",
@@ -363,6 +366,7 @@ function handleAddLabel() {
 function handleUpdateLabel() {
     var fontFamily = fontFamilyInput.value || "Arial";
     var fontSize = parseFloat(fontSizeInput.value) || 6;
+    var fontBold = !!(fontBoldCheckbox && fontBoldCheckbox.checked);
     var labelTemplate = labelTemplateSelect.value || "a";
     var startCount = parseInt(labelStartCountInput.value) || 1;
 
@@ -374,6 +378,7 @@ function handleUpdateLabel() {
         updateLabelIndex(
             "${fontFamily}",
             ${fontSize},
+            ${fontBold},
             "${labelTemplate}",
             "${order}",
             ${revOrder},

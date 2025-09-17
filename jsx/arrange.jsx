@@ -283,7 +283,7 @@ function arrangeImages(columns, rowGap, colGap, useWidth, wVal, useHeight, hVal,
     }
 }
 
-function addLabelsToImages(fontFamily, fontSize, labelOffsetX, labelOffsetY, labelTemplate, order, reverseOrder, startCount, sessionId) {
+function addLabelsToImages(fontFamily, fontSize, fontBold, labelOffsetX, labelOffsetY, labelTemplate, order, reverseOrder, startCount, sessionId) {
     if (app.documents.length === 0) return "Error: No document open.";
 
     var doc = app.activeDocument;
@@ -324,7 +324,36 @@ function addLabelsToImages(fontFamily, fontSize, labelOffsetX, labelOffsetY, lab
             // Style
             textFrame.textRange.characterAttributes.size = fontSize;
             try {
-                textFrame.textRange.characterAttributes.textFont = app.textFonts.getByName(fontFamily === "Arial" ? "ArialMT" : fontFamily);
+                var fontName = fontFamily === "Arial" ? "ArialMT" : fontFamily;
+                // If bold is requested, try to find the bold version of the font
+                if (fontBold) {
+                    // Try different bold font name patterns
+                    var boldFontNames = [
+                        fontFamily + "-BoldMT",
+                        fontFamily + "-Bold",
+                        fontFamily + " Bold",
+                        fontName + "-Bold",
+                        fontName + "Bold"
+                    ];
+
+                    var fontFound = false;
+                    for (var k = 0; k < boldFontNames.length; k++) {
+                        try {
+                            textFrame.textRange.characterAttributes.textFont = app.textFonts.getByName(boldFontNames[k]);
+                            fontFound = true;
+                            break;
+                        } catch (e) {
+                            // Continue trying other names
+                        }
+                    }
+
+                    // If no bold font found, use regular font
+                    if (!fontFound) {
+                        textFrame.textRange.characterAttributes.textFont = app.textFonts.getByName(fontName);
+                    }
+                } else {
+                    textFrame.textRange.characterAttributes.textFont = app.textFonts.getByName(fontName);
+                }
             } catch (e) {
                 return "Error: Font not found: " + fontFamily;
             }
@@ -339,7 +368,7 @@ function addLabelsToImages(fontFamily, fontSize, labelOffsetX, labelOffsetY, lab
     return (startCount + ordered.length).toString();
 }
 
-function updateLabelIndex(fontFamily, fontSize, labelTemplate, order, reverseOrder, startCount) {
+function updateLabelIndex(fontFamily, fontSize, fontBold, labelTemplate, order, reverseOrder, startCount) {
     if (app.documents.length === 0) return "Error: No document open.";
 
     var doc = app.activeDocument;
@@ -372,7 +401,7 @@ function updateLabelIndex(fontFamily, fontSize, labelTemplate, order, reverseOrd
     };
 
     var labels = templates[labelTemplate] || templates["A"];
-    
+
     // 对textframe进行排序
     var ordered = getOrderedTextFrames(textFrames, order || "stacking", !!reverseOrder);
 
@@ -381,7 +410,7 @@ function updateLabelIndex(fontFamily, fontSize, labelTemplate, order, reverseOrd
             var textFrame = ordered[j];
             var labelIndex = (startIndex + j) % labels.length;
             var label = labels[labelIndex];
-            
+
             if (labelTemplate === "A)" || labelTemplate === "a)") {
                 label += ")";
             }
@@ -392,7 +421,36 @@ function updateLabelIndex(fontFamily, fontSize, labelTemplate, order, reverseOrd
             // 更新字体样式
             textFrame.textRange.characterAttributes.size = fontSize;
             try {
-                textFrame.textRange.characterAttributes.textFont = app.textFonts.getByName(fontFamily === "Arial" ? "ArialMT" : fontFamily);
+                var fontName = fontFamily === "Arial" ? "ArialMT" : fontFamily;
+                // If bold is requested, try to find the bold version of the font
+                if (fontBold) {
+                    // Try different bold font name patterns
+                    var boldFontNames = [
+                        fontFamily + "-BoldMT",
+                        fontFamily + "-Bold",
+                        fontFamily + " Bold",
+                        fontName + "-Bold",
+                        fontName + "Bold"
+                    ];
+
+                    var fontFound = false;
+                    for (var k = 0; k < boldFontNames.length; k++) {
+                        try {
+                            textFrame.textRange.characterAttributes.textFont = app.textFonts.getByName(boldFontNames[k]);
+                            fontFound = true;
+                            break;
+                        } catch (e) {
+                            // Continue trying other names
+                        }
+                    }
+
+                    // If no bold font found, use regular font
+                    if (!fontFound) {
+                        textFrame.textRange.characterAttributes.textFont = app.textFonts.getByName(fontName);
+                    }
+                } else {
+                    textFrame.textRange.characterAttributes.textFont = app.textFonts.getByName(fontName);
+                }
             } catch (e) {
                 // 如果字体不存在，使用默认字体
                 try {
@@ -408,7 +466,7 @@ function updateLabelIndex(fontFamily, fontSize, labelTemplate, order, reverseOrd
             return "Error: Error updating text frame " + (j + 1) + ": " + e.message;
         }
     }
-    
+
     return "Success|" + ordered.length;
 }
 
@@ -477,7 +535,7 @@ function filterTextFrames() {
 
     // 清空当前选择
     doc.selection = null;
-    
+
     // 重新选择只包含文本框的对象
     for (var j = 0; j < textFrames.length; j++) {
         textFrames[j].selected = true;

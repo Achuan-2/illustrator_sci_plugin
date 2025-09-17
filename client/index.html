@@ -332,6 +332,10 @@
                         <input type="number" id="font-size" value="8" min="1">
                     </div>
                     <div class="input-group">
+                        <label>Font Bold:</label>
+                        <input type="checkbox" id="font-bold" title="Make label text bold">
+                    </div>
+                    <div class="input-group">
                         <label>Offset X(pt):</label>
                         <input type="number" id="label-offset-x" value="-6" title="">
                     </div>
@@ -428,6 +432,7 @@
             defaults: {
                 fontFamily: "Arial",
                 fontSize: 8,
+                fontBold: false,
                 labelOffsetX: -6,
                 labelOffsetY: -6,
                 labelTemplate: "a",
@@ -442,6 +447,7 @@
                     var settings = {
                         fontFamily: document.getElementById('font-family').value,
                         fontSize: parseFloat(document.getElementById('font-size').value),
+                        fontBold: document.getElementById('font-bold').checked,
                         labelOffsetX: parseFloat(document.getElementById('label-offset-x').value),
                         labelOffsetY: parseFloat(document.getElementById('label-offset-y').value),
                         labelTemplate: document.getElementById('label-template').value,
@@ -465,6 +471,7 @@
                         // 应用保存的设置
                         document.getElementById('font-family').value = settings.fontFamily || this.defaults.fontFamily;
                         document.getElementById('font-size').value = settings.fontSize || this.defaults.fontSize;
+                        document.getElementById('font-bold').checked = settings.fontBold !== undefined ? settings.fontBold : this.defaults.fontBold;
                         document.getElementById('label-offset-x').value = settings.labelOffsetX || this.defaults.labelOffsetX;
                         document.getElementById('label-offset-y').value = settings.labelOffsetY || this.defaults.labelOffsetY;
                         document.getElementById('label-template').value = settings.labelTemplate || this.defaults.labelTemplate;
@@ -484,6 +491,7 @@
             applyDefaults: function() {
                 document.getElementById('font-family').value = this.defaults.fontFamily;
                 document.getElementById('font-size').value = this.defaults.fontSize;
+                document.getElementById('font-bold').checked = this.defaults.fontBold;
                 document.getElementById('label-offset-x').value = this.defaults.labelOffsetX;
                 document.getElementById('label-offset-y').value = this.defaults.labelOffsetY;
                 document.getElementById('label-template').value = this.defaults.labelTemplate;
@@ -507,7 +515,7 @@
                 
                 // 添加设置变化监听器
                 var settingsInputs = [
-                    'font-family', 'font-size', 'label-offset-x', 'label-offset-y', 
+                    'font-family', 'font-size', 'font-bold', 'label-offset-x', 'label-offset-y', 
                     'label-template', 'labels-order', 'labels-reverse-order', 'auto-update-index'
                 ];
                 
