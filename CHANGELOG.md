@@ -1,3 +1,6 @@
+## v1.9.1 / 20250917
+- 🐛 updateLabel的vertical order和horizontal order效果反了
+
 ## v1.9.0 / 20250917
 
 - ✨ Image Label 添加字体加粗选项
