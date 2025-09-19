@@ -39,6 +39,7 @@ var fontBoldCheckbox = document.querySelector("#font-bold");
 var labelOffsetXInput = document.querySelector("#label-offset-x");
 var labelOffsetYInput = document.querySelector("#label-offset-y");
 var labelTemplateSelect = document.querySelector("#label-template");
+var fontColorInput = document.querySelector("#font-color");
 var labelStartCountInput = document.querySelector("#label-start-count");
 var undoLabelIndexButton = document.querySelector("#undo-label-index");
 var labelPreview = document.querySelector("#label-preview");
@@ -311,6 +312,7 @@ function handleAddLabel() {
     var labelOffsetX = parseFloat(labelOffsetXInput.value) || 0;
     var labelOffsetY = parseFloat(labelOffsetYInput.value) || 0;
     var labelTemplate = labelTemplateSelect.value || "a";
+    var fontColor = fontColorInput.value || "#000000";
     var startCount = parseInt(labelStartCountInput.value) || 1;
 
     // Store current index in history before making changes
@@ -331,6 +333,7 @@ function handleAddLabel() {
             ${labelOffsetX},
             ${labelOffsetY},
             "${labelTemplate}",
+            "${fontColor}",
             "${order}",
             ${revOrder},
             ${startCount},
@@ -368,6 +371,7 @@ function handleUpdateLabel() {
     var fontSize = parseFloat(fontSizeInput.value) || 6;
     var fontBold = !!(fontBoldCheckbox && fontBoldCheckbox.checked);
     var labelTemplate = labelTemplateSelect.value || "a";
+    var fontColor = fontColorInput.value || "#000000";
     var startCount = parseInt(labelStartCountInput.value) || 1;
 
     var order = (labelsOrderSelect && labelsOrderSelect.value) || "stacking";
@@ -380,6 +384,7 @@ function handleUpdateLabel() {
             ${fontSize},
             ${fontBold},
             "${labelTemplate}",
+            "${fontColor}",
             "${order}",
             ${revOrder},
             ${startCount}

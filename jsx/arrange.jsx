@@ -283,7 +283,7 @@ function arrangeImages(columns, rowGap, colGap, useWidth, wVal, useHeight, hVal,
     }
 }
 
-function addLabelsToImages(fontFamily, fontSize, fontBold, labelOffsetX, labelOffsetY, labelTemplate, order, reverseOrder, startCount, sessionId) {
+function addLabelsToImages(fontFamily, fontSize, fontBold, labelOffsetX, labelOffsetY, labelTemplate, fontColor, order, reverseOrder, startCount, sessionId) {
     if (app.documents.length === 0) return "Error: No document open.";
 
     var doc = app.activeDocument;
@@ -362,6 +362,22 @@ function addLabelsToImages(fontFamily, fontSize, fontBold, labelOffsetX, labelOf
                 return "Error: Font not found: " + fontFamily;
             }
 
+            // Set font color
+            try {
+                var color = new RGBColor();
+                color.red = parseInt(fontColor.substring(1, 3), 16);
+                color.green = parseInt(fontColor.substring(3, 5), 16);
+                color.blue = parseInt(fontColor.substring(5, 7), 16);
+                textFrame.textRange.characterAttributes.fillColor = color;
+            } catch (e) {
+                // If color parsing fails, use default black
+                var defaultColor = new RGBColor();
+                defaultColor.red = 0;
+                defaultColor.green = 0;
+                defaultColor.blue = 0;
+                textFrame.textRange.characterAttributes.fillColor = defaultColor;
+            }
+
             // 记录基准信息与会话ID在 note，JSON 字符串
             var payload = '{"sid":' + (sessionId || 0) + ',"baseL":' + v.left + ',"baseT":' + v.top + '}';
             try { textFrame.note = payload; } catch (e) { }
@@ -372,7 +388,7 @@ function addLabelsToImages(fontFamily, fontSize, fontBold, labelOffsetX, labelOf
     return (startCount + ordered.length).toString();
 }
 
-function updateLabelIndex(fontFamily, fontSize, fontBold, labelTemplate, order, reverseOrder, startCount) {
+function updateLabelIndex(fontFamily, fontSize, fontBold, labelTemplate, fontColor, order, reverseOrder, startCount) {
     if (app.documents.length === 0) return "Error: No document open.";
 
     var doc = app.activeDocument;
@@ -469,6 +485,22 @@ function updateLabelIndex(fontFamily, fontSize, fontBold, labelTemplate, order, 
                         textFrame.textRange.characterAttributes.textFont = app.textFonts[0];
                     }
                 }
+            }
+
+            // Set font color
+            try {
+                var color = new RGBColor();
+                color.red = parseInt(fontColor.substring(1, 3), 16);
+                color.green = parseInt(fontColor.substring(3, 5), 16);
+                color.blue = parseInt(fontColor.substring(5, 7), 16);
+                textFrame.textRange.characterAttributes.fillColor = color;
+            } catch (e) {
+                // If color parsing fails, use default black
+                var defaultColor = new RGBColor();
+                defaultColor.red = 0;
+                defaultColor.green = 0;
+                defaultColor.blue = 0;
+                textFrame.textRange.characterAttributes.fillColor = defaultColor;
             }
         } catch (e) {
             return "Error: Error updating text frame " + (j + 1) + ": " + e.message;
