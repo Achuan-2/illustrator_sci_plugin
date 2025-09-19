@@ -1,3 +1,8 @@
+## v2.0.0 / 20250919
+
+- ✨ Image Label设置字体颜色 [#18](https://github.com/Achuan-2/illustrator_sci_plugin/issues/18)
+- ✨ Label Template添加(a)和(A) [#17](https://github.com/Achuan-2/illustrator_sci_plugin/issues/17)
+
 ## v1.9.1 / 20250917
 - 🐛 updateLabel的vertical order和horizontal order效果反了
 
