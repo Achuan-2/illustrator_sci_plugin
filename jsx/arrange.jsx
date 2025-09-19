@@ -299,6 +299,8 @@ function addLabelsToImages(fontFamily, fontSize, fontBold, labelOffsetX, labelOf
     var templates = {
         "A": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
         "a": "abcdefghijklmnopqrstuvwxyz",
+        "(A)": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+        "(a)": "abcdefghijklmnopqrstuvwxyz",
         "A)": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
         "a)": "abcdefghijklmnopqrstuvwxyz"
     };
@@ -313,6 +315,8 @@ function addLabelsToImages(fontFamily, fontSize, fontBold, labelOffsetX, labelOf
             var label = labels[labelIndex];
             if (labelTemplate === "A)" || labelTemplate === "a)") {
                 label += ")";
+            } else if (labelTemplate === "(A)" || labelTemplate === "(a)") {
+                label = "(" + label + ")";
             }
             var v = getVisibleInfo(item);
             var textFrame = doc.textFrames.add();
@@ -396,6 +400,8 @@ function updateLabelIndex(fontFamily, fontSize, fontBold, labelTemplate, order, 
     var templates = {
         "A": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
         "a": "abcdefghijklmnopqrstuvwxyz",
+        "(A)": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+        "(a)": "abcdefghijklmnopqrstuvwxyz",
         "A)": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
         "a)": "abcdefghijklmnopqrstuvwxyz"
     };
@@ -413,6 +419,8 @@ function updateLabelIndex(fontFamily, fontSize, fontBold, labelTemplate, order, 
 
             if (labelTemplate === "A)" || labelTemplate === "a)") {
                 label += ")";
+            } else if (labelTemplate === "(A)" || labelTemplate === "(a)") {
+                label = "(" + label + ")";
             }
 
             // 更新文本内容

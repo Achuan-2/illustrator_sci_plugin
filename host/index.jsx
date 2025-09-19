@@ -476,6 +476,8 @@ function updateLabelPreview() {
     var templates = {
         "A": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
         "a": "abcdefghijklmnopqrstuvwxyz",
+        "(A)": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+        "(a)": "abcdefghijklmnopqrstuvwxyz",
         "A)": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
         "a)": "abcdefghijklmnopqrstuvwxyz"
     };
@@ -487,6 +489,8 @@ function updateLabelPreview() {
     
     if (labelTemplate === "A)" || labelTemplate === "a)") {
         label += ")";
+    } else if (labelTemplate === "(A)" || labelTemplate === "(a)") {
+        label = "(" + label + ")";
     }
 
     if (labelPreview) {
