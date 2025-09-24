@@ -1,3 +1,9 @@
+<div align="center">
+
+[English](README_EN.md) | 简体中文
+
+</div>
+
 # README
 
 插件地址：[Achuan-2/illustrator_sci_plugin](https://github.com/Achuan-2/illustrator_sci_plugin)
