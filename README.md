@@ -54,7 +54,7 @@
   - Column Gap：列间距
   - Resize Width：如果打上勾，会统一设置所有对象的Width
   - Resize Height：如果打上勾，会统一设置所有对象的Height
-  - Order：判断对象的先后顺序，插件支持根据垂直位置、水平位置以及图层顺序来确定对象顺序。
+  - Order：判断对象的先后顺序，插件支持根据垂直位置、水平位置以及图层顺序来确定对象顺序。（illustrator没法获取选择顺序，只能根据位置和图层顺序来确定对象顺序）
 
   <img alt="PixPin_2025-08-06_17-59-37" src="https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-08-06_17-59-37-20250806175940-zw3soci.png" style="width: 298px;" />
   <br>
