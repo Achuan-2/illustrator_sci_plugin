@@ -1,6 +1,7 @@
 ## v2.1.0 / 20251127
 
 - ✨ 新增间距均匀分布功能，方便统一不同宽高的形状之间的间距
+- ✨间距复制粘贴 [#22](https://github.com/Achuan-2/illustrator_sci_plugin/issues/22)
 
 ## v2.0.0 / 20250919
 
