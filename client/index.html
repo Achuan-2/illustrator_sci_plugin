@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <!-- 测试 -->
+
 <head>
     <meta charset="utf-8">
     <title>SCI Toolbox</title>
@@ -233,9 +234,9 @@
             <div class="tab active" data-target="panel-relative" data-hash="relative">Relative Position</div>
             <div class="tab" data-target="panel-size" data-hash="size">Size Paste</div>
             <div class="tab" data-target="panel-arrange" data-hash="arrange">Arrange Images</div>
-                <div class="tab" data-target="panel-distribute" data-hash="distribute">Even Spacing</div>
-                <div class="tab" data-target="panel-swap" data-hash="swap">Swap</div>
-                <div class="tab" data-target="panel-labels" data-hash="labels">Image Labels</div>
+            <div class="tab" data-target="panel-distribute" data-hash="distribute">Even Spacing</div>
+            <div class="tab" data-target="panel-swap" data-hash="swap">Swap</div>
+            <div class="tab" data-target="panel-labels" data-hash="labels">Image Labels</div>
             <div class="tab" data-target="panel-about" data-hash="about">About</div>
         </div>
         <div class="content">
@@ -290,7 +291,7 @@
                 </div>
             </div>
 
-            
+
             <!-- Arrange Images Panel -->
             <div class="panel" id="panel-arrange">
                 <div class="grid">
@@ -348,7 +349,8 @@
                     </div>
                 </div>
                 <div class="toolbar">
-                    <button class="btn" id="distribute-button" title="Distribute spacing evenly">Distribute Spacing</button>
+                    <button class="btn" id="distribute-button" title="Distribute spacing evenly">Distribute
+                        Spacing</button>
                 </div>
             </div>
 
@@ -427,11 +429,14 @@
                     </div>
                 </div>
                 <div class="toolbar">
-                    <button class="btn" id="filter-text-button" title="Select text frames from selected objects">Select Only Text</button>
+                    <button class="btn" id="filter-text-button" title="Select text frames from selected objects">Select
+                        Only Text</button>
                 </div>
                 <div class="toolbar">
-                    <button class="btn btn-primary" id="add-label-button" title="Add labels to selected objects">Add Labels</button>
-                    <button class="btn" id="update-label-button" title="Update labels of selected text frames">Update Labels</button>
+                    <button class="btn btn-primary" id="add-label-button" title="Add labels to selected objects">Add
+                        Labels</button>
+                    <button class="btn" id="update-label-button" title="Update labels of selected text frames">Update
+                        Labels</button>
                 </div>
             </div>
             <!-- Size Formater Panel -->
@@ -469,7 +474,7 @@
     <!-- Dependencies -->
     <script type="text/javascript" src="CSInterface.js" defer></script>
     <script type="text/javascript" src="../host/index.jsx" defer></script>
-    
+
     <!-- Settings Management -->
     <script>
         // CEP插件设置管理
@@ -487,9 +492,9 @@
                 labelsReverseOrder: false,
                 autoUpdateIndex: true
             },
-            
+
             // 保存设置到localStorage
-            save: function() {
+            save: function () {
                 try {
                     var settings = {
                         fontFamily: document.getElementById('font-family').value,
@@ -508,14 +513,14 @@
                     console.log('Failed to save settings:', e);
                 }
             },
-            
+
             // 从localStorage加载设置
-            load: function() {
+            load: function () {
                 try {
                     var saved = localStorage.getItem('illustrator_sci_plugin_settings');
                     if (saved) {
                         var settings = JSON.parse(saved);
-                        
+
                         // 应用保存的设置
                         document.getElementById('font-family').value = settings.fontFamily || this.defaults.fontFamily;
                         document.getElementById('font-size').value = settings.fontSize || this.defaults.fontSize;
@@ -527,7 +532,7 @@
                         document.getElementById('labels-order').value = settings.labelsOrder || this.defaults.labelsOrder;
                         document.getElementById('labels-reverse-order').checked = settings.labelsReverseOrder || this.defaults.labelsReverseOrder;
                         document.getElementById('auto-update-index').checked = settings.autoUpdateIndex !== undefined ? settings.autoUpdateIndex : this.defaults.autoUpdateIndex;
-                        
+
                         console.log('Settings loaded successfully');
                     }
                 } catch (e) {
@@ -535,9 +540,9 @@
                     this.applyDefaults();
                 }
             },
-            
+
             // 应用默认设置
-            applyDefaults: function() {
+            applyDefaults: function () {
                 document.getElementById('font-family').value = this.defaults.fontFamily;
                 document.getElementById('font-size').value = this.defaults.fontSize;
                 document.getElementById('font-bold').checked = this.defaults.fontBold;
@@ -549,52 +554,52 @@
                 document.getElementById('labels-reverse-order').checked = this.defaults.labelsReverseOrder;
                 document.getElementById('auto-update-index').checked = this.defaults.autoUpdateIndex;
             },
-            
+
             // 初始化设置管理
-            init: function() {
+            init: function () {
                 var self = this;
-                
+
                 // 页面加载时恢复设置
-                window.addEventListener('load', function() {
+                window.addEventListener('load', function () {
                     self.load();
                     // 如果updateLabelPreview函数存在，则更新预览
                     if (typeof updateLabelPreview === 'function') {
                         updateLabelPreview();
                     }
                 });
-                
+
                 // 添加设置变化监听器
                 var settingsInputs = [
-                    'font-family', 'font-size', 'font-bold', 'label-offset-x', 'label-offset-y', 
+                    'font-family', 'font-size', 'font-bold', 'label-offset-x', 'label-offset-y',
                     'label-template', 'font-color',
                     'labels-order', 'labels-reverse-order', 'auto-update-index'
                 ];
-                
-                settingsInputs.forEach(function(id) {
+
+                settingsInputs.forEach(function (id) {
                     var element = document.getElementById(id);
                     if (element) {
                         var eventType = element.type === 'checkbox' ? 'change' : 'input';
-                        element.addEventListener(eventType, function() {
+                        element.addEventListener(eventType, function () {
                             // 延迟保存，避免频繁写入
                             clearTimeout(self.saveTimeout);
-                            self.saveTimeout = setTimeout(function() {
+                            self.saveTimeout = setTimeout(function () {
                                 self.save();
                             }, 500);
                         });
                     }
                 });
-                
+
                 // 窗口关闭时保存设置
-                window.addEventListener('beforeunload', function() {
+                window.addEventListener('beforeunload', function () {
                     self.save();
                 });
             }
         };
-        
+
         // 初始化设置管理
         PluginSettings.init();
     </script>
-    
+
     <!-- Tabs logic: keep ids intact for existing scripts -->
     <script>
         (function () {

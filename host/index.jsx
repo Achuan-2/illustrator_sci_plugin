@@ -85,12 +85,12 @@ undoLabelIndexButton.addEventListener("click", handleUndoLabelIndex);
 
 // Add event listeners for label preview updates
 labelStartCountInput.addEventListener("input", updateLabelPreview);
-labelTemplateSelect.addEventListener("change", function() {
+labelTemplateSelect.addEventListener("change", function () {
     updateLabelPreview();
     // 触发设置保存
     if (typeof PluginSettings !== 'undefined') {
         clearTimeout(PluginSettings.saveTimeout);
-        PluginSettings.saveTimeout = setTimeout(function() {
+        PluginSettings.saveTimeout = setTimeout(function () {
             PluginSettings.save();
         }, 500);
     }
@@ -100,9 +100,9 @@ labelTemplateSelect.addEventListener("change", function() {
 updateLabelPreview();
 
 // 确保在设置加载后更新预览
-window.addEventListener('load', function() {
+window.addEventListener('load', function () {
     // 延迟执行确保设置已加载
-    setTimeout(function() {
+    setTimeout(function () {
         if (typeof updateLabelPreview === 'function') {
             updateLabelPreview();
         }
@@ -363,7 +363,7 @@ function handleAddLabel() {
 
             // Enable editing mode for label offsets after adding labels
             enterLabelEditingMode();
-            
+
             // 保存设置到记忆
             if (typeof PluginSettings !== 'undefined') {
                 PluginSettings.save();
@@ -410,10 +410,10 @@ function handleUpdateLabel() {
                     if (!isNaN(updatedCount) && autoUpdateIndexCheckbox && autoUpdateIndexCheckbox.checked) {
                         var nextCount = startCount + updatedCount;
                         labelStartCountInput.value = nextCount;
-                        
+
                         // Update the label preview
                         updateLabelPreview();
-                        
+
                         // 也可以存储到历史记录中
                         labelIndexHistory.push(nextCount);
                     }
@@ -422,7 +422,7 @@ function handleUpdateLabel() {
                 // 如果解析失败，仍然显示成功消息
                 console.log("Labels updated successfully");
             }
-            
+
             // 保存设置到记忆
             if (typeof PluginSettings !== 'undefined') {
                 PluginSettings.save();
@@ -433,7 +433,7 @@ function handleUpdateLabel() {
 
 function handleFilterText() {
     console.log("Filter Text button clicked");
-    
+
     csInterface.evalScript(`$.evalFile("${csInterface.getSystemPath(SystemPath.EXTENSION)}/jsx/arrange.jsx")`);
     csInterface.evalScript('filterTextFrames()', function (result) {
         if (result === 'EvalScript error.') {
@@ -483,7 +483,7 @@ function handleUndoLabelIndex() {
 function updateLabelPreview() {
     var startCount = parseInt(labelStartCountInput.value) || 1;
     var labelTemplate = labelTemplateSelect.value || "a";
-    
+
     var templates = {
         "A": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
         "a": "abcdefghijklmnopqrstuvwxyz",
@@ -497,7 +497,7 @@ function updateLabelPreview() {
     var startIndex = startCount - 1;
     var labelIndex = startIndex % labels.length;
     var label = labels[labelIndex];
-    
+
     if (labelTemplate === "A)" || labelTemplate === "a)") {
         label += ")";
     } else if (labelTemplate === "(A)" || labelTemplate === "(a)") {
