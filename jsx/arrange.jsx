@@ -927,6 +927,155 @@ function swapSelectedPositions() {
 }
 
 /**
+ * Distribute spacing evenly between multiple selected objects.
+ * direction: "horizontal" | "vertical"
+ * Keeps the first and last item positions fixed, adjusts middle items so
+ * gaps between adjacent visible edges are equal.
+ */
+function distributeSpacing(direction) {
+    if (app.documents.length === 0) return "Error: No document open.";
+    var selection = app.activeDocument.selection;
+    if (!selection || selection.length < 3) {
+        return "Error: Please select at least three items.";
+    }
+
+    var dir = direction || "horizontal";
+    var ord = (dir === "horizontal") ? "horizontal" : "vertical";
+    var ordered = getOrderedSelection(selection, ord, false);
+    var n = ordered.length;
+
+    // Collect visible infos and widths/heights
+    var infos = [];
+    for (var i = 0; i < n; i++) {
+        infos.push(getVisibleInfo(ordered[i]));
+    }
+
+    if (dir === "horizontal") {
+        var x0 = infos[0].left;
+        var xLast = infos[n - 1].left;
+        // sum widths of items 0 .. n-2
+        var sumWidths = 0;
+        for (var j = 0; j < n - 1; j++) {
+            sumWidths += infos[j].width;
+        }
+        var gapsCount = n - 1;
+        var gap = (xLast - x0 - sumWidths) / gapsCount;
+
+        // place middle items
+        var acc = x0;
+        for (var k = 0; k < n; k++) {
+            if (k === 0) {
+                acc += infos[k].width + gap; // move acc to next start
+                continue;
+            }
+            if (k === n - 1) break; // last item fixed
+
+            var targetLeft = acc;
+            var curLeft = infos[k].left;
+            var dx = targetLeft - curLeft;
+            ordered[k].translate(dx, 0);
+
+            // update acc by this item's width + gap
+            acc = targetLeft + infos[k].width + gap;
+        }
+
+        return "Success";
+    } else {
+        // vertical (fix): compute positive gap magnitude and place items top->down
+        var y0 = infos[0].top;
+        var yLast = infos[n - 1].top;
+        var sumHeights = 0;
+        // sum heights of items 0..n-2 (same logic as horizontal)
+        for (var m = 0; m < n - 1; m++) {
+            sumHeights += infos[m].height;
+        }
+        var gapsCountV = n - 1;
+        // Because top values decrease when moving downward in Illustrator,
+        // use y0 - yLast to get a positive span between first and last tops.
+        var gapV = (y0 - yLast - sumHeights) / gapsCountV;
+
+        // acc holds the current top reference; start from first item's top
+        var acc = y0;
+        // place middle items (keep first and last fixed)
+        for (var k2 = 1; k2 < n - 1; k2++) {
+            // compute target top for item k2: move down from previous acc by previous height + gap
+            acc = acc - (infos[k2 - 1].height + gapV);
+            var targetTop = acc;
+            var curTop = infos[k2].top;
+            var dy = targetTop - curTop;
+            ordered[k2].translate(0, dy);
+        }
+
+        return "Success";
+    }
+}
+
+/**
+ * measureSpacing
+ * Computes horizontal and vertical spacing between two selected items (based on visible bounds)
+ * Returns JSON string: { horizontal: <mm>, vertical: <mm>, euclidean: <mm> }
+ */
+function measureSpacing() {
+    if (app.documents.length === 0) return "Error: No document open.";
+    var sel = app.activeDocument.selection;
+    if (!sel || sel.length !== 2) {
+        return "Error: Please select exactly two items.";
+    }
+
+    var a = sel[0];
+    var b = sel[1];
+    var ia = getVisibleInfo(a);
+    var ib = getVisibleInfo(b);
+
+    // horizontal gap: compute overlap on X; if overlap => 0 else gap = max(lefts) - min(rights)
+    var minRight = Math.min(ia.right, ib.right);
+    var maxLeft = Math.max(ia.left, ib.left);
+    var gapXpt = 0;
+    if (minRight < maxLeft) {
+        gapXpt = maxLeft - minRight;
+    } else {
+        gapXpt = 0;
+    }
+
+    // vertical gap: intervals [bottom, top]
+    var minTop = Math.min(ia.top, ib.top);
+    var maxBottom = Math.max(ia.bottom, ib.bottom);
+    var gapYpt = 0;
+    if (maxBottom > minTop) {
+        // no overlap: gap = maxBottom - minTop
+        gapYpt = maxBottom - minTop;
+    } else {
+        gapYpt = 0;
+    }
+
+    var gapXmm = pointsToMm(gapXpt);
+    var gapYmm = pointsToMm(gapYpt);
+
+    // euclidean distance between closest edges
+    var euclidPt = 0;
+    if (gapXpt === 0 && gapYpt === 0) {
+        euclidPt = 0;
+    } else if (gapXpt === 0) {
+        euclidPt = Math.abs(gapYpt);
+    } else if (gapYpt === 0) {
+        euclidPt = Math.abs(gapXpt);
+    } else {
+        euclidPt = Math.sqrt(gapXpt * gapXpt + gapYpt * gapYpt);
+    }
+
+    var euclidMm = pointsToMm(euclidPt);
+
+    var out = {
+        horizontal: parseFloat(gapXmm.toFixed(3)),
+        vertical: parseFloat(gapYmm.toFixed(3)),
+        euclidean: parseFloat(euclidMm.toFixed(3))
+    };
+
+    return JSON.stringify(out);
+}
+
+
+/**
  * Update label offsets for recently added labels in real-time
  * This function updates the position of all text items in the document
  * based on new offset values, calculating from the original base position

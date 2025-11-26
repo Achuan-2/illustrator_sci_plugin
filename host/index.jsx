@@ -33,6 +33,10 @@ var useUniformHeightCheckbox = document.querySelector("#use-uniform-height");
 var arrangeOrderSelect = document.querySelector("#arrange-order");
 var arrangeReverseOrderCheckbox = document.querySelector("#arrange-reverse-order");
 
+// Distribute spacing UI
+var distributeSelect = document.querySelector("#distribute-orientation");
+var distributeButton = document.querySelector("#distribute-button");
+
 var fontFamilyInput = document.querySelector("#font-family");
 var fontSizeInput = document.querySelector("#font-size");
 var fontBoldCheckbox = document.querySelector("#font-bold");
@@ -73,6 +77,8 @@ if (swapButton) swapButton.addEventListener("click", handleSwap);
 
 copySizeButton.addEventListener("click", handleCopySize);
 pasteSizeButton.addEventListener("click", handlePasteSize);
+
+if (distributeButton) distributeButton.addEventListener("click", handleDistributeSpacing);
 
 // Add event listener for undo label index button
 undoLabelIndexButton.addEventListener("click", handleUndoLabelIndex);
@@ -514,6 +520,24 @@ function handleSwap() {
         }
     });
 }
+
+function handleDistributeSpacing() {
+    var orientation = (distributeSelect && distributeSelect.value) || 'none';
+    if (orientation === 'none') {
+        alert('Please select Horizontal or Vertical distribution.');
+        return;
+    }
+
+    csInterface.evalScript(`$.evalFile("${csInterface.getSystemPath(SystemPath.EXTENSION)}/jsx/arrange.jsx")`);
+    csInterface.evalScript(`distributeSpacing("${orientation}")`, function (result) {
+        if (result && result.indexOf && result.indexOf("Error:") === 0) {
+            alert(result);
+        } else if (result === 'EvalScript error.') {
+            alert('Error executing the distributeSpacing script.');
+        }
+    });
+}
+
 
 // Functions for label offset editing mode
 function enterLabelEditingMode() {

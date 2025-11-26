@@ -233,8 +233,9 @@
             <div class="tab active" data-target="panel-relative" data-hash="relative">Relative Position</div>
             <div class="tab" data-target="panel-size" data-hash="size">Size Paste</div>
             <div class="tab" data-target="panel-arrange" data-hash="arrange">Arrange Images</div>
-            <div class="tab" data-target="panel-swap" data-hash="swap">Swap</div>
-            <div class="tab" data-target="panel-labels" data-hash="labels">Image Labels</div>
+                <div class="tab" data-target="panel-distribute" data-hash="distribute">Even Spacing</div>
+                <div class="tab" data-target="panel-swap" data-hash="swap">Swap</div>
+                <div class="tab" data-target="panel-labels" data-hash="labels">Image Labels</div>
             <div class="tab" data-target="panel-about" data-hash="about">About</div>
         </div>
         <div class="content">
@@ -289,6 +290,7 @@
                 </div>
             </div>
 
+            
             <!-- Arrange Images Panel -->
             <div class="panel" id="panel-arrange">
                 <div class="grid">
@@ -331,6 +333,22 @@
                 </div>
                 <div class="toolbar">
                     <button class="btn btn-primary" id="arrange-button">Arrange Images</button>
+                </div>
+            </div>
+
+            <!-- Distribute Panel -->
+            <div class="panel" id="panel-distribute">
+                <div class="grid">
+                    <div class="input-group">
+                        <label>Distribute:</label>
+                        <select id="distribute-orientation" style="width:140px">
+                            <option value="horizontal">Horizontal Spacing</option>
+                            <option value="vertical">Vertical Spacing</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="toolbar">
+                    <button class="btn" id="distribute-button" title="Distribute spacing evenly">Distribute Spacing</button>
                 </div>
             </div>
 
@@ -586,6 +604,7 @@
             function activate(hash) {
                 let target = 'panel-relative';
                 if (hash === 'arrange') target = 'panel-arrange';
+                else if (hash === 'distribute') target = 'panel-distribute';
                 else if (hash === 'labels') target = 'panel-labels';
                 else if (hash === 'size') target = 'panel-size';
                 else if (hash === 'swap') target = 'panel-swap';
