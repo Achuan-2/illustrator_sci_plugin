@@ -569,7 +569,7 @@ function handlePasteSpacing() {
     var direction = spacingDirectionSelect.value;
     var spacing = parseFloat(spacingValueInput.value);
 
-    if (isNaN(spacing) || spacing < 0) {
+    if (isNaN(spacing)) {
         alert("Please enter a valid spacing value.");
         return;
     }

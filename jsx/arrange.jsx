@@ -1095,23 +1095,15 @@ function copySpacing(direction) {
 
     var spacingPt = 0;
     if (direction === "horizontal") {
-        // horizontal gap
+        // horizontal gap: positive if gap, negative if overlap
         var minRight = Math.min(ia.right, ib.right);
         var maxLeft = Math.max(ia.left, ib.left);
-        if (minRight < maxLeft) {
-            spacingPt = maxLeft - minRight;
-        } else {
-            spacingPt = 0;
-        }
+        spacingPt = maxLeft - minRight;
     } else {
-        // vertical gap
-        var minTop = Math.min(ia.top, ib.top);
-        var maxBottom = Math.max(ia.bottom, ib.bottom);
-        if (maxBottom > minTop) {
-            spacingPt = maxBottom - minTop;
-        } else {
-            spacingPt = 0;
-        }
+        // vertical gap: positive if gap, negative if overlap
+        var minBottom = Math.min(ia.bottom, ib.bottom);
+        var maxTop = Math.max(ia.top, ib.top);
+        spacingPt = maxTop - minBottom;
     }
 
     var spacingMm = pointsToMm(spacingPt);
@@ -1153,7 +1145,7 @@ function pasteSpacing(direction, spacingMm) {
             var curr = ordered[j];
             var prevInfo = getVisibleInfo(prev);
             var currInfo = getVisibleInfo(curr);
-            var targetTop = prevInfo.bottom - spacingPt;
+            var targetTop = prevInfo.bottom + spacingPt;
             var dy = targetTop - currInfo.top;
             curr.translate(0, dy);
         }
