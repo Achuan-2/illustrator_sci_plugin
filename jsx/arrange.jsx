@@ -1076,38 +1076,88 @@ function measureSpacing() {
 
 
 /**
- * Update label offsets for recently added labels in real-time
- * This function updates the position of all text items in the document
- * based on new offset values, calculating from the original base position
+ * copySpacing
+ * Copies the spacing between two selected items in the specified direction.
+ * direction: "horizontal" | "vertical"
+ * Returns spacing in mm as string.
  */
-function updateLabelOffsets(newOffsetX, newOffsetY, sessionId) {
+function copySpacing(direction) {
     if (app.documents.length === 0) return "Error: No document open.";
-    var doc = app.activeDocument;
-    var textFrames = doc.textFrames;
-    if (textFrames.length === 0) {
-        return "Error: No text labels found to update.";
+    var sel = app.activeDocument.selection;
+    if (!sel || sel.length !== 2) {
+        return "Error: Please select exactly two items.";
     }
-    var sid = (typeof sessionId === 'number') ? sessionId : sessionId * 1;
-    var ox = newOffsetX;
-    var oy = newOffsetY;
 
-    // 遍历文本框，按会话ID筛选，并使用记录的基准点重置位置
-    var updated = 0;
-    for (var i = 0; i < textFrames.length; i++) {
-        var tf = textFrames[i];
-        var noteStr = '';
-        try { noteStr = tf.note || ''; } catch (e) { noteStr = ''; }
-        if (!noteStr) continue;
-        // 解析 JSON
-        var s = null;
-        try { s = eval('(' + noteStr + ')'); } catch (e) { s = null; }
-        if (!s) continue;
-        if (sid && s.sid !== sid) continue; // 只更新当前会话新增的标签
-        // 基于基准位置 + 新偏移设置
-        tf.left = s.baseL + ox;
-        tf.top = s.baseT - oy;
-        updated++;
+    var a = sel[0];
+    var b = sel[1];
+    var ia = getVisibleInfo(a);
+    var ib = getVisibleInfo(b);
+
+    var spacingPt = 0;
+    if (direction === "horizontal") {
+        // horizontal gap
+        var minRight = Math.min(ia.right, ib.right);
+        var maxLeft = Math.max(ia.left, ib.left);
+        if (minRight < maxLeft) {
+            spacingPt = maxLeft - minRight;
+        } else {
+            spacingPt = 0;
+        }
+    } else {
+        // vertical gap
+        var minTop = Math.min(ia.top, ib.top);
+        var maxBottom = Math.max(ia.bottom, ib.bottom);
+        if (maxBottom > minTop) {
+            spacingPt = maxBottom - minTop;
+        } else {
+            spacingPt = 0;
+        }
     }
-    if (updated === 0) return "Error: No labels matched current session.";
+
+    var spacingMm = pointsToMm(spacingPt);
+    return spacingMm.toString();
+}
+
+/**
+ * pasteSpacing
+ * Applies the specified spacing between multiple selected items in the specified direction.
+ * direction: "horizontal" | "vertical"
+ * spacingMm: spacing in millimeters
+ */
+function pasteSpacing(direction, spacingMm) {
+    if (app.documents.length === 0) return "Error: No document open.";
+    var sel = app.activeDocument.selection;
+    if (!sel || sel.length < 2) {
+        return "Error: Please select at least two items.";
+    }
+
+    var spacingPt = mmToPoints(spacingMm);
+    var ord = (direction === "horizontal") ? "horizontal" : "vertical";
+    var ordered = getOrderedSelection(sel, ord, false);
+
+    if (direction === "horizontal") {
+        // 从左到右设置间距
+        for (var i = 1; i < ordered.length; i++) {
+            var prev = ordered[i-1];
+            var curr = ordered[i];
+            var prevInfo = getVisibleInfo(prev);
+            var currInfo = getVisibleInfo(curr);
+            var targetLeft = prevInfo.right + spacingPt;
+            var dx = targetLeft - currInfo.left;
+            curr.translate(dx, 0);
+        }
+    } else {
+        // 从上到下设置间距
+        for (var j = 1; j < ordered.length; j++) {
+            var prev = ordered[j-1];
+            var curr = ordered[j];
+            var prevInfo = getVisibleInfo(prev);
+            var currInfo = getVisibleInfo(curr);
+            var targetTop = prevInfo.bottom - spacingPt;
+            var dy = targetTop - currInfo.top;
+            curr.translate(0, dy);
+        }
+    }
+
     return "Success";
 }

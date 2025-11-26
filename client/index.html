@@ -98,7 +98,7 @@
         }
 
         .panel h3 {
-            margin: 0 0 10px;
+            margin: 10 0 10px;
             font-size: 14px;
             color: var(--text);
         }
@@ -106,7 +106,7 @@
         /* 表单区域改为响应式网格：根据宽度自动填充列 */
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            /* grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); */
             gap: 10px 14px;
             align-items: start;
         }
@@ -233,8 +233,8 @@
         <div class="tabs" id="tabs">
             <div class="tab active" data-target="panel-relative" data-hash="relative">Relative Position</div>
             <div class="tab" data-target="panel-size" data-hash="size">Size Paste</div>
-            <div class="tab" data-target="panel-arrange" data-hash="arrange">Arrange Images</div>
-            <div class="tab" data-target="panel-distribute" data-hash="distribute">Even Spacing</div>
+            <div class="tab" data-target="panel-arrange" data-hash="arrange">Images Arrange</div>
+            <div class="tab" data-target="panel-distribute" data-hash="distribute">Spacing Set</div>
             <div class="tab" data-target="panel-swap" data-hash="swap">Swap</div>
             <div class="tab" data-target="panel-labels" data-hash="labels">Image Labels</div>
             <div class="tab" data-target="panel-about" data-hash="about">About</div>
@@ -339,6 +339,7 @@
 
             <!-- Distribute Panel -->
             <div class="panel" id="panel-distribute">
+                <h3>Even Spacing</h3>
                 <div class="grid">
                     <div class="input-group">
                         <label>Distribute:</label>
@@ -351,6 +352,24 @@
                 <div class="toolbar">
                     <button class="btn" id="distribute-button" title="Distribute spacing evenly">Distribute
                         Spacing</button>
+                </div>
+                <h3>Spacing Paste</h3>
+                <div class="grid">
+                    <div class="input-group">
+                        <label>Spacing Direction:</label>
+                        <select id="spacing-direction" style="width:140px">
+                            <option value="horizontal">Horizontal</option>
+                            <option value="vertical">Vertical</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Spacing (mm):</label>
+                        <input type="number" id="spacing-value" step="0.1" min="0" value="0">
+                    </div>
+                </div>
+                <div class="toolbar">
+                    <button class="btn" id="copy-spacing-button">Copy Spacing</button>
+                    <button class="btn btn-primary" id="paste-spacing-button">Paste Spacing</button>
                 </div>
             </div>
 

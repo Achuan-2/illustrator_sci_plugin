@@ -37,6 +37,12 @@ var arrangeReverseOrderCheckbox = document.querySelector("#arrange-reverse-order
 var distributeSelect = document.querySelector("#distribute-orientation");
 var distributeButton = document.querySelector("#distribute-button");
 
+// Spacing paste UI
+var spacingDirectionSelect = document.querySelector("#spacing-direction");
+var spacingValueInput = document.querySelector("#spacing-value");
+var copySpacingButton = document.querySelector("#copy-spacing-button");
+var pasteSpacingButton = document.querySelector("#paste-spacing-button");
+
 var fontFamilyInput = document.querySelector("#font-family");
 var fontSizeInput = document.querySelector("#font-size");
 var fontBoldCheckbox = document.querySelector("#font-bold");
@@ -79,6 +85,10 @@ copySizeButton.addEventListener("click", handleCopySize);
 pasteSizeButton.addEventListener("click", handlePasteSize);
 
 if (distributeButton) distributeButton.addEventListener("click", handleDistributeSpacing);
+
+// Spacing paste event listeners
+if (copySpacingButton) copySpacingButton.addEventListener("click", handleCopySpacing);
+if (pasteSpacingButton) pasteSpacingButton.addEventListener("click", handlePasteSpacing);
 
 // Add event listener for undo label index button
 undoLabelIndexButton.addEventListener("click", handleUndoLabelIndex);
@@ -534,6 +544,42 @@ function handleDistributeSpacing() {
             alert(result);
         } else if (result === 'EvalScript error.') {
             alert('Error executing the distributeSpacing script.');
+        }
+    });
+}
+
+function handleCopySpacing() {
+    console.log("Copy Spacing button clicked");
+    var direction = spacingDirectionSelect.value;
+
+    csInterface.evalScript(`$.evalFile("${csInterface.getSystemPath(SystemPath.EXTENSION)}/jsx/arrange.jsx")`);
+    csInterface.evalScript(`copySpacing("${direction}")`, function (result) {
+        if (result && result.indexOf("Error:") === 0) {
+            alert(result);
+            return;
+        }
+        if (result && result !== 'EvalScript error.') {
+            spacingValueInput.value = parseFloat(result).toFixed(3);
+        }
+    });
+}
+
+function handlePasteSpacing() {
+    console.log("Paste Spacing button clicked");
+    var direction = spacingDirectionSelect.value;
+    var spacing = parseFloat(spacingValueInput.value);
+
+    if (isNaN(spacing) || spacing < 0) {
+        alert("Please enter a valid spacing value.");
+        return;
+    }
+
+    csInterface.evalScript(`$.evalFile("${csInterface.getSystemPath(SystemPath.EXTENSION)}/jsx/arrange.jsx")`);
+    csInterface.evalScript(`pasteSpacing("${direction}", ${spacing})`, function (result) {
+        if (result && result.indexOf("Error:") === 0) {
+            alert(result);
+        } else if (result === 'EvalScript error.') {
+            alert('Error executing the pasteSpacing script.');
         }
     });
 }
