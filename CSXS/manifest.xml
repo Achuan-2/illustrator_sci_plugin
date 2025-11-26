@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ExtensionManifest Version="7.0" ExtensionBundleId="com.example.achuanPlugin" ExtensionBundleVersion="2.0.0" ExtensionBundleName="Achuan-2's Plugin" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<ExtensionManifest Version="7.0" ExtensionBundleId="com.example.achuanPlugin" ExtensionBundleVersion="2.0.0" ExtensionBundleName="SCI Toolbox" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <ExtensionList>
         <Extension Id="com.example.achuanPlugin.panel" Version="1.0" />
     </ExtensionList>
@@ -34,7 +34,7 @@
                 </Lifecycle>
                 <UI>
                     <Type>Panel</Type>
-                    <Menu>Achuan-2's Plugin</Menu>
+                    <Menu>SCI Toolbox</Menu>
                     <Geometry>
                         <Size>
                             <Height>300</Height>
