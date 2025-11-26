@@ -1138,7 +1138,7 @@ function pasteSpacing(direction, spacingMm) {
     if (direction === "horizontal") {
         // 从左到右设置间距
         for (var i = 1; i < ordered.length; i++) {
-            var prev = ordered[i-1];
+            var prev = ordered[i - 1];
             var curr = ordered[i];
             var prevInfo = getVisibleInfo(prev);
             var currInfo = getVisibleInfo(curr);
@@ -1149,7 +1149,7 @@ function pasteSpacing(direction, spacingMm) {
     } else {
         // 从上到下设置间距
         for (var j = 1; j < ordered.length; j++) {
-            var prev = ordered[j-1];
+            var prev = ordered[j - 1];
             var curr = ordered[j];
             var prevInfo = getVisibleInfo(prev);
             var currInfo = getVisibleInfo(curr);
