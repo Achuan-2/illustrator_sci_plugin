@@ -103,6 +103,12 @@
             color: var(--text);
         }
 
+        .panel h4 {
+            margin: 5px 0px 5px;
+            font-weight: 100;
+            font-size: 14px;
+            color: var(--muted);
+        }
         /* 表单区域改为响应式网格：根据宽度自动填充列 */
         .grid {
             display: grid;
@@ -340,36 +346,34 @@
             <!-- Distribute Panel -->
             <div class="panel" id="panel-distribute">
                 <h3>Even Spacing</h3>
-                <div class="grid">
-                    <div class="input-group">
-                        <label>Distribute:</label>
-                        <select id="distribute-orientation" style="width:140px">
-                            <option value="horizontal">Horizontal Spacing</option>
-                            <option value="vertical">Vertical Spacing</option>
-                        </select>
-                    </div>
-                </div>
                 <div class="toolbar">
-                    <button class="btn" id="distribute-button" title="Distribute spacing evenly">Distribute
-                        Spacing</button>
+                    <button class="btn" id="distribute-horizontal-button">Horizontal</button>
+                    <button class="btn" id="distribute-vertical-button">Vertical</button>
                 </div>
                 <h3>Spacing Paste</h3>
+                <!-- Horizontal -->
                 <div class="grid">
-                    <div class="input-group">
-                        <label>Spacing Direction:</label>
-                        <select id="spacing-direction" style="width:140px">
-                            <option value="horizontal">Horizontal</option>
-                            <option value="vertical">Vertical</option>
-                        </select>
-                    </div>
+                    <h4>Horizontal</h4>
                     <div class="input-group">
                         <label>Spacing (mm):</label>
-                        <input type="number" id="spacing-value" step="0.1" value="0">
+                        <input type="number" id="spacing-value-horizontal" step="0.1" value="0">
                     </div>
                 </div>
                 <div class="toolbar">
-                    <button class="btn" id="copy-spacing-button">Copy Spacing</button>
-                    <button class="btn btn-primary" id="paste-spacing-button">Paste Spacing</button>
+                    <button class="btn" id="copy-spacing-horizontal-button">Copy Spacing</button>
+                    <button class="btn btn-primary" id="paste-spacing-horizontal-button">Paste Spacing</button>
+                </div>
+                <!-- Vertical -->
+                <div class="grid">
+                    <h4 style="margin-top: 15px;">Vertical</h4>
+                    <div class="input-group">
+                        <label>Spacing (mm):</label>
+                        <input type="number" id="spacing-value-vertical" step="0.1" value="0">
+                    </div>
+                </div>
+                <div class="toolbar">
+                    <button class="btn" id="copy-spacing-vertical-button">Copy Spacing</button>
+                    <button class="btn btn-primary" id="paste-spacing-vertical-button">Paste Spacing</button>
                 </div>
             </div>
 

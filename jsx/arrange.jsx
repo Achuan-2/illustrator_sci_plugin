@@ -193,7 +193,7 @@ function getOrderedSelection(selection, order, reverse) {
                 if (cyA < cyB) return 1;
                 return 0;
             } else {
-                // vertical: 从上到下（top 值大在前）
+                // vertical: 从上到下（上方的 top 值更大，应排在前）
                 if (cyA > cyB) return -1;
                 if (cyA < cyB) return 1;
                 // 次级按 X 从左到右
@@ -981,24 +981,23 @@ function distributeSpacing(direction) {
 
         return "Success";
     } else {
-        // vertical (fix): compute positive gap magnitude and place items top->down
-        var y0 = infos[0].top;
-        var yLast = infos[n - 1].top;
+        // vertical: compute gap and place items top->down
+        var yTopFirst = infos[0].top;
+        var yBottomLast = infos[n - 1].bottom;
         var sumHeights = 0;
-        // sum heights of items 0..n-2 (same logic as horizontal)
-        for (var m = 0; m < n - 1; m++) {
+        // sum heights of all items
+        for (var m = 0; m < n; m++) {
             sumHeights += infos[m].height;
         }
         var gapsCountV = n - 1;
-        // Because top values decrease when moving downward in Illustrator,
-        // use y0 - yLast to get a positive span between first and last tops.
-        var gapV = (y0 - yLast - sumHeights) / gapsCountV;
+        // total available space between first top and last bottom
+        var totalSpan = yTopFirst - yBottomLast;
+        var gapV = (totalSpan - sumHeights) / gapsCountV;
 
-        // acc holds the current top reference; start from first item's top
-        var acc = y0;
         // place middle items (keep first and last fixed)
+        var acc = yTopFirst;
         for (var k2 = 1; k2 < n - 1; k2++) {
-            // compute target top for item k2: move down from previous acc by previous height + gap
+            // compute target top for item k2: previous bottom - gap (top decreases downwards)
             acc = acc - (infos[k2 - 1].height + gapV);
             var targetTop = acc;
             var curTop = infos[k2].top;
@@ -1088,22 +1087,20 @@ function copySpacing(direction) {
         return "Error: Please select exactly two items.";
     }
 
-    var a = sel[0];
-    var b = sel[1];
-    var ia = getVisibleInfo(a);
-    var ib = getVisibleInfo(b);
+    // Sort the two items from top to bottom or left to right
+    var ordered = getOrderedSelection(sel, direction, false);
+    var upperOrLeft = ordered[0];
+    var lowerOrRight = ordered[1];
+    var upperInfo = getVisibleInfo(upperOrLeft);
+    var lowerInfo = getVisibleInfo(lowerOrRight);
 
     var spacingPt = 0;
     if (direction === "horizontal") {
-        // horizontal gap: positive if gap, negative if overlap
-        var minRight = Math.min(ia.right, ib.right);
-        var maxLeft = Math.max(ia.left, ib.left);
-        spacingPt = maxLeft - minRight;
+        // horizontal gap: rightmost.left - leftmost.right
+        spacingPt = lowerInfo.left - upperInfo.right;
     } else {
-        // vertical gap: positive if gap, negative if overlap
-        var minBottom = Math.min(ia.bottom, ib.bottom);
-        var maxTop = Math.max(ia.top, ib.top);
-        spacingPt = maxTop - minBottom;
+        // vertical gap: upper.bottom - lower.top (positive when there's a gap)
+        spacingPt = upperInfo.bottom - lowerInfo.top;
     }
 
     var spacingMm = pointsToMm(spacingPt);
@@ -1145,7 +1142,8 @@ function pasteSpacing(direction, spacingMm) {
             var curr = ordered[j];
             var prevInfo = getVisibleInfo(prev);
             var currInfo = getVisibleInfo(curr);
-            var targetTop = prevInfo.bottom + spacingPt;
+            // 因为 top 在坐标系中随着向下减小，目标 top = prev.bottom - spacing
+            var targetTop = prevInfo.bottom - spacingPt;
             var dy = targetTop - currInfo.top;
             curr.translate(0, dy);
         }

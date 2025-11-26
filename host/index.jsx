@@ -34,14 +34,16 @@ var arrangeOrderSelect = document.querySelector("#arrange-order");
 var arrangeReverseOrderCheckbox = document.querySelector("#arrange-reverse-order");
 
 // Distribute spacing UI
-var distributeSelect = document.querySelector("#distribute-orientation");
-var distributeButton = document.querySelector("#distribute-button");
+var distributeVerticalButton = document.querySelector("#distribute-vertical-button");
+var distributeHorizontalButton = document.querySelector("#distribute-horizontal-button");
 
 // Spacing paste UI
-var spacingDirectionSelect = document.querySelector("#spacing-direction");
-var spacingValueInput = document.querySelector("#spacing-value");
-var copySpacingButton = document.querySelector("#copy-spacing-button");
-var pasteSpacingButton = document.querySelector("#paste-spacing-button");
+var spacingValueHorizontalInput = document.querySelector("#spacing-value-horizontal");
+var copySpacingHorizontalButton = document.querySelector("#copy-spacing-horizontal-button");
+var pasteSpacingHorizontalButton = document.querySelector("#paste-spacing-horizontal-button");
+var spacingValueVerticalInput = document.querySelector("#spacing-value-vertical");
+var copySpacingVerticalButton = document.querySelector("#copy-spacing-vertical-button");
+var pasteSpacingVerticalButton = document.querySelector("#paste-spacing-vertical-button");
 
 var fontFamilyInput = document.querySelector("#font-family");
 var fontSizeInput = document.querySelector("#font-size");
@@ -84,11 +86,13 @@ if (swapButton) swapButton.addEventListener("click", handleSwap);
 copySizeButton.addEventListener("click", handleCopySize);
 pasteSizeButton.addEventListener("click", handlePasteSize);
 
-if (distributeButton) distributeButton.addEventListener("click", handleDistributeSpacing);
+distributeVerticalButton.addEventListener("click", () => handleDistributeSpacing("vertical"));
+distributeHorizontalButton.addEventListener("click", () => handleDistributeSpacing("horizontal"));
 
-// Spacing paste event listeners
-if (copySpacingButton) copySpacingButton.addEventListener("click", handleCopySpacing);
-if (pasteSpacingButton) pasteSpacingButton.addEventListener("click", handlePasteSpacing);
+copySpacingHorizontalButton.addEventListener("click", () => handleCopySpacing("horizontal"));
+pasteSpacingHorizontalButton.addEventListener("click", () => handlePasteSpacing("horizontal", spacingValueHorizontalInput.value));
+copySpacingVerticalButton.addEventListener("click", () => handleCopySpacing("vertical"));
+pasteSpacingVerticalButton.addEventListener("click", () => handlePasteSpacing("vertical", spacingValueVerticalInput.value));
 
 // Add event listener for undo label index button
 undoLabelIndexButton.addEventListener("click", handleUndoLabelIndex);
@@ -531,13 +535,7 @@ function handleSwap() {
     });
 }
 
-function handleDistributeSpacing() {
-    var orientation = (distributeSelect && distributeSelect.value) || 'none';
-    if (orientation === 'none') {
-        alert('Please select Horizontal or Vertical distribution.');
-        return;
-    }
-
+function handleDistributeSpacing(orientation) {
     csInterface.evalScript(`$.evalFile("${csInterface.getSystemPath(SystemPath.EXTENSION)}/jsx/arrange.jsx")`);
     csInterface.evalScript(`distributeSpacing("${orientation}")`, function (result) {
         if (result && result.indexOf && result.indexOf("Error:") === 0) {
@@ -548,10 +546,8 @@ function handleDistributeSpacing() {
     });
 }
 
-function handleCopySpacing() {
+function handleCopySpacing(direction) {
     console.log("Copy Spacing button clicked");
-    var direction = spacingDirectionSelect.value;
-
     csInterface.evalScript(`$.evalFile("${csInterface.getSystemPath(SystemPath.EXTENSION)}/jsx/arrange.jsx")`);
     csInterface.evalScript(`copySpacing("${direction}")`, function (result) {
         if (result && result.indexOf("Error:") === 0) {
@@ -559,15 +555,18 @@ function handleCopySpacing() {
             return;
         }
         if (result && result !== 'EvalScript error.') {
-            spacingValueInput.value = parseFloat(result).toFixed(3);
+            if (direction === "horizontal") {
+                spacingValueHorizontalInput.value = parseFloat(result).toFixed(3);
+            } else {
+                spacingValueVerticalInput.value = parseFloat(result).toFixed(3);
+            }
         }
     });
 }
 
-function handlePasteSpacing() {
+function handlePasteSpacing(direction, spacingValue) {
     console.log("Paste Spacing button clicked");
-    var direction = spacingDirectionSelect.value;
-    var spacing = parseFloat(spacingValueInput.value);
+    var spacing = parseFloat(spacingValue);
 
     if (isNaN(spacing)) {
         alert("Please enter a valid spacing value.");
