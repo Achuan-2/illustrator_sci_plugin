@@ -1130,7 +1130,7 @@ function pasteSpacing(direction, spacingMm, moveLeftOrTop) {
             // Move left items: from right to left
             for (var i = ordered.length - 2; i >= 0; i--) {
                 var curr = ordered[i];
-                var next = ordered[i+1];
+                var next = ordered[i + 1];
                 var currInfo = getVisibleInfo(curr);
                 var nextInfo = getVisibleInfo(next);
                 // Move current item to next.left - spacing - curr.width
@@ -1155,7 +1155,7 @@ function pasteSpacing(direction, spacingMm, moveLeftOrTop) {
             // Move top items: from bottom to top
             for (var j = ordered.length - 2; j >= 0; j--) {
                 var curr = ordered[j];
-                var next = ordered[j+1];
+                var next = ordered[j + 1];
                 var currInfo = getVisibleInfo(curr);
                 var nextInfo = getVisibleInfo(next);
                 // Move current item to next.top + spacing + curr.height
