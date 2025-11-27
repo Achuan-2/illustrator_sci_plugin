@@ -1112,8 +1112,9 @@ function copySpacing(direction) {
  * Applies the specified spacing between multiple selected items in the specified direction.
  * direction: "horizontal" | "vertical"
  * spacingMm: spacing in millimeters
+ * moveLeftOrTop: boolean, if true, move left/top items instead of right/bottom
  */
-function pasteSpacing(direction, spacingMm) {
+function pasteSpacing(direction, spacingMm, moveLeftOrTop) {
     if (app.documents.length === 0) return "Error: No document open.";
     var sel = app.activeDocument.selection;
     if (!sel || sel.length < 2) {
@@ -1125,27 +1126,55 @@ function pasteSpacing(direction, spacingMm) {
     var ordered = getOrderedSelection(sel, ord, false);
 
     if (direction === "horizontal") {
-        // 从左到右设置间距
-        for (var i = 1; i < ordered.length; i++) {
-            var prev = ordered[i - 1];
-            var curr = ordered[i];
-            var prevInfo = getVisibleInfo(prev);
-            var currInfo = getVisibleInfo(curr);
-            var targetLeft = prevInfo.right + spacingPt;
-            var dx = targetLeft - currInfo.left;
-            curr.translate(dx, 0);
+        if (moveLeftOrTop) {
+            // Move left items: from right to left
+            for (var i = ordered.length - 2; i >= 0; i--) {
+                var curr = ordered[i];
+                var next = ordered[i+1];
+                var currInfo = getVisibleInfo(curr);
+                var nextInfo = getVisibleInfo(next);
+                // Move current item to next.left - spacing - curr.width
+                var targetLeft = nextInfo.left - spacingPt - currInfo.width;
+                var dx = targetLeft - currInfo.left;
+                curr.translate(dx, 0);
+            }
+        } else {
+            // Default: move right items from left to right
+            for (var i = 1; i < ordered.length; i++) {
+                var prev = ordered[i - 1];
+                var curr = ordered[i];
+                var prevInfo = getVisibleInfo(prev);
+                var currInfo = getVisibleInfo(curr);
+                var targetLeft = prevInfo.right + spacingPt;
+                var dx = targetLeft - currInfo.left;
+                curr.translate(dx, 0);
+            }
         }
     } else {
-        // 从上到下设置间距
-        for (var j = 1; j < ordered.length; j++) {
-            var prev = ordered[j - 1];
-            var curr = ordered[j];
-            var prevInfo = getVisibleInfo(prev);
-            var currInfo = getVisibleInfo(curr);
-            // 因为 top 在坐标系中随着向下减小，目标 top = prev.bottom - spacing
-            var targetTop = prevInfo.bottom - spacingPt;
-            var dy = targetTop - currInfo.top;
-            curr.translate(0, dy);
+        if (moveLeftOrTop) {
+            // Move top items: from bottom to top
+            for (var j = ordered.length - 2; j >= 0; j--) {
+                var curr = ordered[j];
+                var next = ordered[j+1];
+                var currInfo = getVisibleInfo(curr);
+                var nextInfo = getVisibleInfo(next);
+                // Move current item to next.top + spacing + curr.height
+                var targetTop = nextInfo.top + spacingPt + currInfo.height;
+                var dy = targetTop - currInfo.top;
+                curr.translate(0, dy);
+            }
+        } else {
+            // Default: move bottom items from top to bottom
+            for (var j = 1; j < ordered.length; j++) {
+                var prev = ordered[j - 1];
+                var curr = ordered[j];
+                var prevInfo = getVisibleInfo(prev);
+                var currInfo = getVisibleInfo(curr);
+                // 因为 top 在坐标系中随着向下减小，目标 top = prev.bottom - spacing
+                var targetTop = prevInfo.bottom - spacingPt;
+                var dy = targetTop - currInfo.top;
+                curr.translate(0, dy);
+            }
         }
     }
 

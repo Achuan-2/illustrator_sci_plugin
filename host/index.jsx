@@ -45,6 +45,9 @@ var spacingValueVerticalInput = document.querySelector("#spacing-value-vertical"
 var copySpacingVerticalButton = document.querySelector("#copy-spacing-vertical-button");
 var pasteSpacingVerticalButton = document.querySelector("#paste-spacing-vertical-button");
 
+var moveLeftHorizontalCheckbox = document.querySelector("#move-left-horizontal");
+var moveTopVerticalCheckbox = document.querySelector("#move-top-vertical");
+
 var fontFamilyInput = document.querySelector("#font-family");
 var fontSizeInput = document.querySelector("#font-size");
 var fontBoldCheckbox = document.querySelector("#font-bold");
@@ -90,9 +93,9 @@ distributeVerticalButton.addEventListener("click", () => handleDistributeSpacing
 distributeHorizontalButton.addEventListener("click", () => handleDistributeSpacing("horizontal"));
 
 copySpacingHorizontalButton.addEventListener("click", () => handleCopySpacing("horizontal"));
-pasteSpacingHorizontalButton.addEventListener("click", () => handlePasteSpacing("horizontal", spacingValueHorizontalInput.value));
+pasteSpacingHorizontalButton.addEventListener("click", () => handlePasteSpacing("horizontal", spacingValueHorizontalInput.value, moveLeftHorizontalCheckbox.checked));
 copySpacingVerticalButton.addEventListener("click", () => handleCopySpacing("vertical"));
-pasteSpacingVerticalButton.addEventListener("click", () => handlePasteSpacing("vertical", spacingValueVerticalInput.value));
+pasteSpacingVerticalButton.addEventListener("click", () => handlePasteSpacing("vertical", spacingValueVerticalInput.value, moveTopVerticalCheckbox.checked));
 
 // Add event listener for undo label index button
 undoLabelIndexButton.addEventListener("click", handleUndoLabelIndex);
@@ -564,7 +567,7 @@ function handleCopySpacing(direction) {
     });
 }
 
-function handlePasteSpacing(direction, spacingValue) {
+function handlePasteSpacing(direction, spacingValue, moveLeftOrTop) {
     console.log("Paste Spacing button clicked");
     var spacing = parseFloat(spacingValue);
 
@@ -574,7 +577,7 @@ function handlePasteSpacing(direction, spacingValue) {
     }
 
     csInterface.evalScript(`$.evalFile("${csInterface.getSystemPath(SystemPath.EXTENSION)}/jsx/arrange.jsx")`);
-    csInterface.evalScript(`pasteSpacing("${direction}", ${spacing})`, function (result) {
+    csInterface.evalScript(`pasteSpacing("${direction}", ${spacing}, ${moveLeftOrTop})`, function (result) {
         if (result && result.indexOf("Error:") === 0) {
             alert(result);
         } else if (result === 'EvalScript error.') {
