@@ -109,6 +109,7 @@
             font-size: 14px;
             color: var(--muted);
         }
+
         /* 表单区域改为响应式网格：根据宽度自动填充列 */
         .grid {
             display: grid;
@@ -507,7 +508,7 @@
         var PluginSettings = {
             // 默认设置
             defaults: {
-                fontFamily: "Arial",
+                fontFamily: "ArialMT",
                 fontSize: 8,
                 fontBold: false,
                 labelOffsetX: -6,
@@ -604,7 +605,7 @@
                 settingsInputs.forEach(function (id) {
                     var element = document.getElementById(id);
                     if (element) {
-                        var eventType = element.type === 'checkbox' ? 'change' : 'input';
+                        var eventType = (element.type === 'checkbox' || element.tagName === 'SELECT') ? 'change' : 'input';
                         element.addEventListener(eventType, function () {
                             // 延迟保存，避免频繁写入
                             clearTimeout(self.saveTimeout);
