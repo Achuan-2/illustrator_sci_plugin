@@ -82,7 +82,12 @@
   <img alt="PixPin_2025-09-10_16-34-58" src="https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-09-10_16-34-58-20250910163500-46cw2gv.png" />
   <br>
   <img alt="PixPin_2025-09-10_16-09-36" src="https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-09-10_16-09-36-20250910163518-gs9tdog.gif" />
-- 间距均匀分布功能:一键统一不同宽高的形状之间的间距
+- 间距设置功能
+  - 间距均匀分布功能:一键统一不同宽高的形状之间的水平/垂直间距
+  - 间距复制粘贴功能：快速复制粘贴水平/垂直间距
+
+  <img width="937" height="987" alt="image" src="https://github.com/user-attachments/assets/1b804050-1cb2-44a5-a711-1833f28d17f9" />
+
 
 ## 3 如何使用本插件
 
