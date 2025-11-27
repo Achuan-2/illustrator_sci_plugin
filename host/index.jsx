@@ -40,13 +40,13 @@ var distributeHorizontalButton = document.querySelector("#distribute-horizontal-
 // Spacing paste UI
 var spacingValueHorizontalInput = document.querySelector("#spacing-value-horizontal");
 var copySpacingHorizontalButton = document.querySelector("#copy-spacing-horizontal-button");
-var pasteSpacingHorizontalButton = document.querySelector("#paste-spacing-horizontal-button");
 var spacingValueVerticalInput = document.querySelector("#spacing-value-vertical");
 var copySpacingVerticalButton = document.querySelector("#copy-spacing-vertical-button");
-var pasteSpacingVerticalButton = document.querySelector("#paste-spacing-vertical-button");
 
-var moveLeftHorizontalCheckbox = document.querySelector("#move-left-horizontal");
-var moveTopVerticalCheckbox = document.querySelector("#move-top-vertical");
+var moveLeftHorizontalButton = document.querySelector("#move-left-horizontal-button");
+var moveRightHorizontalButton = document.querySelector("#move-right-horizontal-button");
+var moveTopVerticalButton = document.querySelector("#move-top-vertical-button");
+var moveBottomVerticalButton = document.querySelector("#move-bottom-vertical-button");
 
 var fontFamilyInput = document.querySelector("#font-family");
 var fontSizeInput = document.querySelector("#font-size");
@@ -93,9 +93,11 @@ distributeVerticalButton.addEventListener("click", () => handleDistributeSpacing
 distributeHorizontalButton.addEventListener("click", () => handleDistributeSpacing("horizontal"));
 
 copySpacingHorizontalButton.addEventListener("click", () => handleCopySpacing("horizontal"));
-pasteSpacingHorizontalButton.addEventListener("click", () => handlePasteSpacing("horizontal", spacingValueHorizontalInput.value, moveLeftHorizontalCheckbox.checked));
+moveLeftHorizontalButton.addEventListener("click", () => handlePasteSpacing("horizontal", spacingValueHorizontalInput.value, true));
+moveRightHorizontalButton.addEventListener("click", () => handlePasteSpacing("horizontal", spacingValueHorizontalInput.value, false));
 copySpacingVerticalButton.addEventListener("click", () => handleCopySpacing("vertical"));
-pasteSpacingVerticalButton.addEventListener("click", () => handlePasteSpacing("vertical", spacingValueVerticalInput.value, moveTopVerticalCheckbox.checked));
+moveTopVerticalButton.addEventListener("click", () => handlePasteSpacing("vertical", spacingValueVerticalInput.value, true));
+moveBottomVerticalButton.addEventListener("click", () => handlePasteSpacing("vertical", spacingValueVerticalInput.value, false));
 
 // Add event listener for undo label index button
 undoLabelIndexButton.addEventListener("click", handleUndoLabelIndex);
