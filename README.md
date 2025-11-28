@@ -1,8 +1,9 @@
 <div align="center">
 
 [English](README_EN.md) | 简体中文
-
 </div>
+
+[![Star History Chart](https://api.star-history.com/svg?repos=Achuan-2/illustrator_sci_toolbox&type=Date)](https://www.star-history.com/#Achuan-2/illustrator_sci_toolbox&Date)
 
 # README
 
