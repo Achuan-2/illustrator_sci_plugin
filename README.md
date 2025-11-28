@@ -1,8 +1,9 @@
 <div align="center">
 
 [English](README_EN.md) | 简体中文
-
 </div>
+
+[![Star History Chart](https://api.star-history.com/svg?repos=Achuan-2/illustrator_sci_toolbox&type=Date)](https://www.star-history.com/#Achuan-2/illustrator_sci_toolbox&Date)
 
 # README
 
@@ -20,16 +21,21 @@
 
 ## 2 功能介绍
 
+<img width="1393" height="624" alt="image" src="https://github.com/user-attachments/assets/e9a08988-f5cf-4ed7-9f6e-fba1d7214c01" />
+
+
 - 复制粘贴相对位置：
 
-  使用技巧
-  - 手动设置两个对象的相对位置：修改ΔX和ΔY可以手动设置两个对象的相对位置，比如想让文字距离矩形左上角x方向2mm，y方向2mm
-  - 复制一个对象的相对位置时，默认以画板为参考，这样可以先把一个形状移出去，然后对下面的形状进行改动，然后再粘贴回原来位置
+  使用说明
+
+  - 复制一个对象的相对位置时，默认以画板为参考
   - 复制两个对象以上的相对位置，默认以第一个对象为参考对象，复制后面的对象对于第一个对象的相对位置，可以更改Order来调整对象顺序，插件支持根据垂直位置、水平位置以及图层顺序来确定对象顺序。如果你想以最后一个对象为参考对象，可以把“Reverse Order”打上勾，这样就是以最后一个对象为参考点
   - 当需要对多个对象进行跨画布统一位置时，勾选Artboard Reference
 
   使用场景
-  - 手动设置两个对象的相对位置
+
+  - 复制一个对象的相对位置时，默认以画板为参考，这样可以先把一个形状移出去，然后对下面的形状进行改动，然后再粘贴回原来位置
+  - 快速实现不同图同一个位置添加同一个标注，一个图排版好，就可以复制粘贴给其他图
   - 快速统一排列方式：如果已经排好了一组图，想对另一组图也按照之前那组图的排布方式排布，也可以一键复制并粘贴相对位置就瞬间排好了
   - 快速统一label位置：一个图加了label，其他图的label位置也需要一样，也可以快速统一
   - 可以基于画布复制多选形状的位置，进行跨画布统一位置
@@ -73,20 +79,46 @@
   <img alt="PixPin_2025-08-06_17-59-37" src="https://github.com/user-attachments/assets/b1024d68-50e9-402a-9034-8ffc22f5947b" />
 
 ​
-- 一键添加label
+- 一键添加label和更新label
 
-  使用技巧
+  - 添加label
 
-  - 添加label后，offset 输入框变红，修改值就会自动实时更改label offset，还支持鼠标滚动修改，要退出这个状态只需要随意点击其他按钮、输入框即可
+    <img alt="PixPin_2025-09-10_16-34-58" src="https://assets.b3logfile.com/siyuan/1610205759005/assets/PixPin_2025-09-10_16-34-58-20250910163500-46cw2gv.png" />
 
-  <img alt="PixPin_2025-09-10_16-34-58" src="https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-09-10_16-34-58-20250910163500-46cw2gv.png" />
-  <br>
-  <img alt="PixPin_2025-09-10_16-09-36" src="https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-09-10_16-09-36-20250910163518-gs9tdog.gif" />
+    添加子图label后，offset 输入框变红，修改值就会自动实时更改label offset，还支持悬浮输入框鼠标滚轮滚动快速实时移动label
+
+    注：要退出这个状态只需要随意点击其他按钮、输入框即可
+
+    <img alt="减少帧数2" src="https://assets.b3logfile.com/siyuan/1610205759005/assets/减少帧数2-20251128232313-i4ncm0a.gif" />
+  - 更新label
+
+    根据设置的样式和编号来一键更新Label已有编号，子图重排、更新编号模板的时候就不需要自己一个个重写编号了
+
+    批量选中label一键更新
+
+    <img alt="PixPin_2025-11-28_23-07-13" src="https://assets.b3logfile.com/siyuan/1610205759005/assets/PixPin_2025-11-28_23-07-13-20251128230731-2wk5yaa.gif" />
+
+    根据设置的label index编号来一个个更新
+
+    <img alt="减少帧数" src="https://assets.b3logfile.com/siyuan/1610205759005/assets/减少帧数-20251128232207-13i4s6e.gif" />
+
 - 间距设置功能
-  - 间距均匀分布功能:一键统一不同宽高的形状之间的水平/垂直间距
+
+  - 间距均匀分布功能：一键统一不同宽高的形状之间的水平/垂直间距
+
+    ![水平间距均匀分布-20251128204458-56dc2da](https://github.com/user-attachments/assets/971991ff-cec1-4488-b862-26534e445522)
+
+    > ps：写完这个功能我才发现illustrator的分布间距功能本身就是支持均匀分布的（捂脸，我之前一直以为只能指定固定值，否则不能点击，看到网上的教程也只说用于固定间距，没说可以均匀分布，大意了，不过写了就写了吧）
+    >
+    > ![image](https://github.com/user-attachments/assets/6059211c-131e-45e2-bfac-5914016e8eb9)
+    >
   - 间距复制粘贴功能：快速复制粘贴水平/垂直间距
 
-  <img width="937" height="987" alt="image" src="https://github.com/user-attachments/assets/1b804050-1cb2-44a5-a711-1833f28d17f9" />
+    官方的分布间距只能指定值，而不能获取值，如果原先一直排好了两个形状的间距，想批量应用到其他形状，就可以用本功能
+
+    下面是一个例子：在画一个流程图，矩形和箭头的间距调整了一个满意的，然后就可以复制这个间距，快速批量应用于其他矩形和箭头，统一这个间距
+
+    ![复制粘贴间距-20251128205250-r9vjwbw](https://github.com/user-attachments/assets/0567f2aa-6a3c-4757-9ffd-f1fc3cf12d58)
 
 
 ## 3 如何使用本插件
