@@ -79,15 +79,29 @@
   <img alt="PixPin_2025-08-06_17-59-37" src="https://github.com/user-attachments/assets/b1024d68-50e9-402a-9034-8ffc22f5947b" />
 
 ​
-- 一键添加label
+- 一键添加label和更新label
 
-  使用技巧
+  - 添加label
 
-  - 添加label后，offset 输入框变红，修改值就会自动实时更改label offset，还支持鼠标滚动修改，要退出这个状态只需要随意点击其他按钮、输入框即可
+    <img alt="PixPin_2025-09-10_16-34-58" src="https://assets.b3logfile.com/siyuan/1610205759005/assets/PixPin_2025-09-10_16-34-58-20250910163500-46cw2gv.png" />
 
-  <img alt="PixPin_2025-09-10_16-34-58" src="https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-09-10_16-34-58-20250910163500-46cw2gv.png" />
-  <br>
-  <img alt="PixPin_2025-09-10_16-09-36" src="https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-09-10_16-09-36-20250910163518-gs9tdog.gif" />
+    添加子图label后，offset 输入框变红，修改值就会自动实时更改label offset，还支持悬浮输入框鼠标滚轮滚动快速实时移动label
+
+    注：要退出这个状态只需要随意点击其他按钮、输入框即可
+
+    <img alt="减少帧数2" src="https://assets.b3logfile.com/siyuan/1610205759005/assets/减少帧数2-20251128232313-i4ncm0a.gif" />
+  - 更新label
+
+    根据设置的样式和编号来一键更新Label已有编号，子图重排、更新编号模板的时候就不需要自己一个个重写编号了
+
+    批量选中label一键更新
+
+    <img alt="PixPin_2025-11-28_23-07-13" src="https://assets.b3logfile.com/siyuan/1610205759005/assets/PixPin_2025-11-28_23-07-13-20251128230731-2wk5yaa.gif" />
+
+    根据设置的label index编号来一个个更新
+
+    <img alt="减少帧数" src="https://assets.b3logfile.com/siyuan/1610205759005/assets/减少帧数-20251128232207-13i4s6e.gif" />
+
 - 间距设置功能
 
   - 间距均匀分布功能：一键统一不同宽高的形状之间的水平/垂直间距
