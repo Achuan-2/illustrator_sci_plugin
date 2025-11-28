@@ -83,10 +83,22 @@
   <br>
   <img alt="PixPin_2025-09-10_16-09-36" src="https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-09-10_16-09-36-20250910163518-gs9tdog.gif" />
 - 间距设置功能
+
   - 间距均匀分布功能:一键统一不同宽高的形状之间的水平/垂直间距
+
+    ![水平间距均匀分布-20251128204458-56dc2da](https://github.com/user-attachments/assets/971991ff-cec1-4488-b862-26534e445522)
+
+    > ps：写完这个功能我才发现illustrator的分布间距功能本身就是支持均匀分布的（捂脸，我之前一直以为只能指定固定值，否则不能点击，看到网上的教程也只说用于固定间距，没说可以均匀分布，大意了，不过写了就写了吧）
+    >
+    > ![image](https://github.com/user-attachments/assets/6059211c-131e-45e2-bfac-5914016e8eb9)
+    >
   - 间距复制粘贴功能：快速复制粘贴水平/垂直间距
 
-  <img width="937" height="987" alt="image" src="https://github.com/user-attachments/assets/1b804050-1cb2-44a5-a711-1833f28d17f9" />
+    官方的分布间距只能指定值，而不能获取值，如果原先一直排好了两个形状的间距，想批量应用到其他形状，就可以用本功能
+
+    下面是一个例子：在画一个流程图，矩形和箭头的间距调整了一个满意的，然后就可以复制这个间距，快速批量应用于其他矩形和箭头，统一这个间距
+
+    ![复制粘贴间距-20251128205250-r9vjwbw](https://github.com/user-attachments/assets/0567f2aa-6a3c-4757-9ffd-f1fc3cf12d58)
 
 
 ## 3 如何使用本插件
