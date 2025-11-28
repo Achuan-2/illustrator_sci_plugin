@@ -17,6 +17,24 @@ function simpleJsonStringify(arr) {
     return '[' + parts.join(',') + ']';
 }
 
+// 简化字体名称决策逻辑: 根据 fontFamily 与 bold 返回正确的字体 PostScript 名称
+function getFontFullName(fontFamily, bold) {
+    var f = fontFamily || '';
+    switch (f) {
+        case 'ArialMT':
+            return bold ? 'Arial-BoldMT' : 'ArialMT';
+        case 'TimesNewRomanPSMT':
+            return bold ? 'TimesNewRomanPS-BoldMT' : 'TimesNewRomanPSMT';
+        default:
+            // 对于其他字体，尽量保持简单：若 bold 则尝试追加 -BoldMT，否则返回原名
+            if (bold) {
+                if (f.indexOf('-BoldMT') !== -1 || f.indexOf('Bold') !== -1) return f;
+                return f + '-BoldMT';
+            }
+            return f;
+    }
+}
+
 // 更稳健的获取“可视区域”边界，参考用户提供逻辑，优先基于剪切路径/复合路径计算
 // 返回 [left, top, right, bottom]，未能获取时返回 undefined
 function getVisibleBounds(o) {
@@ -328,35 +346,12 @@ function addLabelsToImages(fontFamily, fontSize, fontBold, labelOffsetX, labelOf
             // Style
             textFrame.textRange.characterAttributes.size = fontSize;
             try {
-                var fontName = fontFamily === "Arial" ? "ArialMT" : fontFamily;
-                // If bold is requested, try to find the bold version of the font
-                if (fontBold) {
-                    // Try different bold font name patterns
-                    var boldFontNames = [
-                        fontFamily + "-BoldMT",
-                        fontFamily + "-Bold",
-                        fontFamily + " Bold",
-                        fontName + "-Bold",
-                        fontName + "Bold"
-                    ];
-
-                    var fontFound = false;
-                    for (var k = 0; k < boldFontNames.length; k++) {
-                        try {
-                            textFrame.textRange.characterAttributes.textFont = app.textFonts.getByName(boldFontNames[k]);
-                            fontFound = true;
-                            break;
-                        } catch (e) {
-                            // Continue trying other names
-                        }
-                    }
-
-                    // If no bold font found, use regular font
-                    if (!fontFound) {
-                        textFrame.textRange.characterAttributes.textFont = app.textFonts.getByName(fontName);
-                    }
-                } else {
-                    textFrame.textRange.characterAttributes.textFont = app.textFonts.getByName(fontName);
+                var resolved = getFontFullName(fontFamily, !!fontBold);
+                try {
+                    textFrame.textRange.characterAttributes.textFont = app.textFonts.getByName(resolved);
+                } catch (e) {
+                    // Fallback: try the raw fontFamily; if that fails, bubble up error
+                    textFrame.textRange.characterAttributes.textFont = app.textFonts.getByName(fontFamily);
                 }
             } catch (e) {
                 return "Error: Font not found: " + fontFamily;
@@ -445,35 +440,12 @@ function updateLabelIndex(fontFamily, fontSize, fontBold, labelTemplate, fontCol
             // 更新字体样式
             textFrame.textRange.characterAttributes.size = fontSize;
             try {
-                var fontName = fontFamily === "Arial" ? "ArialMT" : fontFamily;
-                // If bold is requested, try to find the bold version of the font
-                if (fontBold) {
-                    // Try different bold font name patterns
-                    var boldFontNames = [
-                        fontFamily + "-BoldMT",
-                        fontFamily + "-Bold",
-                        fontFamily + " Bold",
-                        fontName + "-Bold",
-                        fontName + "Bold"
-                    ];
-
-                    var fontFound = false;
-                    for (var k = 0; k < boldFontNames.length; k++) {
-                        try {
-                            textFrame.textRange.characterAttributes.textFont = app.textFonts.getByName(boldFontNames[k]);
-                            fontFound = true;
-                            break;
-                        } catch (e) {
-                            // Continue trying other names
-                        }
-                    }
-
-                    // If no bold font found, use regular font
-                    if (!fontFound) {
-                        textFrame.textRange.characterAttributes.textFont = app.textFonts.getByName(fontName);
-                    }
-                } else {
-                    textFrame.textRange.characterAttributes.textFont = app.textFonts.getByName(fontName);
+                var resolvedUp = getFontFullName(fontFamily, !!fontBold);
+                try {
+                    textFrame.textRange.characterAttributes.textFont = app.textFonts.getByName(resolvedUp);
+                } catch (e) {
+                    // fallback to raw font family name
+                    textFrame.textRange.characterAttributes.textFont = app.textFonts.getByName(fontFamily);
                 }
             } catch (e) {
                 // 如果字体不存在，使用默认字体
