@@ -86,7 +86,7 @@
   <img alt="PixPin_2025-09-10_16-09-36" src="https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-09-10_16-09-36-20250910163518-gs9tdog.gif" />
 - 间距设置功能
 
-  - 间距均匀分布功能:一键统一不同宽高的形状之间的水平/垂直间距
+  - 间距均匀分布功能：一键统一不同宽高的形状之间的水平/垂直间距
 
     ![水平间距均匀分布-20251128204458-56dc2da](https://github.com/user-attachments/assets/971991ff-cec1-4488-b862-26534e445522)
 
