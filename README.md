@@ -21,6 +21,9 @@
 
 ## 2 功能介绍
 
+<img width="1393" height="624" alt="image" src="https://github.com/user-attachments/assets/e9a08988-f5cf-4ed7-9f6e-fba1d7214c01" />
+
+
 - 复制粘贴相对位置：
 
   使用说明
