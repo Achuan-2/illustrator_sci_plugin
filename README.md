@@ -5,9 +5,6 @@
 
 [![Star History Chart](https://api.star-history.com/svg?repos=Achuan-2/illustrator_sci_toolbox&type=Date)](https://www.star-history.com/#Achuan-2/illustrator_sci_toolbox&Date)
 
-# README
-
-插件地址：[Achuan-2/illustrator_sci_plugin](https://github.com/Achuan-2/illustrator_sci_plugin)
 
 ## 1 开发背景
 
