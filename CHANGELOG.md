@@ -1,3 +1,7 @@
+## v2.2.0 / 20251209
+
+  - ✨支持添加 border
+
 ## v2.1.0 / 20251127
 
 - ✨ 新增间距均匀分布功能，方便统一不同宽高的形状之间的间距 [#21](https://github.com/Achuan-2/illustrator_sci_plugin/issues/21)
