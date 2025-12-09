@@ -77,6 +77,12 @@ var pasteSizeButton = document.querySelector("#paste-size-button");
 var useSizeWCheckbox = document.querySelector("#use-size-w");
 var useSizeHCheckbox = document.querySelector("#use-size-h");
 
+// Border UI Elements
+var borderColorInput = document.querySelector("#border-color");
+var borderThicknessInput = document.querySelector("#border-thickness");
+var addBorderButton = document.querySelector("#add-border-button");
+var borderDashInput = document.querySelector("#border-dash");
+
 // Event Listeners
 arrangeButton.addEventListener("click", handleArrange);
 addLabelButton.addEventListener("click", handleAddLabel);
@@ -88,6 +94,8 @@ if (swapButton) swapButton.addEventListener("click", handleSwap);
 
 copySizeButton.addEventListener("click", handleCopySize);
 pasteSizeButton.addEventListener("click", handlePasteSize);
+
+addBorderButton.addEventListener("click", handleAddBorder);
 
 distributeVerticalButton.addEventListener("click", () => handleDistributeSpacing("vertical"));
 distributeHorizontalButton.addEventListener("click", () => handleDistributeSpacing("horizontal"));
@@ -646,4 +654,22 @@ function handleLabelOffsetWheel(event) {
 
     // Trigger the input change handler to update labels in real-time
     handleLabelOffsetChange();
+}
+
+function handleAddBorder() {
+    console.log("Add Border button clicked");
+    var color = borderColorInput.value;
+    var thickness = parseFloat(borderThicknessInput.value);
+    var dash = parseFloat(borderDashInput && borderDashInput.value) || 0;
+    if (isNaN(thickness) || thickness <= 0) {
+        alert("Invalid thickness value.");
+        return;
+    }
+
+    csInterface.evalScript(`$.evalFile("${csInterface.getSystemPath(SystemPath.EXTENSION)}/jsx/arrange.jsx")`);
+    csInterface.evalScript(`addBorder("${color}", ${thickness}, ${dash})`, function (result) {
+        if (result && result.indexOf("Error:") === 0) {
+            alert(result);
+        }
+    });
 }

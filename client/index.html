@@ -244,6 +244,7 @@
             <div class="tab" data-target="panel-distribute" data-hash="distribute">Spacing Set</div>
             <div class="tab" data-target="panel-swap" data-hash="swap">Swap</div>
             <div class="tab" data-target="panel-labels" data-hash="labels">Image Labels</div>
+            <div class="tab" data-target="panel-border" data-hash="border">Add Border</div>
             <div class="tab" data-target="panel-about" data-hash="about">About</div>
         </div>
         <div class="content">
@@ -485,6 +486,27 @@
                     <button class="btn btn-primary" id="paste-size-button">Paste Size</button>
                 </div>
             </div>
+            <!-- Add Border Panel -->
+            <div class="panel" id="panel-border">
+                <h3>Add Border</h3>
+                <div class="grid">
+                    <div class="input-group">
+                        <label for="border-color">Color:</label>
+                        <input type="color" id="border-color" value="#000000">
+                    </div>
+                    <div class="input-group">
+                        <label for="border-thickness">Thickness (pt):</label>
+                        <input type="number" id="border-thickness" value="1" min="0.1" step="0.1">
+                    </div>
+                    <div class="input-group">
+                        <label for="border-dash">Dash Gap (pt):</label>
+                        <input type="number" id="border-dash" value="0" min="0" step="0.1" title="0 = solid; >0 sets dash gap in points">
+                    </div>
+                </div>
+                <div class="toolbar">
+                    <button class="btn btn-primary" id="add-border-button">Add Border</button>
+                </div>
+            </div>
             <!-- About Panel -->
             <div class="panel" id="panel-about">
                 <h3>About This Plugin</h3>
@@ -639,6 +661,7 @@
                 else if (hash === 'distribute') target = 'panel-distribute';
                 else if (hash === 'labels') target = 'panel-labels';
                 else if (hash === 'size') target = 'panel-size';
+                else if (hash === 'border') target = 'panel-border';
                 else if (hash === 'swap') target = 'panel-swap';
                 else if (hash === 'about') target = 'panel-about';
 

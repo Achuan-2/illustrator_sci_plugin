@@ -1152,3 +1152,69 @@ function pasteSpacing(direction, spacingMm, moveLeftOrTop) {
 
     return "Success";
 }
+
+/**
+ * addBorder
+ * Adds a border rectangle around each selected item.
+ * color: hex color string like "#000000"
+ * thickness: stroke width in points
+ */
+function addBorder(color, thickness, dash) {
+    if (app.documents.length === 0) return "Error: No document open.";
+
+    var doc = app.activeDocument;
+    var selection = doc.selection;
+
+    if (selection.length === 0) {
+        return "Error: Please select items to add border.";
+    }
+
+    for (var i = 0; i < selection.length; i++) {
+        var item = selection[i];
+        var bounds = getVisibleBounds(item) || item.visibleBounds;
+
+        // Create rectangle: pathItems.rectangle(top, left, width, height)
+        // Note: height must be positive (top - bottom), not bottom - top
+        var top = bounds[1];
+        var left = bounds[0];
+        var width = bounds[2] - bounds[0];
+        var height = bounds[1] - bounds[3];
+        var rect = doc.pathItems.rectangle(top, left, width, height);
+
+        // Set properties
+        rect.filled = false;
+        rect.stroked = true;
+
+        // Parse hex color
+        var r = parseInt(color.substr(1, 2), 16);
+        var g = parseInt(color.substr(3, 2), 16);
+        var b = parseInt(color.substr(5, 2), 16);
+
+        rect.strokeColor = new RGBColor();
+        rect.strokeColor.red = r;
+        rect.strokeColor.green = g;
+        rect.strokeColor.blue = b;
+
+        rect.strokeWidth = thickness;
+
+        // If dash > 0, set stroke dashes: use dash gap as provided and a dash length relative to thickness
+        try {
+            var dashVal = (typeof dash === 'undefined' || dash === null) ? 0 : Number(dash);
+            if (!isNaN(dashVal) && dashVal > 0) {
+                // dash pattern: [dashLength, gapLength]
+                var dashLength = Math.max(1, thickness * 2);
+                rect.strokeDashes = [dashLength, dashVal];
+            } else {
+                // solid
+                rect.strokeDashes = [];
+            }
+        } catch (e) {
+            // In case host doesn't support strokeDashes, ignore
+        }
+
+        // Move to top of the item in stacking order
+        rect.move(item, ElementPlacement.PLACEATBEGINNING);
+    }
+
+    return "Success";
+}
