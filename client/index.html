@@ -215,6 +215,18 @@
             margin-top: 8px;
         }
 
+        /* Swap panel: two-column layout (left col: TL,BL ; right col: TR,BR) */
+        .swap-grid {
+            display: flex;
+            gap: 12px;
+            margin-top: 8px;
+        }
+        .swap-col {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
         /* 小型辅助行：保持可换行 */
         .row {
             display: flex;
@@ -382,7 +394,16 @@
             <!-- Swap Panel -->
             <div class="panel" id="panel-swap">
                 <div class="toolbar">
-                    <button class="btn btn-primary" id="swap-button">Swap Positions</button>
+                    <div class="swap-grid">
+                        <div class="swap-col">
+                            <button class="btn" id="swap-tl-button">Swap Top-Left</button>
+                            <button class="btn" id="swap-bl-button">Swap Bottom-Left</button>
+                        </div>
+                        <div class="swap-col">
+                            <button class="btn" id="swap-tr-button">Swap Top-Right</button>
+                            <button class="btn" id="swap-br-button">Swap Bottom-Right</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 

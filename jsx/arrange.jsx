@@ -877,23 +877,66 @@ function pasteSize(width, height, useW, useH) {
  * Swap positions of exactly two selected items based on their visible top-left corners.
  * Returns "Success" or "Error: ..." string for host to handle.
  */
-function swapSelectedPositions() {
+/**
+ * Swap positions of exactly two selected items based on a chosen corner.
+ * corner: "TL" | "TR" | "BL" | "BR" (defaults to "TL")
+ * Returns "Success" or "Error: ..."
+ */
+function swapSelectedPositions(corner) {
     if (app.documents.length === 0) return "Error: No document open.";
     var selection = app.activeDocument.selection;
     if (!selection || selection.length !== 2) {
         return "Error: Please select exactly two items.";
     }
 
+    corner = corner || "TL";
+
     var a = selection[0];
     var b = selection[1];
 
-    // Record original visible top-lefts before any movement
-    var infoA = getVisibleInfo(a);
-    var infoB = getVisibleInfo(b);
+    var ia = getVisibleInfo(a);
+    var ib = getVisibleInfo(b);
 
-    // Move each to the other's original position
-    moveItemTopLeftTo(a, infoB.left, infoB.top);
-    moveItemTopLeftTo(b, infoA.left, infoA.top);
+    // Helper to get corner coords
+    function cornerCoords(info, c) {
+        switch (c) {
+            case "TR": return { x: info.right, y: info.top };
+            case "BL": return { x: info.left, y: info.bottom };
+            case "BR": return { x: info.right, y: info.bottom };
+            default: // "TL"
+                return { x: info.left, y: info.top };
+        }
+    }
+
+    var aCorner = cornerCoords(ia, corner);
+    var bCorner = cornerCoords(ib, corner);
+
+    // Move each item so its chosen corner becomes the other's original corner
+    try {
+        // For item a: move its corner to bCorner
+        var aBounds = getVisibleBounds(a) || a.visibleBounds;
+        var aX, aY;
+        switch (corner) {
+            case "TR": aX = aBounds[2]; aY = aBounds[1]; break;
+            case "BL": aX = aBounds[0]; aY = aBounds[3]; break;
+            case "BR": aX = aBounds[2]; aY = aBounds[3]; break;
+            default: aX = aBounds[0]; aY = aBounds[1]; break; // TL
+        }
+        a.translate(bCorner.x - aX, bCorner.y - aY);
+
+        // For item b: move its corner to aCorner
+        var bBounds = getVisibleBounds(b) || b.visibleBounds;
+        var bX, bY;
+        switch (corner) {
+            case "TR": bX = bBounds[2]; bY = bBounds[1]; break;
+            case "BL": bX = bBounds[0]; bY = bBounds[3]; break;
+            case "BR": bX = bBounds[2]; bY = bBounds[3]; break;
+            default: bX = bBounds[0]; bY = bBounds[1]; break; // TL
+        }
+        b.translate(aCorner.x - bX, aCorner.y - bY);
+    } catch (e) {
+        return "Error: " + e.message;
+    }
 
     return "Success";
 }

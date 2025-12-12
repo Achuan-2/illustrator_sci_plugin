@@ -7,7 +7,11 @@ var updateLabelButton = document.querySelector("#update-label-button");
 var filterTextButton = document.querySelector("#filter-text-button");
 var copyPosButton = document.querySelector("#copy-pos-button");
 var pastePosButton = document.querySelector("#paste-pos-button");
-var swapButton = document.querySelector("#swap-button");
+// Swap buttons (top-left / top-right / bottom-left / bottom-right)
+var swapTLButton = document.querySelector("#swap-tl-button");
+var swapTRButton = document.querySelector("#swap-tr-button");
+var swapBLButton = document.querySelector("#swap-bl-button");
+var swapBRButton = document.querySelector("#swap-br-button");
 
 var reverseMoveCheckbox = document.querySelector("#reverse-move-checkbox");
 var relativeCornerSelect = document.querySelector("#relative-corner");
@@ -90,7 +94,10 @@ updateLabelButton.addEventListener("click", handleUpdateLabel);
 filterTextButton.addEventListener("click", handleFilterText);
 copyPosButton.addEventListener("click", handleCopyPosition);
 pastePosButton.addEventListener("click", handlePastePosition);
-if (swapButton) swapButton.addEventListener("click", handleSwap);
+if (swapTLButton) swapTLButton.addEventListener("click", function () { handleSwapCorner('TL'); });
+if (swapTRButton) swapTRButton.addEventListener("click", function () { handleSwapCorner('TR'); });
+if (swapBLButton) swapBLButton.addEventListener("click", function () { handleSwapCorner('BL'); });
+if (swapBRButton) swapBRButton.addEventListener("click", function () { handleSwapCorner('BR'); });
 
 copySizeButton.addEventListener("click", handleCopySize);
 pasteSizeButton.addEventListener("click", handlePasteSize);
@@ -536,11 +543,11 @@ function updateLabelPreview() {
     }
 }
 
-function handleSwap() {
-    console.log("Swap button clicked");
+function handleSwapCorner(corner) {
+    console.log("Swap button clicked (corner):", corner);
     csInterface.evalScript(`$.evalFile("${csInterface.getSystemPath(SystemPath.EXTENSION)}/jsx/arrange.jsx")`);
-    csInterface.evalScript('swapSelectedPositions()', function (result) {
-        if (result && result.indexOf("Error:") === 0) {
+    csInterface.evalScript(`swapSelectedPositions("${corner}")`, function (result) {
+        if (result && result.indexOf && result.indexOf("Error:") === 0) {
             alert(result);
         } else if (result === 'EvalScript error.') {
             alert('Error executing the swapSelectedPositions script.');
