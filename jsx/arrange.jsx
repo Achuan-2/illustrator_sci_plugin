@@ -1185,15 +1185,58 @@ function addBorder(color, thickness, dash) {
         rect.filled = false;
         rect.stroked = true;
 
-        // Parse hex color
-        var r = parseInt(color.substr(1, 2), 16);
-        var g = parseInt(color.substr(3, 2), 16);
-        var b = parseInt(color.substr(5, 2), 16);
+        // Parse hex color robustly (fallback to black)
+        var r = 0, g = 0, b = 0;
+        try {
+            if (typeof color === 'string' && color.charAt(0) === '#' && color.length >= 7) {
+                r = parseInt(color.substr(1, 2), 16) || 0;
+                g = parseInt(color.substr(3, 2), 16) || 0;
+                b = parseInt(color.substr(5, 2), 16) || 0;
+            }
+        } catch (e) {
+            r = g = b = 0;
+        }
 
-        rect.strokeColor = new RGBColor();
-        rect.strokeColor.red = r;
-        rect.strokeColor.green = g;
-        rect.strokeColor.blue = b;
+        // Try to respect document color space. If document reports CMYK, convert RGB -> CMYK.
+        try {
+            var docCS = doc.documentColorSpace; // may be DocumentColorSpace.RGB or DocumentColorSpace.CMYK
+        } catch (e) {
+            var docCS = undefined;
+        }
+
+        if (typeof docCS !== 'undefined' && docCS == DocumentColorSpace.CMYK) {
+            // RGB 0..255 -> normalize 0..1
+            var r1 = Math.max(0, Math.min(255, r)) / 255;
+            var g1 = Math.max(0, Math.min(255, g)) / 255;
+            var b1 = Math.max(0, Math.min(255, b)) / 255;
+            // simple RGB -> CMYK conversion
+            var c = 1 - r1;
+            var m = 1 - g1;
+            var y = 1 - b1;
+            var k = Math.min(c, Math.min(m, y));
+            var C = 0, M = 0, Y = 0, K = 0;
+            if (k >= 1.0) {
+                C = 0; M = 0; Y = 0; K = 100;
+            } else {
+                var denom = (1 - k) || 1;
+                C = Math.round(((c - k) / denom) * 100);
+                M = Math.round(((m - k) / denom) * 100);
+                Y = Math.round(((y - k) / denom) * 100);
+                K = Math.round(k * 100);
+            }
+            var cmyk = new CMYKColor();
+            cmyk.cyan = C;
+            cmyk.magenta = M;
+            cmyk.yellow = Y;
+            cmyk.black = K;
+            rect.strokeColor = cmyk;
+        } else {
+            var rgbColor = new RGBColor();
+            rgbColor.red = r;
+            rgbColor.green = g;
+            rgbColor.blue = b;
+            rect.strokeColor = rgbColor;
+        }
 
         rect.strokeWidth = thickness;
 
