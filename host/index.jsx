@@ -86,6 +86,7 @@ var borderColorInput = document.querySelector("#border-color");
 var borderThicknessInput = document.querySelector("#border-thickness");
 var addBorderButton = document.querySelector("#add-border-button");
 var borderDashInput = document.querySelector("#border-dash");
+var autoGroupBorderCheckbox = document.querySelector("#auto-group-border");
 
 // Event Listeners
 arrangeButton.addEventListener("click", handleArrange);
@@ -668,13 +669,14 @@ function handleAddBorder() {
     var color = borderColorInput.value;
     var thickness = parseFloat(borderThicknessInput.value);
     var dash = parseFloat(borderDashInput && borderDashInput.value) || 0;
+    var autoGroup = autoGroupBorderCheckbox && autoGroupBorderCheckbox.checked;
     if (isNaN(thickness) || thickness <= 0) {
         alert("Invalid thickness value.");
         return;
     }
 
     csInterface.evalScript(`$.evalFile("${csInterface.getSystemPath(SystemPath.EXTENSION)}/jsx/arrange.jsx")`);
-    csInterface.evalScript(`addBorder("${color}", ${thickness}, ${dash})`, function (result) {
+    csInterface.evalScript(`addBorder("${color}", ${thickness}, ${dash}, ${autoGroup})`, function (result) {
         if (result && result.indexOf("Error:") === 0) {
             alert(result);
         }

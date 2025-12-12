@@ -1202,7 +1202,7 @@ function pasteSpacing(direction, spacingMm, moveLeftOrTop) {
  * color: hex color string like "#000000"
  * thickness: stroke width in points
  */
-function addBorder(color, thickness, dash) {
+function addBorder(color, thickness, dash, autoGroup) {
     if (app.documents.length === 0) return "Error: No document open.";
 
     var doc = app.activeDocument;
@@ -1304,8 +1304,24 @@ function addBorder(color, thickness, dash) {
             // In case host doesn't support strokeDashes, ignore
         }
 
-        // Move to top of the item in stacking order
-        rect.move(item, ElementPlacement.PLACEATBEGINNING);
+        // 若需要自动编组，先创建组并把边框和对象按原顺序收进组；否则仅把边框移到对象上方
+        if (autoGroup) {
+            try {
+                // 新建组（默认在当前图层最上方）
+                var group = doc.groupItems.add();
+                // 把对象先移进组（会保留原可视位置）
+                item.move(group, ElementPlacement.PLACEATEND);
+                // 再把边框移进组，置于对象上方
+                rect.move(group, ElementPlacement.PLACEATBEGINNING);
+                // 不再移动 group 本身，保持与原图层同级
+            } catch (e) {
+                // 若建组失败，回退到仅把边框放对象上方
+                rect.move(item, ElementPlacement.PLACEATBEGINNING);
+            }
+        } else {
+            // 不编组时，仅把边框移到对象上方
+            rect.move(item, ElementPlacement.PLACEATBEGINNING);
+        }
     }
 
     return "Success";
