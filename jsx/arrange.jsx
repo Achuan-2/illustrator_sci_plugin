@@ -1204,38 +1204,44 @@ function addBorder(color, thickness, dash) {
             var docCS = undefined;
         }
 
-        if (typeof docCS !== 'undefined' && docCS == DocumentColorSpace.CMYK) {
-            // RGB 0..255 -> normalize 0..1
-            var r1 = Math.max(0, Math.min(255, r)) / 255;
-            var g1 = Math.max(0, Math.min(255, g)) / 255;
-            var b1 = Math.max(0, Math.min(255, b)) / 255;
-            // simple RGB -> CMYK conversion
-            var c = 1 - r1;
-            var m = 1 - g1;
-            var y = 1 - b1;
-            var k = Math.min(c, Math.min(m, y));
-            var C = 0, M = 0, Y = 0, K = 0;
-            if (k >= 1.0) {
-                C = 0; M = 0; Y = 0; K = 100;
-            } else {
-                var denom = (1 - k) || 1;
-                C = Math.round(((c - k) / denom) * 100);
-                M = Math.round(((m - k) / denom) * 100);
-                Y = Math.round(((y - k) / denom) * 100);
-                K = Math.round(k * 100);
-            }
-            var cmyk = new CMYKColor();
-            cmyk.cyan = C;
-            cmyk.magenta = M;
-            cmyk.yellow = Y;
-            cmyk.black = K;
-            rect.strokeColor = cmyk;
-        } else {
-            var rgbColor = new RGBColor();
-            rgbColor.red = r;
-            rgbColor.green = g;
-            rgbColor.blue = b;
+        // Create RGBColor first and prefer letting Illustrator convert to document color space.
+        var rgbColor = new RGBColor();
+        rgbColor.red = r;
+        rgbColor.green = g;
+        rgbColor.blue = b;
+
+        try {
             rect.strokeColor = rgbColor;
+        } catch (e) {
+            // If assigning RGB fails (some older hosts), fallback to manual CMYK conversion
+            try {
+                var r1 = Math.max(0, Math.min(255, r)) / 255;
+                var g1 = Math.max(0, Math.min(255, g)) / 255;
+                var b1 = Math.max(0, Math.min(255, b)) / 255;
+                var c = 1 - r1;
+                var m = 1 - g1;
+                var y = 1 - b1;
+                var k = Math.min(c, Math.min(m, y));
+                var C = 0, M = 0, Y = 0, K = 0;
+                if (k >= 1.0) {
+                    C = 0; M = 0; Y = 0; K = 100;
+                } else {
+                    var denom = (1 - k) || 1;
+                    C = Math.round(((c - k) / denom) * 100);
+                    M = Math.round(((m - k) / denom) * 100);
+                    Y = Math.round(((y - k) / denom) * 100);
+                    K = Math.round(k * 100);
+                }
+                var cmyk = new CMYKColor();
+                cmyk.cyan = C;
+                cmyk.magenta = M;
+                cmyk.yellow = Y;
+                cmyk.black = K;
+                rect.strokeColor = cmyk;
+            } catch (e2) {
+                // final fallback: set RGB again and ignore error
+                try { rect.strokeColor = rgbColor; } catch (ee) { }
+            }
         }
 
         rect.strokeWidth = thickness;
