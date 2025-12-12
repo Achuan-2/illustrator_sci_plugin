@@ -113,6 +113,8 @@
 
   <img width="1024" height="1098" alt="image" src="https://github.com/user-attachments/assets/9a192d43-71b8-430a-8e92-e05c9b241437" />
 
+  > 补充：发现illustrator添加图片有蒙版功能，可以快速添加蒙版之后也能设置描边，并且会随着图片移动而移动，也挺方便的。本质上也是illustrator添加了一个和图片等大的矩形，然后创建剪切蒙版，相当于是给这个剪切组添加描边
+
 
 ## 3 如何使用本插件
 
