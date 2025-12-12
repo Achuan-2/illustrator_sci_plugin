@@ -18,9 +18,43 @@
 
 ## 2 功能介绍
 
-<img width="1393" height="624" alt="image" src="https://github.com/user-attachments/assets/e9a08988-f5cf-4ed7-9f6e-fba1d7214c01" />
+<img width="2656" height="1508" alt="image" src="https://github.com/user-attachments/assets/a5174868-ee60-4b83-982a-84734649d3e4" />
 
 
+- 一键添加子图label和更新label
+
+  - 添加label
+
+    ![PixPin_2025-09-10_16-34-58](https://assets.b3logfile.com/siyuan/1610205759005/assets/PixPin_2025-09-10_16-34-58-20250910163500-46cw2gv.png)
+
+    添加子图label后，offset 输入框变红，修改值就会自动实时更改label offset，还支持悬浮输入框鼠标滚轮滚动快速实时移动label
+
+    注：要退出这个状态只需要随意点击其他按钮、输入框即可
+
+    ![减少帧数2](https://assets.b3logfile.com/siyuan/1610205759005/assets/减少帧数2-20251128232313-i4ncm0a.gif)
+  - 更新label
+
+    根据设置的样式和编号来一键更新Label已有编号，子图重排、更新编号模板的时候就不需要自己一个个重写编号了
+
+    批量选中label一键更新
+
+    ![PixPin_2025-11-28_23-07-13](https://assets.b3logfile.com/siyuan/1610205759005/assets/PixPin_2025-11-28_23-07-13-20251128230731-2wk5yaa.gif)
+
+    根据设置的label index编号来一个个更新
+
+    ![减少帧数](https://assets.b3logfile.com/siyuan/1610205759005/assets/减少帧数-20251128232207-13i4s6e.gif)
+- 一键排列图片：可以批量调整图片宽高、一键排列整齐
+
+  - Column：设置要排成几列
+  - Row Gap：行间距
+  - Column Gap：列间距
+  - Resize Width：如果打上勾，会统一设置所有对象的Width
+  - Resize Height：如果打上勾，会统一设置所有对象的Height
+  - Order：判断对象的先后顺序，插件支持根据垂直位置、水平位置以及图层顺序来确定对象顺序。（illustrator没法获取选择顺序，只能根据位置和图层顺序来确定对象顺序）
+
+  ![PixPin_2025-08-06_17-59-37](https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-08-06_17-59-37-20250806175940-zw3soci.png)
+
+  ![PixPin_2025-08-06_17-59-37](https://github.com/user-attachments/assets/3baad6da-798d-449b-9023-69c8698db78e)
 - 复制粘贴相对位置：
 
   使用说明
@@ -37,33 +71,16 @@
   - 快速统一label位置：一个图加了label，其他图的label位置也需要一样，也可以快速统一
   - 可以基于画布复制多选形状的位置，进行跨画布统一位置
 
-  <img alt="PixPin_2025-09-10_16-18-33" src="https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-09-10_16-18-33-20250910161836-eiui89p.png" style="width: 214px;" />
+  ![PixPin_2025-09-10_16-18-33](https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-09-10_16-18-33-20250910161836-eiui89p.png)
 
-  <br>
-  <img alt="PixPin_2025-08-06_17-59-37" src="https://github.com/user-attachments/assets/6a85f732-a325-4864-a7af-5cb9dc0796e4" width="70%"/>
-
-​
-- 形状大小批量复制：
+  ![PixPin_2025-08-06_17-59-37](https://github.com/user-attachments/assets/6a85f732-a325-4864-a7af-5cb9dc0796e4)
+- 形状大小批量复制
 
   复制一个形状的宽高或者手动输入宽高，点击Paste Size即可对选择的形状进行批量粘贴形状。
 
   宽高前有勾选框，默认全部勾选，只勾选其中一个，比如只勾选宽度则只粘贴宽度，高度根据原来宽高比自动调整
 
-  <img alt="PixPin_2025-08-06_17-56-39" src="https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-08-06_17-56-39-20250806175650-enk1w8e.png" style="width: 278px;" />​
-- 一键排列图片：可以批量调整图片宽高、一键排列整齐
-
-  - Column：设置要排成几列
-  - Row Gap：行间距
-  - Column Gap：列间距
-  - Resize Width：如果打上勾，会统一设置所有对象的Width
-  - Resize Height：如果打上勾，会统一设置所有对象的Height
-  - Order：判断对象的先后顺序，插件支持根据垂直位置、水平位置以及图层顺序来确定对象顺序。（illustrator没法获取选择顺序，只能根据位置和图层顺序来确定对象顺序）
-
-  <img alt="PixPin_2025-08-06_17-59-37" src="https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-08-06_17-59-37-20250806175940-zw3soci.png" style="width: 298px;" />
-  <br>
-  <img alt="PixPin_2025-08-06_17-59-37" src="https://github.com/user-attachments/assets/3baad6da-798d-449b-9023-69c8698db78e" width="70%"/>
-
-​
+  ![PixPin_2025-08-06_17-56-39](https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-08-06_17-56-39-20250806175650-enk1w8e.png)
 - 交换两个形状的位置
 
   用途
@@ -71,34 +88,10 @@
   - 一组图已经排版好，复制一份，然后用swap position功能，把新图和原来的图替换
   - 组图后需要修改，交换两个图的位置
 
-  <img alt="PixPin_2025-08-09_22-50-15" src="https://fastly.jsdelivr.net/gh/Achuan-2/PicBed@pic/assets/PixPin_2025-08-09_22-50-15-20250809225017-bwuzfj6.png" style="width: 453px;" />
-  <br>
-  <img alt="PixPin_2025-08-06_17-59-37" src="https://github.com/user-attachments/assets/b1024d68-50e9-402a-9034-8ffc22f5947b" />
+  <img width="602" height="527" alt="image" src="https://github.com/user-attachments/assets/04b2afa9-94db-4ed9-a380-6b6517e629e4" />
 
-​
-- 一键添加label和更新label
 
-  - 添加label
-
-    <img alt="PixPin_2025-09-10_16-34-58" src="https://assets.b3logfile.com/siyuan/1610205759005/assets/PixPin_2025-09-10_16-34-58-20250910163500-46cw2gv.png" />
-
-    添加子图label后，offset 输入框变红，修改值就会自动实时更改label offset，还支持悬浮输入框鼠标滚轮滚动快速实时移动label
-
-    注：要退出这个状态只需要随意点击其他按钮、输入框即可
-
-    <img alt="减少帧数2" src="https://assets.b3logfile.com/siyuan/1610205759005/assets/减少帧数2-20251128232313-i4ncm0a.gif" />
-  - 更新label
-
-    根据设置的样式和编号来一键更新Label已有编号，子图重排、更新编号模板的时候就不需要自己一个个重写编号了
-
-    批量选中label一键更新
-
-    <img alt="PixPin_2025-11-28_23-07-13" src="https://assets.b3logfile.com/siyuan/1610205759005/assets/PixPin_2025-11-28_23-07-13-20251128230731-2wk5yaa.gif" />
-
-    根据设置的label index编号来一个个更新
-
-    <img alt="减少帧数" src="https://assets.b3logfile.com/siyuan/1610205759005/assets/减少帧数-20251128232207-13i4s6e.gif" />
-
+  ![PixPin_2025-08-06_17-59-37](https://github.com/user-attachments/assets/b1024d68-50e9-402a-9034-8ffc22f5947b)
 - 间距设置功能
 
   - 间距均匀分布功能：一键统一不同宽高的形状之间的水平/垂直间距
@@ -116,6 +109,9 @@
     下面是一个例子：在画一个流程图，矩形和箭头的间距调整了一个满意的，然后就可以复制这个间距，快速批量应用于其他矩形和箭头，统一这个间距
 
     ![复制粘贴间距-20251128205250-r9vjwbw](https://github.com/user-attachments/assets/0567f2aa-6a3c-4757-9ffd-f1fc3cf12d58)
+- 一键添加图片边框
+
+  <img width="1024" height="1098" alt="image" src="https://github.com/user-attachments/assets/9a192d43-71b8-430a-8e92-e05c9b241437" />
 
 
 ## 3 如何使用本插件
